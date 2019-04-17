@@ -9,6 +9,7 @@ import unimelb.bitbox.util.Configuration;
 import unimelb.bitbox.util.FileSystemManager;
 
 import java.net.*;
+import java.util.Scanner;
 
 public class Peer
 {
@@ -21,18 +22,39 @@ public class Peer
         log.info("BitBox Peer starting...");
         Configuration.getConfiguration();
 
-        Socket csocket = null;
-        Socket ssocket = null;
-        Socket referenceSocket = null;
+        new ServerMain();
+
+        //Start of project
+
+        Socket ServerSocket = null;
+        Socket refSocket = null;
 
         //Client side
-        /*
+
+        Socket socket = null;
         try
         {
-            csocket = new Socket("localhost", 3000);
+            int port = 3400;
+            socket = new Socket("localhost", port);
+            System.out.println("Connection to port " + port + " established");
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(csocket.getInputStream(), "UTF-8"));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(csocket.getOutputStream(), "UTF-8"));
+            Scanner scanner = new Scanner(System.in);
+            String inputStr = null;
+
+            //While the user input differs from "exit"
+            while (!(inputStr = scanner.nextLine()).equals("exit"))
+            {
+                out.write(inputStr + "\n");
+                out.flush();
+                System.out.println("Message sent");
+
+                String received = in.readLine(); // This method blocks until there
+                System.out.println("Message received: " + received);
+            }
+
+            scanner.close();
 
         } catch (UnknownHostException e)
         {
@@ -42,22 +64,19 @@ public class Peer
             e.printStackTrace();
         } finally
         {
-            if (csocket != null)
+            if (socket != null)
             {
                 try
                 {
-                    csocket.close();
+                    socket.close();
                 } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
             }
         }
-        */
+
         //Server side
 
-
-
-        new ServerMain();
     }
 }

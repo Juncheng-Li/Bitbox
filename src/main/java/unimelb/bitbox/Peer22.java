@@ -27,7 +27,7 @@ public class Peer22
         //ServerSocket listeningsocket = null;
         ServerSocket sSocket = null;
         Socket rSocket = null;
-        int port = 0;
+        int port = 3400;
         int count = 0;
 
         try
@@ -38,6 +38,10 @@ public class Peer22
                 System.out.println("Listening on port: " + port);
                 rSocket = sSocket.accept();
                 count++;
+                System.out.println("Client connection number " + count + " accepted:");
+                System.out.println("Remote Port: " + rSocket.getPort());
+                System.out.println("Remote Hostname: " + rSocket.getInetAddress().getHostName());
+                System.out.println("Local Port: " + rSocket.getLocalPort());
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(rSocket.getInputStream(), "UTF-8"));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(rSocket.getOutputStream(), "UTF-8"));
@@ -47,7 +51,7 @@ public class Peer22
                 {
                     while((Message = in.readLine()) != null)
                     {
-                        System.out.println("Message: " + Message);
+                        System.out.println("Received message: " + Message + " from " + rSocket.getInetAddress());
                         out.write("Server Ack " + Message + "\n");
                         out.flush();
                         System.out.println("Respond sent");
