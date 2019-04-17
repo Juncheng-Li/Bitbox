@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for pfs" enabled="true">
+        <sourceOutputDir name="peer2/generated-sources/annotations" />
+        <sourceTestOutputDir name="peer2/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="bitbox" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="bitbox" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
