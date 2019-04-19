@@ -25,10 +25,6 @@ public class ThreadDemo extends Thread
         System.out.println(" exiting...");
     }
 
-
-
-
-
     public static void main(String[] args)
     {
         ThreadDemo iron = new ThreadDemo();
