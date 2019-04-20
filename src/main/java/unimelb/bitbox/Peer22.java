@@ -95,6 +95,7 @@ public class Peer22
         }
     }
 
+
     public static void JSONServer()
     {
         ServerSocketFactory factory = ServerSocketFactory.getDefault();
@@ -128,28 +129,26 @@ public class Peer22
         try (Socket clientSocket = client)
         {
 
-            // The JSON Parser - setting
+            // 0. The JSON Parser - setting
             JSONParser parser = new JSONParser();
-            // Input and Output stream - setting
-            DataInputStream input = new DataInputStream(clientSocket.
-                    getInputStream());
-            DataOutputStream output = new DataOutputStream(clientSocket.
-                    getOutputStream());
+            // 0. Input and Output stream - setting
+            DataInputStream input = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
             // 1. Read client message
             System.out.println("CLIENT: " + input.readUTF());
             // 2. Greeting client by telling it number
             output.writeUTF("Server: Hi Client " + counter + " !!!");
 
-            // Receive more data..
+            // 3. Receive and parse JSON file
             while (true)
             {
                 if (input.available() > 0)
                 {
-                    // Attempt to convert read data to JSON
+                    // Read command
                     JSONObject command = (JSONObject) parser.parse(input.readUTF());
                     System.out.println("COMMAND RECEIVED: " + command.toJSONString());
-                    // Calculate the result
-                    Integer result = parseCommand(command, output);
+                    //Parse and Do the command
+                    parseCommand(command, output);
 
                 }
             }
@@ -159,10 +158,10 @@ public class Peer22
         }
     }
 
-    private static Integer parseCommand(JSONObject command, DataOutputStream output)
+    private static void parseCommand(JSONObject command, DataOutputStream output)
     {
 
-        int result = 0;
+        //int result = 0;
 
         // This section deals with the file handler
         //DIY ensure what Keys are in received JSON
@@ -177,7 +176,7 @@ public class Peer22
                 // Send this back to client so that they know what the file is.
                 JSONObject trigger = new JSONObject();
                 trigger.put("command_name", "SENDING_FILE");
-                trigger.put("file_name", "sauron.jpg");
+                trigger.put("file_name", fileName);
                 trigger.put("file_size", f.length());
                 try
                 {
@@ -205,6 +204,6 @@ public class Peer22
             }
         }
         // TODO Auto-generated method stub
-        return result;
+        //return result;
     }
 }

@@ -38,11 +38,10 @@ public class Peer
 
     }
 
+    //Client side
 
     public static void ClientConnect()
     {
-        //Client side
-
         Socket socket = null;
         try
         {
@@ -88,174 +87,63 @@ public class Peer
         }
     }
 
-    public static void JSONServer()
-    {
-        ServerSocketFactory factory = ServerSocketFactory.getDefault();
-        try (ServerSocket server = factory.createServerSocket(port))
-        {
-            System.out.println("Waiting for client connection..");
 
-            // Wait for connections.
-            while (true)
-            {
-                Socket client = server.accept();
-                counter++;
-                System.out.println("Client " + counter + ": Applying for connection!");
-
-
-                // Start a new thread for a connection
-                Thread t = new Thread(() -> serveClient(client));
-
-                t.start();
-            }
-
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public static void serveClient(Socket client)
-    {
-        //Server side
-        try (Socket clientSocket = client)
-        {
-
-            // The JSON Parser - setting
-            JSONParser parser = new JSONParser();
-            // Input and Output stream - setting
-            DataInputStream input = new DataInputStream(clientSocket.
-                    getInputStream());
-            DataOutputStream output = new DataOutputStream(clientSocket.
-                    getOutputStream());
-            // 1. Read client message
-            System.out.println("CLIENT: " + input.readUTF());
-            // 2. Greeting client by telling it number
-            output.writeUTF("Server: Hi Client " + counter + " !!!");
-
-            // Receive more data..
-            while (true)
-            {
-                if (input.available() > 0)
-                {
-                    // Attempt to convert read data to JSON
-                    JSONObject command = (JSONObject) parser.parse(input.readUTF());
-                    System.out.println("COMMAND RECEIVED: " + command.toJSONString());
-                    // Calculate the result
-                    Integer result = parseCommand(command, output);
-
-                }
-            }
-        } catch (IOException | ParseException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private static Integer parseCommand(JSONObject command, DataOutputStream output)
-    {
-
-        int result = 0;
-
-        // This section deals with the file handler
-        //DIY ensure what Keys are in received JSON
-        if (command.get("command_name").equals("GET_FILE"))
-        {
-            String fileName = (String) command.get("file_name");
-            // Check if file exists
-            File f = new File("server_files/" + fileName);
-            if (f.exists())
-            {
-
-                // Send this back to client so that they know what the file is.
-                JSONObject trigger = new JSONObject();
-                trigger.put("command_name", "SENDING_FILE");
-                trigger.put("file_name", "sauron.jpg");
-                trigger.put("file_size", f.length());
-                try
-                {
-                    // Send trigger to client
-                    output.writeUTF(trigger.toJSONString());
-
-                    // Start sending file
-                    RandomAccessFile byteFile = new RandomAccessFile(f, "r");
-                    byte[] sendingBuffer = new byte[1024 * 1024];
-                    int num;
-                    // While there are still bytes to send..
-                    while ((num = byteFile.read(sendingBuffer)) > 0)
-                    {
-                        System.out.println(num);
-                        output.write(Arrays.copyOf(sendingBuffer, num));
-                    }
-                    byteFile.close();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            } else
-            {
-                System.out.println("There is no file named as " + fileName);
-            }
-        }
-        // TODO Auto-generated method stub
-        return result;
-    }
 
     public static void JSONClient()
     {
-        try (Socket socket = new Socket(ip, port);)
+        try (Socket socket = new Socket(ip, port))
         {
-            // Output and Input Stream
-            DataInputStream input = new DataInputStream(socket.
-                    getInputStream());
-            DataOutputStream output = new DataOutputStream(socket.
-                    getOutputStream());
-
-            output.writeUTF("I want to connect!");
+            // 0.
+            String fileName = "mini_black_hole.jpg";
+            // 0. Output and Input Stream, parser - setting
+            DataInputStream input = new DataInputStream(socket.getInputStream());
+            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+            JSONParser parser = new JSONParser();
+            // 0. Write a message
+            output.writeUTF("Connecting ... " + ip + " " + port);
             output.flush();
 
-            JSONObject newCommand = new JSONObject();
-            newCommand.put("command_name", "GET_FILE");
-            newCommand.put("file_name", "sauron.jpg");
-
-            System.out.println(newCommand.toJSONString());
-
-            // Read hello from server..
+            // 0. Read hello from server..
             String message = input.readUTF();
             System.out.println(message);
 
-            // Send RMI to Server
+            // 1. Ready the object
+            JSONObject newCommand = new JSONObject();
+            newCommand.put("command_name", "GET_FILE");
+            newCommand.put("file_name", fileName);
+            // 1. Show the object on local
+            System.out.println(newCommand.toJSONString());
+
+            // 2. Send prepared object(RMI) to Server
             output.writeUTF(newCommand.toJSONString());
             output.flush();
 
-            JSONParser parser = new JSONParser();
-
-            // Print out results received from server..
+            // 3. Receive and parse reply received from server
             while (true)
             {
                 if (input.available() > 0)
                 {
-
-                    String result = input.readUTF();
-                    System.out.println("Received from server: " + result);
-
-                    JSONObject command = (JSONObject) parser.parse(result);
-
-
+                    //3.1 Receive reply
+                    String reply = input.readUTF();
+                    System.out.println("Received from server: " + reply);
+                    //3.2 Parse reply
+                    JSONObject command = (JSONObject) parser.parse(reply);
+                    System.out.println("Command: " + command);
+                    //3.3 Interpret the reply
                     // Check the command name
                     if (command.containsKey("command_name"))
                     {
-
+                        // Command = "SENDING_FILE"
                         if (command.get("command_name").equals("SENDING_FILE"))
                         {
 
-                            // The file location
-                            String fileName = "client_files/" + command.get("file_name");
+                            // 1. Set The download location
+                            String downloadPath = "share/" + command.get("file_name");
 
-                            // Create a RandomAccessFile to read and write the output file.
-                            RandomAccessFile downloadingFile = new RandomAccessFile(fileName, "rw");
+                            // 2. Create a RandomAccessFile to read and write the output file to disk.
+                            RandomAccessFile downloadingFile = new RandomAccessFile(downloadPath, "rw");
 
-                            // Find out how much size is remaining to get from the server.
+                            // 3. Find out how much size is remaining to get from the server.
                             long fileSizeRemaining = (Long) command.get("file_size");
 
                             int chunkSize = setChunkSize(fileSizeRemaining);
@@ -266,7 +154,7 @@ public class Peer
                             // Variable used to read if there are remaining size left to read.
                             int num;
 
-                            System.out.println("Downloading " + fileName + " of size " + fileSizeRemaining);
+                            System.out.println("Downloading " + downloadPath + " of size " + fileSizeRemaining);
                             while ((num = input.read(receiveBuffer)) > 0)
                             {
                                 // Write the received bytes into the RandomAccessFile
