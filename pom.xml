@@ -4,7 +4,7 @@
 
     <groupId>unimelb</groupId>
     <artifactId>bitbox</artifactId>
-    <version>0.45</version>
+    <version>0.5</version>
     <packaging>jar</packaging>
 
     <name>pfs</name>
@@ -25,7 +25,7 @@
     </dependencies>
 
     <build>
-        <directory>peer2</directory>
+        <!--<directory>peer2</directory>-->
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
