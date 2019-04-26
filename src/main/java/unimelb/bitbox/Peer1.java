@@ -45,8 +45,8 @@ public class Peer1
             // 0.
             String fileName = "mini_black_hole.jpg";
             // 0. Output and Input Stream, parser - setting
-            DataInputStream input = new DataInputStream(socket.getInputStream());
-            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+            BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
             JSONParser parser = new JSONParser();
             // 0. Write a message
             //output.writeUTF("Connecting ... " + ip + " " + port);
@@ -60,26 +60,35 @@ public class Peer1
             JSONObject newCommand = new JSONObject();
             newCommand.put("command", "HANDSHAKE_REQUEST");
             JSONObject hostPort = new JSONObject();
-            hostPort.put("host", "localhost");
+            hostPort.put("host", ip);
             hostPort.put("port", 3000);
             newCommand.put("hostPort", hostPort);
 
             //newCommand.put("file_name", fileName);
             // 1. Show the object on local
+            System.out.println("Send message: ");
             System.out.println(newCommand.toJSONString());
 
             // 2. Send prepared object(RMI) to Server
-            output.writeUTF(newCommand.toJSONString() + "\n");
+            output.write(newCommand.toJSONString());
+            output.write("\n");
             output.flush();
 
             // 3. Receive and parse reply received from server
-            while (true)
+            System.out.println();
+            System.out.println("Receive message: ");
+            try
             {
-                if (input.available() > 0)
+                while (true)
                 {
-                    System.out.println("111111111");
-                    //3.1 Receive reply
-                    String reply = input.readUTF();
+                    if (input.readLine() != null)
+                    {
+
+                        System.out.println(input.readLine());
+                        System.out.println();
+                        //3.1 Receive reply
+                    /*
+                    String reply = input.readLine();
                     System.out.println("Received from server: " + reply);
                     //3.2 Parse reply
                     JSONObject command = (JSONObject) parser.parse(reply);
@@ -87,7 +96,14 @@ public class Peer1
                     //3.3 Interpret the reply
                     // Check the command name
 
+                     */
+
+                    }
                 }
+            } catch (SocketException e)
+            {
+                System.out.println("1");
+                System.out.println("closed...");
             }
 
         } catch (UnknownHostException e)
@@ -95,26 +111,9 @@ public class Peer1
             e.printStackTrace();
         } catch (IOException e)
         {
-
-        } catch (ParseException e)
-        {
-            // TODO Auto-generated catch block
+            System.out.println("2");
             e.printStackTrace();
         }
     }
 
-    public static int setChunkSize(long fileSizeRemaining)
-    {
-        // Determine the chunkSize
-        int chunkSize = 1024 * 1024;
-
-        // If the file size remaining is less than the chunk size
-        // then set the chunk size to be equal to the file size.
-        if (fileSizeRemaining < chunkSize)
-        {
-            chunkSize = (int) fileSizeRemaining;
-        }
-
-        return chunkSize;
-    }
 }

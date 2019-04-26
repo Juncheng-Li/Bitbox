@@ -16,15 +16,15 @@ import javax.net.ServerSocketFactory;
 import java.net.*;
 import java.util.Scanner;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class peer4
+public class peer5
 {
     public static void main(String[] args)
     {
-        Client T1 = new Client("peer4", "localhost", 3000);
-        //T1.start();
+        //Start of project
+        //client_n c = new client_n("peer5", "43.240.97.106", 3000);
+        //c.clientRun();
+        Client T1 = new Client("peer5", "43.240.97.106", 3000);
+        T1.start();
 
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
@@ -72,5 +72,7 @@ public class peer4
                 }
             }
         }
+
+
     }
 }

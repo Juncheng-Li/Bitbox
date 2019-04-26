@@ -1,30 +1,29 @@
 package unimelb.bitbox;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import unimelb.bitbox.util.Document;
+
 import java.io.*;
-import java.net.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-
-class Client extends Thread
+public class client_n
 {
-    private Thread t;
-    private String threadName;
+    Socket socket = null;
     private String ip;
     private int port;
+    private String peerName = null;
 
-
-    Client(String threadName, String ip, int port)
+    client_n(String peerName, String ip, int port)
     {
-        this.threadName = threadName;
+        this.peerName = peerName;
         this.ip = ip;
         this.port = port;
     }
 
-    public void run()
+    public void clientRun()
     {
-        Socket socket = null;
         try
         {
             socket = new Socket(ip, port);
@@ -38,37 +37,18 @@ class Client extends Thread
             JSONObject hostPort = new JSONObject();
             hostPort.put("host",ip);
             hostPort.put("port",port);
-            hs_r.put("hostPort",hostPort);
+            hs_r.put("hostport",hostPort);
             System.out.println(hs_r.toJSONString());
-
 
             // Send the input string to the server by writing to the socket output stream
             out.write(hs_r + "\n");
             out.flush();
             System.out.println("JSONObject sent");
-            String message = null;
-            while ((message = in.readLine()) != null)
-            {
-                JSONObject command = (JSONObject) parser.parse(message);
-                System.out.println("Message from peer: " + command.toJSONString());
-                //out.write("Server Ack " + command.toJSONString() + "\n");
-                //out.flush();
-                //System.out.println("Reply sent");
-                //Execute command
-            }
-            // Receive the reply from the server by reading from the socket input stream
-            String received = in.readLine(); // This method blocks until there
-            // is something to read from the
-            // input stream
-
 
         } catch (UnknownHostException e)
         {
             e.printStackTrace();
         } catch (IOException e)
-        {
-            e.printStackTrace();
-        } catch (ParseException e)
         {
             e.printStackTrace();
         } finally
