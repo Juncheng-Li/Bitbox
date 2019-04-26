@@ -23,7 +23,7 @@ public class peer4
 {
     public static void main(String[] args)
     {
-        Client T1 = new Client("peer4", "localhost", 3000);
+        //Client T1 = new Client("peer4", "localhost", 3000);
         //T1.start();
 
         ServerSocket listeningSocket = null;
