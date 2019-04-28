@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.ListIterator;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
@@ -17,7 +18,8 @@ import java.net.*;
 import java.util.Scanner;
 
 import unimelb.bitbox.util.FileSystemManager.FileSystemEvent;
-import unimelb.bitbox.util.FileSystemObserver;
+import java.util.ArrayList;
+
 
 public class peer10
 {
@@ -40,11 +42,12 @@ public class peer10
 
         ServerMain f = new ServerMain(in, out);
 
-        //f.fileSystemManager.generateSyncEvents();
 
-        client_T T3 = new client_T(in, out);
+        // Try if connectable
+        client_T T3 = new client_T(in, out, f);
         T3.run();
-        //Start
+
+        // Server Start
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
         int i = 0; //counter to keep track of the number of clients

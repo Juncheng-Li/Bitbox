@@ -3,11 +3,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimelb.bitbox.util.Document;
+import unimelb.bitbox.util.FileSystemManager;
 import unimelb.bitbox.util.FileSystemObserver;
 
 import java.io.*;
 import java.net.*;
 import java.nio.Buffer;
+import java.util.ArrayList;
 
 
 class client_T extends Thread
@@ -20,11 +22,13 @@ class client_T extends Thread
     //private ServerMain f;
     public BufferedReader in;
     public BufferedWriter out;
+    private ServerMain f;
 
-    client_T(BufferedReader in, BufferedWriter out)
+    client_T(BufferedReader in, BufferedWriter out, ServerMain f)
     {
         this.in = in;
         this.out = out;
+        this.f = f;
     }
 
     public void run()
@@ -63,14 +67,21 @@ class client_T extends Thread
                 //System.out.println("Reply sent");
                 //Execute command
                 //doCommand(command, out);
-                /*
+
                 if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                 {
-                    System.out.println("(Client)Start Synchronizing Events------");
-                    //System.out.println(f.fileSystemManager.generateSyncEvents());
+                    // Synchronizing Events after Handshake!!!
+                    ArrayList<FileSystemManager.FileSystemEvent> sync = f.fileSystemManager.generateSyncEvents();
+                    System.out.println(sync);
+                    FileSystemManager.FileSystemEvent currentEvent = null;
+                    System.out.println("----------Synchronizing Events!!!----------");
+                    while (sync.size() > 0)
+                    {
+                        System.out.println(currentEvent = sync.remove(0));
+                        f.processFileSystemEvent(currentEvent);
+                    }
                 }
-                //System.out.println("=======");
-                */
+
             }
 
         } catch (UnknownHostException e)
@@ -78,7 +89,14 @@ class client_T extends Thread
             e.printStackTrace();
         } catch (IOException e)
         {
-            e.printStackTrace();
+            if(e.toString().contains("ConnectException"))
+            {
+                System.out.println("Peer working as a server");
+            }
+            else
+            {
+                e.printStackTrace();
+            }
         } catch (ParseException e)
         {
             e.printStackTrace();
@@ -98,22 +116,6 @@ class client_T extends Thread
                     e.printStackTrace();
                 }
             }
-        }
-    }
-
-
-    public void doCommand(JSONObject command, BufferedWriter out)
-    {
-        try
-        {
-            JSONObject test = new JSONObject();
-            test.put("command", "awoken");
-            out.write(test + "\n");
-            out.flush();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
         }
     }
 

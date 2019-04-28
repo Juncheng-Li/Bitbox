@@ -3,6 +3,7 @@ package unimelb.bitbox;
 import java.io.*;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
@@ -29,9 +30,8 @@ public class ServerMain implements FileSystemObserver
         //T1.start();
         this.in = in;
         this.out = out;
-
-
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
+        //ArrayList<FileSystemEvent>sync = fileSystemManager.generateSyncEvents();
     }
 
     @Override
@@ -55,6 +55,11 @@ public class ServerMain implements FileSystemObserver
             System.out.println("Yes, there is a file created");
         }
 
+        if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
+        {
+            System.out.println("Yes, there is a file modified");
+        }
+
         if (fileSystemEvent.event.toString().equals("FILE_DELETE"))
         {
             //Destination remove file
@@ -69,7 +74,7 @@ public class ServerMain implements FileSystemObserver
             {
                 JSONObject req = new JSONObject();
                 req = parseRequest("DIRECTORY_CREATE_REQUEST", fileSystemEvent.pathName);
-                out.write(req + "\n");
+                out.write(req.toJSONString() + "\n");
                 out.flush();
             }
             catch (IOException e)
