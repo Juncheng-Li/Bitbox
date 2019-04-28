@@ -7,27 +7,24 @@ import unimelb.bitbox.util.FileSystemObserver;
 
 import java.io.*;
 import java.net.*;
+import java.nio.Buffer;
 
 
-class Client extends Thread
+class client_T extends Thread
 {
     private Thread t;
     private String threadName;
     private String ip;
     private int port;
     public Socket socket = null;
-    private String eventString;
-    private String pathName;
     //private ServerMain f;
     public BufferedReader in;
     public BufferedWriter out;
 
-    Client(String threadName, String ip, int port)
+    client_T(BufferedReader in, BufferedWriter out)
     {
-        this.threadName = threadName;
-        this.ip = ip;
-        this.port = port;
-        //this.f = FileSystemManager;
+        this.in = in;
+        this.out = out;
     }
 
     public void run()
@@ -35,12 +32,6 @@ class Client extends Thread
 
         try
         {
-            socket = new Socket(ip, port);
-            System.out.println("Connection established");
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-            JSONParser parser = new JSONParser();
-
             // Handshake - fixed!
             JSONObject hs = new JSONObject();
             JSONObject hostPort = new JSONObject();
@@ -59,9 +50,9 @@ class Client extends Thread
             out.write(sendMessage + "\n");
             out.flush();
             System.out.println(sendMessage.get("command") + " sent");
-            */
-
+             */
             // Receive incoming reply
+            JSONParser parser = new JSONParser();
             String message = null;
             while ((message = in.readLine()) != null)
             {
@@ -71,15 +62,15 @@ class Client extends Thread
                 //out.flush();
                 //System.out.println("Reply sent");
                 //Execute command
+                //doCommand(command, out);
                 /*
                 if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                 {
                     System.out.println("(Client)Start Synchronizing Events------");
                     //System.out.println(f.fileSystemManager.generateSyncEvents());
                 }
-
-                 */
                 //System.out.println("=======");
+                */
             }
 
         } catch (UnknownHostException e)
@@ -87,14 +78,7 @@ class Client extends Thread
             e.printStackTrace();
         } catch (IOException e)
         {
-            if(e.toString().contains("ConnectException"))
-            {
-                System.out.println("Peer working as a server");
-            }
-            else
-            {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         } catch (ParseException e)
         {
             e.printStackTrace();
@@ -114,6 +98,22 @@ class Client extends Thread
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+
+    public void doCommand(JSONObject command, BufferedWriter out)
+    {
+        try
+        {
+            JSONObject test = new JSONObject();
+            test.put("command", "awoken");
+            out.write(test + "\n");
+            out.flush();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 

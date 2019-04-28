@@ -16,16 +16,24 @@ import javax.net.ServerSocketFactory;
 import java.net.*;
 import java.util.Scanner;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class peer4
+public class peer44
 {
-    public static void main(String[] args)
-    {
-        //Client T1 = new Client("peer4", "localhost", 3000);
-        //T1.start();
+    private static int counter = 0;
+    private static int port = 3000;
+    private static Logger log = Logger.getLogger(Peer.class.getName());
+    private static String ip = "localhost";
 
+    public static void main(String[] args) throws IOException, NumberFormatException, NoSuchAlgorithmException
+    {
+        System.setProperty("java.util.logging.SimpleFormatter.format",
+                "[%1$tc] %2$s %4$s: %5$s%n");
+        log.info("BitBox Peer starting...");
+        Configuration.getConfiguration();
+
+        ServerMain f = new ServerMain();
+
+        //Start of project
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
         int i = 0; //counter to keep track of the number of clients
@@ -43,14 +51,13 @@ public class peer4
                 System.out.println(clientSocket.getInetAddress().toString().replaceAll("/", ""));
                 System.out.println(clientSocket.getLocalPort());
 
-                Server T2 = new Server("peer4 server", 3000, clientSocket, i, null);
+                Server T2 = new Server("peer4 server", 3000, clientSocket, i, f);
                 T2.start();
                 //ExecutorService pool = Executors.newFixedThreadPool(10);
                 //pool.execute(T2);
 
 
             }
-
 
         } catch (SocketException ex)
         {

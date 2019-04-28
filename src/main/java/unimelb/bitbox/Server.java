@@ -21,6 +21,7 @@ import java.util.Arrays;
 import javax.net.ServerSocketFactory;
 
 import unimelb.bitbox.util.Document;
+import unimelb.bitbox.util.FileSystemManager;
 
 public class Server extends Thread
 {
@@ -35,14 +36,15 @@ public class Server extends Thread
     private String clientMsg = null;
     private JSONObject command = null;
     private Document Msg = null;
+    private ServerMain f;
 
-
-    Server(String threadname, int port, Socket clientSocket, int i)
+    Server(String threadname, int port, Socket clientSocket, int i, ServerMain f)
     {
         this.threadName = threadname;
         this.port = port;
         this.clientSocket = clientSocket;
         this.i = i;
+        this.f = f;
     }
 
 
@@ -54,6 +56,13 @@ public class Server extends Thread
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
             JSONParser parser = new JSONParser();
+            //test message
+            /*
+            JSONObject sh = new JSONObject();
+            sh.put("command", "aaaaa");
+            out.write(sh + "\n");
+            out.flush();
+            */
             //Read the message from the client and reply
             //Notice that no other connection can be accepted and processed until the last line of
             //code of this loop is executed, incoming connections have to wait until the current
@@ -63,12 +72,139 @@ public class Server extends Thread
                 while ((clientMsg = in.readLine()) != null)
                 {
                     command = (JSONObject) parser.parse(clientMsg);
-                    System.out.println("Message from client " + i + ": " + command.toJSONString());
+                    System.out.println("(Server)Message from client " + i + ": " + command.toJSONString());
                     //out.write("Server Ack " + command.toJSONString() + "\n");
                     //out.flush();
                     //System.out.println("Reply sent");
                     //Execute command
-                    doCommand(command, out);
+                    //doCommand(command, out);
+                    if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
+                    {
+                        JSONObject hs_res = new JSONObject();
+                        hs_res.put("command", "HANDSHAKE_RESPONSE");
+                        JSONObject hostPort = new JSONObject();
+                        hostPort.put("host", "10.0.0.79");
+                        hostPort.put("port", port);
+                        hs_res.put("hostPort", hostPort);
+                        try
+                        {
+                            out.write(hs_res + "\n");
+                            out.flush();
+                            System.out.println("Respond flushed");
+                        } catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    // Handle DIRECTORY_CREATE_REQUEST
+                    else if (command.get("command").toString().equals("DIRECTORY_CREATE_REQUEST"))
+                    {
+                        String pathName = command.get("pathName").toString();
+                        try
+                        {
+                            if (f.fileSystemManager.isSafePathName(pathName))
+                            {
+                                if (f.fileSystemManager.dirNameExists(pathName))
+                                {
+                                    JSONObject reply = new JSONObject();
+                                    reply.put("command", "DIRECTORY_CREATE_RESPONSE");
+                                    reply.put("pathName", pathName);
+                                    reply.put("message", "pathname already exists");
+                                    reply.put("status", false);
+                                    out.write(reply + "\n");
+                                    out.flush();
+                                } else
+                                {
+                                    f.fileSystemManager.makeDirectory(pathName);
+                                    JSONObject reply = new JSONObject();
+                                    reply.put("command", "DIRECTORY_CREATE_RESPONSE");
+                                    reply.put("pathName", pathName);
+                                    reply.put("message", "directory created");
+                                    reply.put("status", true);
+                                    out.write(reply + "\n");
+                                    out.flush();
+                                }
+                            } else
+                            {
+                                JSONObject reply = new JSONObject();
+                                reply.put("command", "DIRECTORY_CREATE_RESPONSE");
+                                reply.put("pathName", pathName);
+                                reply.put("message", "unsafe pathname given");
+                                reply.put("status", false);
+                                out.write(reply + "\n");
+                                out.flush();
+                            }
+                        } catch (Exception e)
+                        {
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "DIRECTORY_CREATE_RESPONSE");
+                            reply.put("pathName", pathName);
+                            reply.put("message", "there was a problem creating the directory");
+                            reply.put("status", false);
+                            out.write(reply + "\n");
+                            out.flush();
+                        }
+                    }
+                    // Handle DIRECTORY_DELETE_REQUEST
+                    else if (command.get("command").toString().equals("DIRECTORY_DELETE_REQUEST"))
+                    {
+                        String pathName = command.get("pathName").toString();
+                        try
+                        {
+                            if (f.fileSystemManager.isSafePathName(pathName))
+                            {
+                                if (f.fileSystemManager.dirNameExists(pathName))
+                                {
+                                    f.fileSystemManager.deleteDirectory(pathName);
+                                    JSONObject reply = new JSONObject();
+                                    reply.put("command", "DIRECTORY_DELETE_RESPONSE");
+                                    reply.put("pathName", pathName);
+                                    reply.put("message", "directory deleted");
+                                    reply.put("status", true);
+                                    out.write(reply + "\n");
+                                    out.flush();
+                                } else
+                                {
+                                    JSONObject reply = new JSONObject();
+                                    reply.put("command", "DIRECTORY_DELETE_RESPONSE");
+                                    reply.put("pathName", pathName);
+                                    reply.put("message", "pathname does not exist");
+                                    reply.put("status", false);
+                                    out.write(reply + "\n");
+                                    out.flush();
+                                }
+                            } else
+                            {
+                                JSONObject reply = new JSONObject();
+                                reply.put("command", "DIRECTORY_DELETE_RESPONSE");
+                                reply.put("pathName", pathName);
+                                reply.put("message", "unsafe pathname given");
+                                reply.put("status", false);
+                                out.write(reply + "\n");
+                                out.flush();
+                            }
+                        } catch (Exception e)
+                        {
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "DIRECTORY_DELETE_RESPONSE");
+                            reply.put("pathName", pathName);
+                            reply.put("message", "there was a problem deleting the directory");
+                            reply.put("status", false);
+                            out.write(reply + "\n");
+                            out.flush();
+                        }
+                    }
+                    // If command is invalid
+                    else
+                    {
+                        System.out.println("INVALID_PROTOCOL");
+                        JSONObject reply = new JSONObject();
+                        reply.put("command", "INVALID_PROTOCOL");
+                        reply.put("message", "message must contain a command field as string");
+                        out.write(reply + "\n");
+                        out.flush();
+                    }
                 }
             } catch (SocketException e)
             {
@@ -78,7 +214,7 @@ public class Server extends Thread
                 e.printStackTrace();
             }
             clientSocket.close();
-        }catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -89,17 +225,17 @@ public class Server extends Thread
         if (command.get("command").equals("HANDSHAKE_REQUEST"))
         {
             JSONObject hs_res = new JSONObject();
-            hs_res.put("command","HANDSHAKE_RESPONSE");
+            hs_res.put("command", "HANDSHAKE_RESPONSE");
             JSONObject hostPort = new JSONObject();
-            hostPort.put("host","localhost");
-            hostPort.put("port",port);
-            hs_res.put("hostPort",hostPort);
+            hostPort.put("host", "localhost");
+            hostPort.put("port", port);
+            hs_res.put("hostPort", hostPort);
             try
             {
                 out.write(hs_res.toJSONString());
                 out.flush();
                 System.out.println("Respond flushed");
-            }catch (IOException e)
+            } catch (IOException e)
             {
                 e.printStackTrace();
             }
