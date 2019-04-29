@@ -22,7 +22,7 @@ public class peer44
     private static int counter = 0;
     private static int port = 3000;
     private static Logger log = Logger.getLogger(Peer.class.getName());
-    private static String ip = "localhost";
+    private static String ip = "10.0.0.79";
 
     public static void main(String[] args) throws IOException, NumberFormatException, NoSuchAlgorithmException
     {
@@ -31,7 +31,11 @@ public class peer44
         log.info("BitBox Peer starting...");
         Configuration.getConfiguration();
 
-        ServerMain f = new ServerMain();
+        Socket socket = new Socket(ip, port);
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+
+        ServerMain f = new ServerMain(in, out);
 
         //Start of project
         ServerSocket listeningSocket = null;

@@ -18,6 +18,7 @@ import java.net.*;
 import java.util.Scanner;
 
 import unimelb.bitbox.util.FileSystemManager.FileSystemEvent;
+
 import java.util.ArrayList;
 
 
@@ -28,6 +29,7 @@ public class peer10
     private static Logger log = Logger.getLogger(Peer.class.getName());
     private static String ip = "10.0.0.79";
 
+
     public static void main(String[] args) throws IOException, NumberFormatException, NoSuchAlgorithmException
     {
         System.setProperty("java.util.logging.SimpleFormatter.format",
@@ -35,17 +37,18 @@ public class peer10
         log.info("BitBox Peer starting...");
         Configuration.getConfiguration();
         // Setting
+
         Socket socket = new Socket(ip, port);
         System.out.println("Connection established");
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-
         ServerMain f = new ServerMain(in, out);
 
 
         // Try if connectable
         client_T T3 = new client_T(in, out, f);
-        T3.run();
+        T3.start();
+
 
         // Server Start
         ServerSocket listeningSocket = null;

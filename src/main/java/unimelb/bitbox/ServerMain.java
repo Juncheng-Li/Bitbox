@@ -31,7 +31,11 @@ public class ServerMain implements FileSystemObserver
         this.in = in;
         this.out = out;
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
-        //ArrayList<FileSystemEvent>sync = fileSystemManager.generateSyncEvents();
+    }
+
+    public ServerMain() throws NumberFormatException, IOException, NoSuchAlgorithmException
+    {
+        fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
     @Override
@@ -52,18 +56,41 @@ public class ServerMain implements FileSystemObserver
         if (fileSystemEvent.event.toString().equals("FILE_CREATE"))
         {
             //Transmit file to destination
-            System.out.println("Yes, there is a file created");
-        }
+            //System.out.println(fileSystemEvent.fileDescriptor.md5);
+            //System.out.println(fileSystemEvent.fileDescriptor.lastModified);
+            //System.out.println(fileSystemEvent.fileDescriptor.fileSize);
 
-        if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
-        {
-            System.out.println("Yes, there is a file modified");
+            try
+            {
+                JSONObject req = new JSONObject();
+                JSONObject fileDescriptor = new JSONObject();
+                fileDescriptor.put("md5", fileSystemEvent.fileDescriptor.md5);
+                fileDescriptor.put("lastModified", fileSystemEvent.fileDescriptor.lastModified);
+                fileDescriptor.put("fileSize", fileSystemEvent.fileDescriptor.fileSize);
+                req.put("command", "FILE_CREATE_REQUEST");
+                req.put("fileDescriptor", fileDescriptor);
+                req.put("pathName", fileSystemEvent.pathName);
+                System.out.println(req.toJSONString());
+                out.write(req.toJSONString() + "\n");
+                out.flush();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+
         }
 
         if (fileSystemEvent.event.toString().equals("FILE_DELETE"))
         {
             //Destination remove file
             System.out.println("Yes, there is a file deleted");
+        }
+
+        if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
+        {
+            System.out.println("Yes, there is a file modified");
         }
 
         if (fileSystemEvent.event.toString().equals("DIRECTORY_CREATE"))

@@ -9,7 +9,10 @@ import unimelb.bitbox.util.FileSystemObserver;
 import java.io.*;
 import java.net.*;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 
 class client_T extends Thread
@@ -45,7 +48,7 @@ class client_T extends Thread
             hs.put("hostPort", hostPort);
             out.write(hs + "\n");
             out.flush();
-            System.out.println(hs.get("command") + " sent");
+            System.out.println(hs);
 
             /*
             // Send and Print what is sent
@@ -72,7 +75,7 @@ class client_T extends Thread
                 {
                     // Synchronizing Events after Handshake!!!
                     ArrayList<FileSystemManager.FileSystemEvent> sync = f.fileSystemManager.generateSyncEvents();
-                    System.out.println(sync);
+                    //System.out.println(sync);
                     FileSystemManager.FileSystemEvent currentEvent = null;
                     System.out.println("----------Synchronizing Events!!!----------");
                     while (sync.size() > 0)
@@ -80,6 +83,38 @@ class client_T extends Thread
                         System.out.println(currentEvent = sync.remove(0));
                         f.processFileSystemEvent(currentEvent);
                     }
+                }
+
+                if (command.get("command").toString().equals("FILE_BYTES_REQUEST"))
+                {
+                    // Unmarshall request
+                    String pathName = command.get("pathName").toString();
+                    JSONObject fd = (JSONObject) command.get("fileDescriptor");
+                    String md5 = fd.get("md5").toString();
+                    long lastModified = (long) fd.get("lastModified");
+                    long fileSize = (long) fd.get("fileSize");
+                    long position = (long) command.get("position");
+                    long length = (long) command.get("length");
+
+                    //Read file by
+                    ByteBuffer buf = f.fileSystemManager.readFile(md5, position, length);
+                    buf.rewind();
+                    byte[] arr = new byte[buf.remaining()];
+                    buf.get(arr, 0, arr.length);
+                    String content = Base64.getEncoder().encodeToString(arr);
+
+                    // Send BYTE
+                    JSONObject rep = new JSONObject();
+                    rep.put("command", "FILE_BYTES_RESPONSE");
+                    rep.put("fileDescriptor", fd);
+                    rep.put("pathName", pathName);
+                    rep.put("position", 0);
+                    rep.put("length", length);
+                    rep.put("content", content);
+                    rep.put("message", "successful read");
+                    rep.put("status", true);
+                    out.write(rep + "\n");
+                    out.flush();
                 }
 
             }
@@ -98,6 +133,9 @@ class client_T extends Thread
                 e.printStackTrace();
             }
         } catch (ParseException e)
+        {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
         }
