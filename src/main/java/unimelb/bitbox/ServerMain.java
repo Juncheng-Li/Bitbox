@@ -87,7 +87,6 @@ public class ServerMain implements FileSystemObserver
             //Destination remove file
             try
             {
-                System.out.println("Yes, there is a file deleted");
                 JSONObject req = new JSONObject();
                 JSONObject fileDescriptor = new JSONObject();
                 fileDescriptor.put("md5", fileSystemEvent.fileDescriptor.md5);
@@ -108,10 +107,25 @@ public class ServerMain implements FileSystemObserver
 
         if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
         {
-            System.out.println("Yes, there is a file modified");
+            try
+            {
+                System.out.println("Yes, there is a file modified");
+                JSONObject req = new JSONObject();
+                JSONObject fileDescriptor = new JSONObject();
+                fileDescriptor.put("md5", fileSystemEvent.fileDescriptor.md5);
+                fileDescriptor.put("lastModified", fileSystemEvent.fileDescriptor.lastModified);
+                fileDescriptor.put("fileSize", fileSystemEvent.fileDescriptor.fileSize);
+                req.put("command", "FILE_MODIFY_REQUEST");
+                req.put("fileDescriptor", fileDescriptor);
+                req.put("pathName", fileSystemEvent.pathName);
+                out.write(req.toJSONString() + "\n");
+                out.flush();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
-
-
 
         if (fileSystemEvent.event.toString().equals("DIRECTORY_CREATE"))
         {
