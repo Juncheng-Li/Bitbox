@@ -14,6 +14,11 @@ May produce error when parent dir does not exist (used "count" may fail)
 
 if (command.get("command")...): if JSON does not contain "command", there will be an error
 
+Peer2 wont be able to detect if a file/dir is deleted in peer1 when offline.
+
+What if connection is lost when transfering file, the file loader will exist in the peer for ever. (it will get synchronized at next connection)
+
+Do we need to "checkShortCut" after creating modifyFileLoader?
 
 
 **Unfinished work**
@@ -30,3 +35,7 @@ File delete
 File modify
 
 How to use checkShortcut and where it is used
+
+"checkShortCut is deleted for now"
+
+put cancel file loader before creating file loader

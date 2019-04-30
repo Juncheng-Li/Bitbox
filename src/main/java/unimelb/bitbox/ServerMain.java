@@ -20,7 +20,7 @@ public class ServerMain implements FileSystemObserver
     private BufferedWriter out;
     protected FileSystemManager fileSystemManager;
     private String ip = "10.0.0.79";
-    private int port = 3000;
+    private int port = Integer.parseInt(Configuration.getConfigurationValue("port"));
     private Socket socket = null;
 
 

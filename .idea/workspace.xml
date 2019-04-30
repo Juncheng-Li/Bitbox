@@ -6,7 +6,24 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78960826-e3ca-43e0-9c84-989f8b7527b5" name="Default Changelist" comment="" />
+    <list default="true" id="78960826-e3ca-43e0-9c84-989f8b7527b5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configuration.properties" beforeDir="false" afterPath="$PROJECT_DIR$/configuration.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_files/mini_black_hole.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_files/sauron.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/share/bed.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/share/download.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer44.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer44.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/unimelb/bitbox/ServerMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/unimelb/bitbox/ServerMain.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/unimelb/bitbox/client_T.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/unimelb/bitbox/client_T.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/unimelb/bitbox/peer10.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/unimelb/bitbox/peer10.class" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/.idea/" />
@@ -56,8 +73,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1957">
-              <caret line="116" column="32" selection-start-line="116" selection-start-column="32" selection-end-line="116" selection-end-column="32" />
+            <state relative-caret-position="965">
+              <caret line="315" column="37" selection-start-line="315" selection-start-column="37" selection-end-line="315" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="45" column="76" selection-start-line="45" selection-start-column="76" selection-end-line="45" selection-end-column="76" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Server.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="380">
+              <caret line="79" column="20" selection-start-line="77" selection-start-column="12" selection-end-line="577" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -65,8 +100,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="627">
-              <caret line="52" column="23" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="23" />
+            <state relative-caret-position="285">
+              <caret line="66" column="76" selection-start-line="66" selection-start-column="76" selection-end-line="66" selection-end-column="76" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -74,11 +109,20 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/configuration.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="38">
+              <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="931">
-              <caret line="60" column="14" selection-start-line="60" selection-start-column="14" selection-end-line="60" selection-end-column="14" />
+            <state relative-caret-position="323">
+              <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -89,8 +133,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/FileSystemManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10412">
-              <caret line="573" column="32" selection-start-line="573" selection-start-column="19" selection-end-line="573" selection-end-column="32" />
+            <state relative-caret-position="188">
+              <caret line="480" column="30" selection-start-line="480" selection-start-column="22" selection-end-line="480" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -98,12 +142,12 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="384">
-                <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+              <first_editor relative-caret-position="485">
+                <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
               </first_editor>
               <second_editor />
             </state>
@@ -121,12 +165,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>FileSystems</find>
-      <find>getCOnfigurationValue</find>
-      <find>maven</find>
-      <find>port</find>
-      <find>exit</find>
-      <find>saur</find>
       <find>result</find>
       <find>sauron</find>
       <find>input</find>
@@ -147,10 +185,16 @@
       <find>position</find>
       <find>shortcut</find>
       <find>attempt</find>
-      <find>readfile</find>
-      <find>writefile</find>
       <find>readFile</find>
       <find>checkShortcut</find>
+      <find>write</find>
+      <find>writefile</find>
+      <find>checkShort</find>
+      <find>modify</find>
+      <find>file_create_res</find>
+      <find>file_bytes_request</find>
+      <find>readfile</find>
+      <find>file_create_request</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -167,7 +211,6 @@
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/Document.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/FileSystemObserver.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/Configuration.java" />
-        <option value="$PROJECT_DIR$/configuration.properties" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/client.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Thread.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/TestJoinMethod1.java" />
@@ -178,7 +221,6 @@
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer6.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer7.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer8.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/HostPort.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/document.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_n.java" />
@@ -188,14 +230,16 @@
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Client.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer9.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer5.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer44.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/GFG.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Server.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java" />
+        <option value="$PROJECT_DIR$/configuration.properties" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer44.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java" />
       </list>
     </option>
   </component>
@@ -256,6 +300,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -266,11 +312,6 @@
             <path>
               <item name="bitbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="Distrubuted_System" type="462c0819:PsiDirectoryNode" />
-              <item name="share" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bitbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Distrubuted_System" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -293,22 +334,11 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="bitbox" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bitbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Distrubuted_System" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bitbox" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -446,11 +476,13 @@
       <workItem from="1556417090215" duration="31430000" />
       <workItem from="1556497912566" duration="10908000" />
       <workItem from="1556511991292" duration="369000" />
+      <workItem from="1556541133176" duration="666000" />
+      <workItem from="1556594910409" duration="28062000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="194296000" />
+    <option name="totallyTimeSpent" value="223074000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -465,7 +497,7 @@
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1793027" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18372993" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -474,15 +506,15 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32937366" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.30237582" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.45464364" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32891566" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32937366" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32397407" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.28077754" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32829374" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -677,13 +709,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/GFG.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer1.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer2.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="29" column="35" selection-start-line="29" selection-start-column="35" selection-end-line="29" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer5.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="581">
@@ -718,21 +743,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer44.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="65">
-          <caret line="41" column="35" lean-forward="true" selection-start-line="41" selection-start-column="35" selection-end-line="41" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/share/file" />
-    <entry file="file://$PROJECT_DIR$/configuration.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Client.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1691">
@@ -741,13 +752,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/share/you.txt" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Server.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="46" column="19" selection-start-line="46" selection-start-column="19" selection-end-line="46" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1026">
@@ -758,17 +762,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1957">
-          <caret line="116" column="32" selection-start-line="116" selection-start-column="32" selection-end-line="116" selection-end-column="32" />
+    <entry file="file://$PROJECT_DIR$/share/bed.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="485">
+            <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="52" column="23" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="23" />
+        <state relative-caret-position="380">
+          <caret line="79" column="20" selection-start-line="77" selection-start-column="12" selection-end-line="577" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer4.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="45" column="76" selection-start-line="45" selection-start-column="76" selection-end-line="45" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer44.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="817">
+          <caret line="57" column="76" selection-start-line="57" selection-start-column="76" selection-end-line="57" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/FileSystemManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="480" column="30" selection-start-line="480" selection-start-column="22" selection-end-line="480" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -777,31 +808,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="931">
-          <caret line="60" column="14" selection-start-line="60" selection-start-column="14" selection-end-line="60" selection-end-column="14" />
+        <state relative-caret-position="323">
+          <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/util/FileSystemManager.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/client_T.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10412">
-          <caret line="573" column="32" selection-start-line="573" selection-start-column="19" selection-end-line="573" selection-end-column="32" />
+        <state relative-caret-position="965">
+          <caret line="315" column="37" selection-start-line="315" selection-start-column="37" selection-end-line="315" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peer10.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="66" column="76" selection-start-line="66" selection-start-column="76" selection-end-line="66" selection-end-column="76" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="384">
-            <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/configuration.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="14" />
         </state>
       </provider>
     </entry>

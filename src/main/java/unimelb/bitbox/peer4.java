@@ -43,7 +43,7 @@ public class peer4
                 System.out.println(clientSocket.getInetAddress().toString().replaceAll("/", ""));
                 System.out.println(clientSocket.getLocalPort());
 
-                Server T2 = new Server("peer4 server", 3000, clientSocket, i, null);
+                Server T2 = new Server("peer4 server", 3000, clientSocket, i);
                 T2.start();
                 //ExecutorService pool = Executors.newFixedThreadPool(10);
                 //pool.execute(T2);

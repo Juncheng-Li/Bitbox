@@ -25,9 +25,9 @@ import java.util.ArrayList;
 public class peer10
 {
     private static int counter = 0;
-    private static int port = 3000;
+    private static int port = Integer.parseInt(Configuration.getConfigurationValue("port"));
     private static Logger log = Logger.getLogger(Peer.class.getName());
-    private static String ip = "10.0.0.79";
+    private static String ip = Configuration.getConfigurationValue("advertisedName");
 
 
     public static void main(String[] args) throws IOException, NumberFormatException, NoSuchAlgorithmException
@@ -64,7 +64,7 @@ public class peer10
                 i++;
                 System.out.println("Client " + i + " accepted.");
 
-                Server T2 = new Server("peer4 server", 3000, clientSocket, i, f);
+                Server T2 = new Server("peer4 server", 3000, clientSocket, i);
                 T2.start();
             }
         } catch (SocketException ex)
