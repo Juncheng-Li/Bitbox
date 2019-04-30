@@ -477,12 +477,12 @@
       <workItem from="1556497912566" duration="10908000" />
       <workItem from="1556511991292" duration="369000" />
       <workItem from="1556541133176" duration="666000" />
-      <workItem from="1556594910409" duration="28062000" />
+      <workItem from="1556594910409" duration="28456000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="223074000" />
+    <option name="totallyTimeSpent" value="223468000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -495,7 +495,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18372993" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -506,7 +505,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32937366" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.45464364" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.45464364" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -514,7 +513,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32937366" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.28077754" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.28077754" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32829374" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
