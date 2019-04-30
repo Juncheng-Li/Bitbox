@@ -108,7 +108,7 @@ class client_T extends Thread
                     rep.put("command", "FILE_BYTES_RESPONSE");
                     rep.put("fileDescriptor", fd);
                     rep.put("pathName", pathName);
-                    rep.put("position", 0);
+                    rep.put("position", position);    //changed position from 0 to position
                     rep.put("length", length);
                     rep.put("content", content);
                     rep.put("message", "successful read");
