@@ -20,8 +20,10 @@ What if connection is lost when transfering file, the file loader will exist in 
 
 Do we need to "checkShortCut" after creating modifyFileLoader?
 
+Do we need to kill ServerMain and Timer in Client side?
 
 **Unfinished work**
+
 Write peer into configration
 
 Ensure only 10 can be connected

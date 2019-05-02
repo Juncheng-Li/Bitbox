@@ -71,6 +71,11 @@ class client_T extends Thread
                         Timer timer = new Timer();
                         timer.schedule(new SyncEvents(f), 0, Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     }
+                    else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
+                    {
+                        System.out.println("Server maximum connection reached");
+                        break;
+                    }
                     else
                     {
                         commNProcess process_T = new commNProcess(command, socket, f);
@@ -114,7 +119,7 @@ class client_T extends Thread
                 try
                 {
                     socket.close();
-                    System.out.println("client socket closed...");
+                    System.out.println("server socket closed...");
                 } catch (IOException e)
                 {
                     e.printStackTrace();

@@ -1,6 +1,8 @@
 package unimelb.bitbox;
 
 import java.io.*;
+import java.net.Socket;
+import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -18,19 +20,14 @@ public class ServerMain implements FileSystemObserver
     private BufferedReader in;
     private BufferedWriter out;
     protected FileSystemManager fileSystemManager;
+    private Socket socket = null;
 
-
-    public ServerMain(BufferedReader in, BufferedWriter out) throws NumberFormatException, IOException, NoSuchAlgorithmException
+    public ServerMain(Socket socket) throws NumberFormatException, IOException, NoSuchAlgorithmException
     {
-        //Client T1 = new Client("peer5", "10.0.0.79", 3000);
-        //T1.start();
-        this.in = in;
-        this.out = out;
-        fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
-    }
+        this.socket = socket;
+        this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
+        this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
 
-    public ServerMain() throws NumberFormatException, IOException, NoSuchAlgorithmException
-    {
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
@@ -39,11 +36,11 @@ public class ServerMain implements FileSystemObserver
     {
         // TODO: process events
 
-        if (fileSystemEvent.event.toString().equals("FILE_CREATE"))
+        try
         {
-            //Ask to create file loader
-            try
+            if (fileSystemEvent.event.toString().equals("FILE_CREATE"))
             {
+                //Ask to create file loader
                 JSONObject req = new JSONObject();
                 JSONObject fileDescriptor = new JSONObject();
                 fileDescriptor.put("md5", fileSystemEvent.fileDescriptor.md5);
@@ -56,17 +53,10 @@ public class ServerMain implements FileSystemObserver
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        if (fileSystemEvent.event.toString().equals("FILE_DELETE"))
-        {
-            //Destination remove file
-            try
+            if (fileSystemEvent.event.toString().equals("FILE_DELETE"))
             {
+                //Destination remove file
                 JSONObject req = new JSONObject();
                 JSONObject fileDescriptor = new JSONObject();
                 fileDescriptor.put("md5", fileSystemEvent.fileDescriptor.md5);
@@ -79,15 +69,8 @@ public class ServerMain implements FileSystemObserver
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
-        {
-            try
+            if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
             {
                 System.out.println("Yes, there is a file modified");
                 JSONObject req = new JSONObject();
@@ -102,46 +85,44 @@ public class ServerMain implements FileSystemObserver
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        if (fileSystemEvent.event.toString().equals("DIRECTORY_CREATE"))
-        {
-            //Destination create dir
-            try
+            if (fileSystemEvent.event.toString().equals("DIRECTORY_CREATE"))
             {
+                //Destination create dir
                 JSONObject req = new JSONObject();
                 String pathName = fileSystemEvent.pathName;
                 req.put("command", "DIRECTORY_CREATE_REQUEST");
                 req.put("pathName", pathName);
-
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
 
-        if (fileSystemEvent.event.toString().equals("DIRECTORY_DELETE"))
-        {
-            //Destination delete dir
-            try
+            if (fileSystemEvent.event.toString().equals("DIRECTORY_DELETE"))
             {
+                //Destination delete dir
                 JSONObject req = new JSONObject();
                 String pathName = fileSystemEvent.pathName;
                 req.put("command", "DIRECTORY_DELETE_REQUEST");
                 req.put("pathName", pathName);
-
                 out.write(req + "\n");
                 out.flush();
             }
-            catch (IOException e)
+        }catch (IOException e)
+        {
+            if (e.toString().equals("java.net.SocketException: Socket closed"))
             {
+                try
+                {
+                    socket.close();
+                    System.out.println("Socket closed!");
+                }catch (IOException es)
+                {
+                    es.printStackTrace();
+                }
+            }
+            else
+            {
+                System.out.println(e.toString());
                 e.printStackTrace();
             }
         }
