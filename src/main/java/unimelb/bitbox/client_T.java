@@ -44,22 +44,15 @@ class client_T extends Thread
             // Handshake - fixed!
             JSONObject hs = new JSONObject();
             JSONObject hostPort = new JSONObject();
-            hostPort.put("host", "10.0.0.50");
-            hostPort.put("port", 3000);
+            hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
+            //hostPort.put("port", Configuration.getConfigurationValue("port"));
             hs.put("command", "HANDSHAKE_REQUEST");
             hs.put("hostPort", hostPort);
             out.write(hs + "\n");
             out.flush();
             System.out.println(hs);
 
-            /*
-            // Send and Print what is sent
-            JSONObject sendMessage = new JSONObject();
-            sendMessage = parseRequest(eventString, pathName);
-            out.write(sendMessage + "\n");
-            out.flush();
-            System.out.println(sendMessage.get("command") + " sent");
-             */
+
             // Receive incoming reply
             JSONParser parser = new JSONParser();
             String message = null;
@@ -67,17 +60,11 @@ class client_T extends Thread
             {
                 JSONObject command = (JSONObject) parser.parse(message);
                 System.out.println("(Client)Message from peer server: " + command.toJSONString());
-                //out.write("Server Ack " + command.toJSONString() + "\n");
-                //out.flush();
-                //System.out.println("Reply sent");
-                //Execute command
-                //doCommand(command, out);
 
 
                 //Copied from server
                 try
                 {
-
                     if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                     {
                         if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
@@ -653,7 +640,8 @@ class client_T extends Thread
                         out.flush();
                     }
 
-                } catch (SocketException e)
+                }
+                catch (SocketException e)
                 {
                     System.out.println("closed...");
                 }

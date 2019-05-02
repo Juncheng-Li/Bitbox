@@ -1,7 +1,6 @@
 package unimelb.bitbox;
 
 import java.io.*;
-import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -19,9 +18,6 @@ public class ServerMain implements FileSystemObserver
     private BufferedReader in;
     private BufferedWriter out;
     protected FileSystemManager fileSystemManager;
-    private String ip = "10.0.0.79";
-    private int port = Integer.parseInt(Configuration.getConfigurationValue("port"));
-    private Socket socket = null;
 
 
     public ServerMain(BufferedReader in, BufferedWriter out) throws NumberFormatException, IOException, NoSuchAlgorithmException
@@ -43,23 +39,9 @@ public class ServerMain implements FileSystemObserver
     {
         // TODO: process events
 
-        //System.out.println(fileSystemEvent.pathName);
-        //System.out.println(fileSystemEvent.path);
-        //System.out.println(fileSystemEvent.name);
-        //System.out.println(fileSystemEvent.event);
-        //System.out.println(fileSystemEvent.fileDescriptor.md5);
-        //System.out.println(fileSystemEvent.fileDescriptor.lastModified);
-        //System.out.println(fileSystemEvent.fileDescriptor.fileSize);
-        //System.out.println(fileSystemEvent.fileDescriptor.toDoc().toJson());
-        //System.out.println(fileSystemEvent.toString());
-
         if (fileSystemEvent.event.toString().equals("FILE_CREATE"))
         {
-            //Transmit file to destination
-            //System.out.println(fileSystemEvent.fileDescriptor.md5);
-            //System.out.println(fileSystemEvent.fileDescriptor.lastModified);
-            //System.out.println(fileSystemEvent.fileDescriptor.fileSize);
-
+            //Ask to create file loader
             try
             {
                 JSONObject req = new JSONObject();
@@ -78,8 +60,6 @@ public class ServerMain implements FileSystemObserver
             {
                 e.printStackTrace();
             }
-
-
         }
 
         if (fileSystemEvent.event.toString().equals("FILE_DELETE"))
@@ -118,6 +98,7 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_MODIFY_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
+                System.out.println(req.toJSONString() + "\n");
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
@@ -130,11 +111,13 @@ public class ServerMain implements FileSystemObserver
         if (fileSystemEvent.event.toString().equals("DIRECTORY_CREATE"))
         {
             //Destination create dir
-            //System.out.println("Yes, a directory needs to be created");
             try
             {
                 JSONObject req = new JSONObject();
-                req = parseRequest("DIRECTORY_CREATE_REQUEST", fileSystemEvent.pathName);
+                String pathName = fileSystemEvent.pathName;
+                req.put("command", "DIRECTORY_CREATE_REQUEST");
+                req.put("pathName", pathName);
+
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
@@ -147,11 +130,13 @@ public class ServerMain implements FileSystemObserver
         if (fileSystemEvent.event.toString().equals("DIRECTORY_DELETE"))
         {
             //Destination delete dir
-            //System.out.println("Yes, a directory needs to be deleted");
             try
             {
                 JSONObject req = new JSONObject();
-                req = parseRequest("DIRECTORY_DELETE_REQUEST", fileSystemEvent.pathName);
+                String pathName = fileSystemEvent.pathName;
+                req.put("command", "DIRECTORY_DELETE_REQUEST");
+                req.put("pathName", pathName);
+
                 out.write(req + "\n");
                 out.flush();
             }
@@ -161,32 +146,4 @@ public class ServerMain implements FileSystemObserver
             }
         }
     }
-
-    public JSONObject parseRequest(String eventString, String pathName)
-    {
-        JSONObject req = new JSONObject();
-        if (eventString.equals("HANDSHAKE_REQUEST"))
-        {
-            req.put("command", "HANDSHAKE_REQUEST");
-            JSONObject hostPort = new JSONObject();
-            hostPort.put("host", ip);
-            hostPort.put("port", port);
-            req.put("hostPort", hostPort);
-        } else if (eventString.equals("DIRECTORY_CREATE_REQUEST"))
-        {
-            req.put("command", "DIRECTORY_CREATE_REQUEST");
-            req.put("pathName", pathName);
-        } else if (eventString.equals("DIRECTORY_DELETE_REQUEST"))
-        {
-            req.put("command", "DIRECTORY_DELETE_REQUEST");
-            req.put("pathName", pathName);
-        } else
-        {
-            System.out.println("Wrong eventString!");
-        }
-
-        System.out.println(req.toJSONString());
-        return req;
-    }
-
 }
