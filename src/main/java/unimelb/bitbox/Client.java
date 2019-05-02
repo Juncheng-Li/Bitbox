@@ -3,10 +3,7 @@ package unimelb.bitbox;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import unimelb.bitbox.util.Configuration;
-import unimelb.bitbox.util.Document;
-import unimelb.bitbox.util.FileSystemManager;
-import unimelb.bitbox.util.FileSystemObserver;
+import unimelb.bitbox.util.*;
 
 import java.io.*;
 import java.net.*;
@@ -18,33 +15,32 @@ import java.util.Base64;
 import java.util.Timer;
 
 
-class client_T extends Thread
+class Client extends Thread
 {
-    private String ip;
-    private int port;
-    private Socket socket = null;
+    private Socket socket;
     private BufferedReader in;
     private BufferedWriter out;
     private ServerMain f;
 
-    client_T(Socket socket, ServerMain f) throws IOException
+    Client() throws IOException, NoSuchAlgorithmException
     {
-        this.socket = socket;
+        HostPort hostPort = new HostPort(Configuration.getConfigurationValue("peers"));
+        this.socket = new Socket(hostPort.host, hostPort.port);
+        System.out.println("Connection established");
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-        this.f = f;
+        this.f = new ServerMain(socket);
     }
 
     public void run()
     {
-
         try
         {
             // Handshake - fixed!
             JSONObject hs = new JSONObject();
             JSONObject hostPort = new JSONObject();
             hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
-            //hostPort.put("port", Configuration.getConfigurationValue("port"));
+            hostPort.put("port", Configuration.getConfigurationValue("port"));
             hs.put("command", "HANDSHAKE_REQUEST");
             hs.put("hostPort", hostPort);
             out.write(hs + "\n");
@@ -92,10 +88,7 @@ class client_T extends Thread
                     out.write(reply + "\n");
                     out.flush();
                 }
-
-
             }
-
         } catch (UnknownHostException e)
         {
             e.printStackTrace();

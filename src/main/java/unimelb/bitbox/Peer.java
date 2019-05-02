@@ -1,18 +1,13 @@
 package unimelb.bitbox;
 
 import java.io.*;
-import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 import unimelb.bitbox.util.Configuration;
-import unimelb.bitbox.util.FileSystemManager;
-import unimelb.bitbox.util.HostPort;
+
 import java.net.*;
 
 public class Peer
@@ -29,16 +24,8 @@ public class Peer
         // Client Start
         try
         {
-            HostPort hostPort = new HostPort(Configuration.getConfigurationValue("peers"));
-            int port = hostPort.port;
-            String ip = hostPort.host;
-            Socket socket = new Socket(ip, port);
-            System.out.println("Connection established");
-            ServerMain f = new ServerMain(socket);
-
-            // Try if connectable
-            client_T T3 = new client_T(socket, f);
-            T3.start();
+            Client T_client = new Client();
+            T_client.start();
         }
         catch (IOException e)
         {
@@ -66,10 +53,9 @@ public class Peer
                     peer.put("port", clientSocket.getLocalPort());
                     peerList.add(peer);
                     System.out.println("Client " + i + " accepted.");
-                    Server T2 = new Server("peer4 server",
-                                            Integer.parseInt(Configuration.getConfigurationValue("port")),
-                                            clientSocket, i, listeningSocket);
-                    T2.start();
+                    Server T_server = new Server(Integer.parseInt(Configuration.getConfigurationValue("port")),
+                                                   clientSocket, i, listeningSocket);
+                    T_server.start();
                 }
                 else
                 {

@@ -27,8 +27,6 @@ import java.nio.file.Files;
 
 public class Server extends Thread
 {
-    private Thread t;
-    private String threadName;
     private String ip;
     private int port;
     private int counter = 0;
@@ -41,9 +39,8 @@ public class Server extends Thread
     private ServerMain f;
     private Timer timer = new Timer();
 
-    Server(String threadname, int port, Socket clientSocket, int i, ServerSocket serverSocket)
+    Server(int port, Socket clientSocket, int i, ServerSocket serverSocket)
     {
-        this.threadName = threadname;
         this.port = port;
         this.clientSocket = clientSocket;
         this.i = i;
