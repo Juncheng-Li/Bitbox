@@ -88,7 +88,7 @@ public class Server extends Thread
 
                             //SyncEvents initSync = new SyncEvents(f);
                             //initSync.run();
-                            timer.schedule(new SyncEvents(f), 0, Integer.parseInt(Configuration.getConfigurationValue("syncInterval"))*100);
+                            timer.schedule(new SyncEvents(f), 0, Integer.parseInt(Configuration.getConfigurationValue("syncInterval"))*1000);
                         }
                         else
                         {
