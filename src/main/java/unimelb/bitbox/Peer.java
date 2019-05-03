@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 import unimelb.bitbox.util.Configuration;
+import unimelb.bitbox.util.HostPort;
 
 import java.net.*;
 
@@ -21,11 +22,19 @@ public class Peer
         log.info("BitBox Peer starting...");
         Configuration.getConfiguration();
 
+
+
         // Client Start
         try
         {
-            Client T_client = new Client();
-            T_client.start();
+            String peers = Configuration.getConfigurationValue("peers");
+            String[] peersArray = peers.split(" ");
+            for (String element : peersArray)
+            {
+                HostPort peer_hp = new HostPort(element);
+                Client T_client = new Client(peer_hp.host, peer_hp.port);
+                T_client.start();
+            }
         }
         catch (IOException e)
         {

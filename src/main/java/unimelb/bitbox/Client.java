@@ -21,11 +21,13 @@ class Client extends Thread
     private BufferedReader in;
     private BufferedWriter out;
     private ServerMain f;
+    private String host;
+    private int port;
 
-    Client() throws IOException, NoSuchAlgorithmException
+    Client(String host, int port) throws IOException, NoSuchAlgorithmException
     {
-        HostPort hostPort = new HostPort(Configuration.getConfigurationValue("peers"));
-        this.socket = new Socket(hostPort.host, hostPort.port);
+
+        this.socket = new Socket(host, port);
         System.out.println("Connection established");
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
         this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
