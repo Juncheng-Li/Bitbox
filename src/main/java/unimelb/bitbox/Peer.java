@@ -23,23 +23,25 @@ public class Peer
         Configuration.getConfiguration();
 
 
-
         // Client Start
-        try
+
+        String peers = Configuration.getConfigurationValue("peers");
+        String[] peersArray = peers.split(" ");
+        for (String peer : peersArray)
         {
-            String peers = Configuration.getConfigurationValue("peers");
-            String[] peersArray = peers.split(" ");
-            for (String element : peersArray)
+            try
             {
-                HostPort peer_hp = new HostPort(element);
-                Client T_client = new Client(peer_hp.host, peer_hp.port);
+                //System.out.println(peer);
+                HostPort peer_hp = new HostPort(peer);
+                Socket socket = new Socket(peer_hp.host, peer_hp.port);
+                Client T_client = new Client(socket);
                 T_client.start();
+            }catch (IOException e)
+            {
+                System.out.println(peer + " cannot be connected.");
             }
         }
-        catch (IOException e)
-        {
-            System.out.println("Peer working as a server..");
-        }
+
 
         // Server Start
         ServerSocket listeningSocket = null;
@@ -55,7 +57,7 @@ public class Peer
                 clientSocket = listeningSocket.accept();
                 i++;
                 // Check if already 10 clients?
-                if(i <= Integer.parseInt(Configuration.getConfigurationValue("maximumIncommingConnections")))
+                if (i <= Integer.parseInt(Configuration.getConfigurationValue("maximumIncommingConnections")))
                 {
                     JSONObject peer = new JSONObject();
                     peer.put("host", clientSocket.getInetAddress().toString().replaceAll("/", ""));
@@ -63,14 +65,13 @@ public class Peer
                     peerList.add(peer);
                     System.out.println("Client " + i + " accepted.");
                     Server T_server = new Server(Integer.parseInt(Configuration.getConfigurationValue("port")),
-                                                   clientSocket, i, listeningSocket);
+                            clientSocket, i, listeningSocket);
                     T_server.start();
-                }
-                else
+                } else
                 {
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
                     JSONObject reply = new JSONObject();
-                    reply.put("command","CONNECTION_REFUSED");
+                    reply.put("command", "CONNECTION_REFUSED");
                     reply.put("message", "connection limit reached");
                     reply.put("peers", peerList);
                     System.out.println(reply.toJSONString());
@@ -102,7 +103,6 @@ public class Peer
             }
         }
     }
-
 
 
 }

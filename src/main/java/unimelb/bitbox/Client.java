@@ -21,17 +21,14 @@ class Client extends Thread
     private BufferedReader in;
     private BufferedWriter out;
     private ServerMain f;
-    private String host;
-    private int port;
 
-    Client(String host, int port) throws IOException, NoSuchAlgorithmException
+    Client(Socket socket) throws IOException, NoSuchAlgorithmException
     {
-
-        this.socket = new Socket(host, port);
+        this.socket = socket;
         System.out.println("Connection established");
-        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-        this.f = new ServerMain(socket);
+        this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
+        this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
+        this.f = new ServerMain(this.socket);
     }
 
     public void run()
@@ -42,7 +39,7 @@ class Client extends Thread
             JSONObject hs = new JSONObject();
             JSONObject hostPort = new JSONObject();
             hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
-            hostPort.put("port", Configuration.getConfigurationValue("port"));
+            hostPort.put("port", Integer.parseInt(Configuration.getConfigurationValue("port")));
             hs.put("command", "HANDSHAKE_REQUEST");
             hs.put("hostPort", hostPort);
             out.write(hs + "\n");
@@ -101,12 +98,14 @@ class Client extends Thread
                 System.out.println("Peer working as a server");
             } else
             {
+                System.out.println("Client class IOException error");
                 e.printStackTrace();
             }
         } catch (ParseException e)
         {
             e.printStackTrace();
-        } finally
+        }
+        finally
         {
             // Close the socket
             if (socket != null)
