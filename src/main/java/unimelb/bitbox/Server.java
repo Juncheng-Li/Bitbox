@@ -62,7 +62,7 @@ public class Server extends Thread
                 while ((clientMsg = in.readLine()) != null)
                 {
                     command = (JSONObject) parser.parse(clientMsg);
-                    System.out.println("(Server)Message from client " + i + ": " + command.toJSONString());
+                    System.out.println("Message from client " + i + ": " + command.toJSONString());
                     //doCommand(command, out);
                     if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                     {
