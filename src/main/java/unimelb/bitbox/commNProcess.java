@@ -41,7 +41,6 @@ public class commNProcess extends Thread
                 String pathName = command.get("pathName").toString();
                 try
                 {
-                    //System.out.println("correct");
                     if (f.fileSystemManager.isSafePathName(pathName))
                     {
                         // Check if parent dirs exists when pathName contains parent dir:
@@ -53,7 +52,7 @@ public class commNProcess extends Thread
                             {
                                 //Do nothing and Wait
                             }
-                            System.out.println("waiting for the parent directory creating");
+                            System.out.println("Checking parent dir, wait for creating if does not exist");
                             // Create dir when parent dir is ready
                             f.fileSystemManager.makeDirectory(pathName);
                             JSONObject reply = new JSONObject();
@@ -61,7 +60,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "directory created");
                             reply.put("status", true);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                         }
@@ -73,7 +72,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "pathname already exists");
                             reply.put("status", false);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                         } else
@@ -84,7 +83,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "directory created");
                             reply.put("status", true);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                         }
@@ -95,7 +94,7 @@ public class commNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(reply + "\n");
                         out.flush();
                     }
@@ -107,7 +106,7 @@ public class commNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "there was a problem creating the directory");
                     reply.put("status", false);
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                 }
@@ -128,7 +127,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "directory deleted");
                             reply.put("status", true);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                         } else
@@ -138,7 +137,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "pathname does not exist");
                             reply.put("status", false);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                         }
@@ -149,7 +148,7 @@ public class commNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(reply + "\n");
                         out.flush();
                     }
@@ -161,7 +160,7 @@ public class commNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "there was a problem deleting the directory");
                     reply.put("status", false);
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                 }
@@ -181,94 +180,112 @@ public class commNProcess extends Thread
                     {
                         File dir = new File(pathName);
                         String parentDir = dir.getParent();
+                        System.out.println("Check parent dir, wait for creating if does not exist");
                         while (!f.fileSystemManager.dirNameExists(parentDir))
                         {
                             //Do nothing and Wait
                         }
-                        System.out.println("waiting for the parent dir creating");
                         // Create file loader and ask for bytes when parent dir is ready
-                        try
-                        {
-                            f.fileSystemManager.createFileLoader(pathName, md5, fileSize, lastModified);
-                        } catch (NoSuchAlgorithmException e)
-                        {
+                        // check if file with same content exists?
+                        if (f.fileSystemManager.fileNameExists(pathName, md5))    //should be if file already exists, should update or not? no need to delete
+                        {                                                   //or should use checkShort cut to skip reCreating the file?
                             JSONObject reply = new JSONObject();
                             reply.put("command", "FILE_CREATE_RESPONSE");
                             reply.put("fileDescriptor", fd);
                             reply.put("pathName", pathName);
-                            reply.put("message", "there was a problem creating file");
+                            reply.put("message", "file with same content already exists");
                             reply.put("status", false);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
-                            out.flush();
-                            e.printStackTrace();
-                        }
-                        // FILE_CREATE_RESPONSE
-                        JSONObject reply = new JSONObject();
-                        reply.put("command", "FILE_CREATE_RESPONSE");
-                        reply.put("fileDescriptor", fd);
-                        reply.put("pathName", pathName);
-                        reply.put("message", "file loader ready");
-                        reply.put("status", true);
-                        System.out.println(reply);
-                        out.write(reply + "\n");
-                        out.flush();
-                        // FILE_BYTES_REQUEST
-                        if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
-                        {
-                            JSONObject req = new JSONObject();
-                            req.put("command", "FILE_BYTES_REQUEST");
-                            req.put("fileDescriptor", fd);
-                            req.put("pathName", pathName);
-                            req.put("position", 0);
-                            req.put("length", fileSize);
-                            System.out.println(reply);
-                            out.write(req + "\n");
                             out.flush();
                         } else
                         {
-                            long remainingSize = fileSize;
-                            long position = 0;
-                            while (remainingSize > Long.parseLong(Configuration.getConfigurationValue("blockSize")))
+                            // do here
+                            // create fileLoader
+                            try
                             {
-                                System.out.println("Large file transfering!");
-                                JSONObject req = new JSONObject();
-                                req.put("command", "FILE_BYTES_REQUEST");
-                                req.put("fileDescriptor", fd);
-                                req.put("pathName", pathName);
-                                req.put("position", position);
-                                req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                System.out.println(reply);
-                                out.write(req + "\n");
+                                f.fileSystemManager.createFileLoader(pathName, md5, fileSize, lastModified);
+                            } catch (NoSuchAlgorithmException e)
+                            {
+                                JSONObject reply = new JSONObject();
+                                reply.put("command", "FILE_CREATE_RESPONSE");
+                                reply.put("fileDescriptor", fd);
+                                reply.put("pathName", pathName);
+                                reply.put("message", "there was a problem creating file");
+                                reply.put("status", false);
+                                System.out.println("sent: " + reply);
+                                out.write(reply + "\n");
                                 out.flush();
-                                // Update position
-                                position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
-                                remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                e.printStackTrace();
                             }
-                            if (remainingSize != 0)
+
+                            // FILE_CREATE_RESPONSE
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "FILE_CREATE_RESPONSE");
+                            reply.put("fileDescriptor", fd);
+                            reply.put("pathName", pathName);
+                            reply.put("message", "file loader ready");
+                            reply.put("status", true);
+                            System.out.println("sent: " + reply);
+                            out.write(reply + "\n");
+                            out.flush();
+                            // FILE_BYTES_REQUEST
+                            if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
                             {
                                 JSONObject req = new JSONObject();
                                 req.put("command", "FILE_BYTES_REQUEST");
                                 req.put("fileDescriptor", fd);
                                 req.put("pathName", pathName);
-                                req.put("position", position);
-                                req.put("length", remainingSize);
-                                System.out.println(reply);
+                                req.put("position", 0);
+                                req.put("length", fileSize);
+                                System.out.println("sent: " + reply);
                                 out.write(req + "\n");
                                 out.flush();
+                            } else
+                            {
+                                long remainingSize = fileSize;
+                                long position = 0;
+                                while (remainingSize > Long.parseLong(Configuration.getConfigurationValue("blockSize")))
+                                {
+                                    System.out.println("Large file transfering!");
+                                    JSONObject req = new JSONObject();
+                                    req.put("command", "FILE_BYTES_REQUEST");
+                                    req.put("fileDescriptor", fd);
+                                    req.put("pathName", pathName);
+                                    req.put("position", position);
+                                    req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
+                                    System.out.println("sent: " + reply);
+                                    out.write(req + "\n");
+                                    out.flush();
+                                    // Update position
+                                    position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                    remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                }
+                                if (remainingSize != 0)
+                                {
+                                    JSONObject req = new JSONObject();
+                                    req.put("command", "FILE_BYTES_REQUEST");
+                                    req.put("fileDescriptor", fd);
+                                    req.put("pathName", pathName);
+                                    req.put("position", position);
+                                    req.put("length", remainingSize);
+                                    System.out.println("sent: " + reply);
+                                    out.write(req + "\n");
+                                    out.flush();
+                                }
                             }
                         }
-
                     }
 
                     if (f.fileSystemManager.fileNameExists(pathName, md5))    //should be if file already exists, should update or not? no need to delete
                     {                                                   //or should use checkShort cut to skip reCreating the file?
                         JSONObject reply = new JSONObject();
                         reply.put("command", "FILE_CREATE_RESPONSE");
+                        reply.put("fileDescriptor", fd);
                         reply.put("pathName", pathName);
                         reply.put("message", "file with same content already exists");
                         reply.put("status", false);
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(reply + "\n");
                         out.flush();
                     } else
@@ -286,7 +303,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "there was a problem creating file");
                             reply.put("status", false);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                             e.printStackTrace();
@@ -299,7 +316,7 @@ public class commNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "file loader ready");
                         reply.put("status", true);
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(reply + "\n");
                         out.flush();
                         // FILE_BYTES_REQUEST
@@ -311,7 +328,7 @@ public class commNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", 0);
                             req.put("length", fileSize);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(req + "\n");
                             out.flush();
                         } else
@@ -327,7 +344,7 @@ public class commNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                System.out.println(reply);
+                                System.out.println("sent: " + reply);
                                 out.write(req + "\n");
                                 out.flush();
                                 // Update position
@@ -342,7 +359,7 @@ public class commNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", remainingSize);
-                                System.out.println(reply);
+                                System.out.println("sent: " + reply);
                                 out.write(req + "\n");
                                 out.flush();
                             }
@@ -352,10 +369,11 @@ public class commNProcess extends Thread
                 {
                     JSONObject reply = new JSONObject();
                     reply.put("command", "FILE_CREATE_RESPONSE");
+                    reply.put("fileDescriptor", fd);
                     reply.put("pathName", pathName);
                     reply.put("message", "unsafe pathname given");
                     reply.put("status", false);
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                 }
@@ -401,7 +419,7 @@ public class commNProcess extends Thread
                                     reply.put("pathName", pathName);
                                     reply.put("message", "file deleted");
                                     reply.put("status", true);
-                                    System.out.println(reply);
+                                    System.out.println("sent: " + reply);
                                     out.write(reply + "\n");
                                     out.flush();
                                 } else
@@ -412,7 +430,7 @@ public class commNProcess extends Thread
                                     reply.put("pathName", pathName);
                                     reply.put("message", "there is a problem deleting the file");
                                     reply.put("status", false);
-                                    System.out.println(reply);
+                                    System.out.println("sent: " + reply);
                                     out.write(reply + "\n");
                                     out.flush();
                                 }
@@ -424,7 +442,7 @@ public class commNProcess extends Thread
                                 reply.put("pathName", pathName);
                                 reply.put("message", "md5 does not match");
                                 reply.put("status", false);
-                                System.out.println(reply);
+                                System.out.println("sent: " + reply);
                                 out.write(reply + "\n");
                                 out.flush();
                             }
@@ -436,7 +454,7 @@ public class commNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "pathname does not exist");
                             reply.put("status", false);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(reply + "\n");
                             out.flush();
                         }
@@ -448,7 +466,7 @@ public class commNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(reply + "\n");
                         out.flush();
                     }
@@ -461,7 +479,7 @@ public class commNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "There was a problem deleting the file");
                     reply.put("status", false);
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                 }
@@ -483,7 +501,7 @@ public class commNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "file loader ready");
                     reply.put("status", true);
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                     //FILE_BYTES_REQUEST
@@ -495,7 +513,7 @@ public class commNProcess extends Thread
                         req.put("pathName", pathName);
                         req.put("position", 0);
                         req.put("length", fileSize);
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(req + "\n");
                         out.flush();
                     } else
@@ -511,7 +529,7 @@ public class commNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", position);
                             req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(req + "\n");
                             out.flush();
                             // Update position
@@ -529,7 +547,7 @@ public class commNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", position);
                             req.put("length", remainingSize);
-                            System.out.println(reply);
+                            System.out.println("sent: " + reply);
                             out.write(req + "\n");
                             out.flush();
                         }
@@ -542,7 +560,7 @@ public class commNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "file with same content");
                     reply.put("status", false);
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                 }
@@ -575,25 +593,26 @@ public class commNProcess extends Thread
                 rep.put("content", content);
                 rep.put("message", "successful read");
                 rep.put("status", true);
-                System.out.println(rep);
+                System.out.println("sent: " + rep);
                 out.write(rep + "\n");
                 out.flush();
             } else if (command.get("command").toString().equals("DIRECTORY_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("DIRECTORY_DELETE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_DELETE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_CREATE_RESPONSE") ||
-                    command.get("command").toString().equals("FILE_MODIFY_RESPONSE"))
+                    command.get("command").toString().equals("FILE_MODIFY_RESPONSE") ||
+                    command.get("command").toString().equals("INVALID_PROTOCOL"))
             {
                 // Do nothing when receive these responses
             }
             // If command is invalid
             else
             {
-                System.out.println("INVALID_PROTOCOL");
+                //System.out.println("INVALID_PROTOCOL");
                 JSONObject reply = new JSONObject();
                 reply.put("command", "INVALID_PROTOCOL");
                 reply.put("message", "message must contain a command field as string");
-                System.out.println(reply);
+                System.out.println("sent: " + reply);
                 out.write(reply + "\n");
                 out.flush();
             }

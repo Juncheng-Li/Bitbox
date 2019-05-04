@@ -21,6 +21,7 @@ class Client extends Thread
     private BufferedReader in;
     private BufferedWriter out;
     private ServerMain f;
+    private Timer timer = new Timer();
 
     Client(Socket socket) throws IOException, NoSuchAlgorithmException
     {
@@ -44,7 +45,7 @@ class Client extends Thread
             hs.put("hostPort", hostPort);
             out.write(hs + "\n");
             out.flush();
-            System.out.println(hs);
+            System.out.println("sent: " + hs);
 
 
             // Receive incoming reply
@@ -53,7 +54,7 @@ class Client extends Thread
             while ((message = in.readLine()) != null)
             {
                 JSONObject command = (JSONObject) parser.parse(message);
-                System.out.println("(Client)Message from peer server: " + command.toJSONString());
+                System.out.println("Message from peer: " + command.toJSONString());
 
                 //Copied from server
                 if(command.getClass().getName().equals("org.json.simple.JSONObject"))
@@ -61,13 +62,14 @@ class Client extends Thread
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
                         // Synchronizing Events after Handshake!!!
-                        Timer timer = new Timer();
                         timer.schedule(new SyncEvents(f), 0,
                                     Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     }
                     else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
                     {
-                        System.out.println("Peer maximum connection limit reached");
+                        System.out.println("Peer("+
+                                           socket.getRemoteSocketAddress().toString().replaceAll("/", "")
+                                           + ") maximum connection limit reached...");
                         break;
                     }
                     else
@@ -82,7 +84,7 @@ class Client extends Thread
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
                     reply.put("message", "message must contain a command field as string");
-                    System.out.println(reply);
+                    System.out.println("sent: " + reply);
                     out.write(reply + "\n");
                     out.flush();
                 }
@@ -111,8 +113,12 @@ class Client extends Thread
             {
                 try
                 {
+                    System.out.println("Peer("
+                                       + socket.getRemoteSocketAddress().toString().replaceAll("/", "")
+                                       +") socket closed...");
+                    timer.cancel();
+                    timer.purge();
                     socket.close();
-                    System.out.println("server socket closed...");
                 } catch (IOException e)
                 {
                     e.printStackTrace();

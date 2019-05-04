@@ -76,7 +76,7 @@ public class Server extends Thread
                             hostPort.put("host", ip);
                             hostPort.put("port", port);
                             hs_res.put("hostPort", hostPort);
-                            System.out.println(hs_res.toJSONString());
+                            System.out.println("sent: " + hs_res.toJSONString());
                             out.write(hs_res + "\n");
                             out.flush();
 
@@ -95,7 +95,7 @@ public class Server extends Thread
                         JSONObject reply = new JSONObject();
                         reply.put("command", "INVALID_PROTOCOL");
                         reply.put("message", "message must contain a command field as string");
-                        System.out.println(reply);
+                        System.out.println("sent: " + reply);
                         out.write(reply + "\n");
                         out.flush();
                     }

@@ -49,7 +49,7 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_CREATE_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
-                System.out.println(req.toJSONString());
+                System.out.println("sent: " + req.toJSONString());
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
@@ -65,7 +65,7 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_DELETE_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
-                System.out.println(req.toJSONString());
+                System.out.println("sent: " + req.toJSONString());
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
@@ -81,7 +81,7 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_MODIFY_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
-                System.out.println(req.toJSONString() + "\n");
+                System.out.println("sent: " + req.toJSONString());
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
@@ -93,6 +93,7 @@ public class ServerMain implements FileSystemObserver
                 String pathName = fileSystemEvent.pathName;
                 req.put("command", "DIRECTORY_CREATE_REQUEST");
                 req.put("pathName", pathName);
+                System.out.println("sent: " + req.toJSONString());
                 out.write(req.toJSONString() + "\n");
                 out.flush();
             }
@@ -104,6 +105,7 @@ public class ServerMain implements FileSystemObserver
                 String pathName = fileSystemEvent.pathName;
                 req.put("command", "DIRECTORY_DELETE_REQUEST");
                 req.put("pathName", pathName);
+                System.out.println("sent: " + req.toJSONString());
                 out.write(req + "\n");
                 out.flush();
             }
