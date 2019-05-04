@@ -61,14 +61,13 @@ class Client extends Thread
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
                         // Synchronizing Events after Handshake!!!
-                        //SyncEvents initSync = new SyncEvents(f);
-                        //initSync.run();
                         Timer timer = new Timer();
-                        timer.schedule(new SyncEvents(f), 0, Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                        timer.schedule(new SyncEvents(f), 0,
+                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     }
                     else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
                     {
-                        System.out.println("Server maximum connection reached");
+                        System.out.println("Peer maximum connection limit reached");
                         break;
                     }
                     else

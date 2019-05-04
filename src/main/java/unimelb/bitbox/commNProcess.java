@@ -3,9 +3,6 @@ package unimelb.bitbox;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import unimelb.bitbox.util.Configuration;
-import unimelb.bitbox.util.FileSystemManager;
-import unimelb.bitbox.util.FileSystemObserver;
-import unimelb.bitbox.util.FileSystemManager.FileSystemEvent;
 import unimelb.bitbox.util.HostPort;
 
 import java.io.*;
@@ -42,7 +39,6 @@ public class commNProcess extends Thread
             if (command.get("command").toString().equals("DIRECTORY_CREATE_REQUEST"))
             {
                 String pathName = command.get("pathName").toString();
-
                 try
                 {
                     //System.out.println("correct");
@@ -617,7 +613,7 @@ public class commNProcess extends Thread
         } catch (IOException e)
         {
             // Includes no dir
-            System.out.println("IOException catch!!!!!!!!!!!!!!!!!");
+            System.out.println("IOException cought!!!!!!!!!!!!!!!!!");
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e)
         {

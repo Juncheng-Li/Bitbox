@@ -29,13 +29,11 @@ public class Server extends Thread
 {
     private String ip;
     private int port;
-    private int counter = 0;
     private int i = 0;
     private ServerSocket listeningSocket = null;
     private Socket clientSocket = null;
     private String clientMsg = null;
     private JSONObject command = null;
-    private Document Msg = null;
     private ServerMain f;
     private Timer timer = new Timer();
 
@@ -72,9 +70,8 @@ public class Server extends Thread
                         {
                             JSONObject hs_res = new JSONObject();
                             JSONObject hostPort = new JSONObject();
-                            HostPort hp = new HostPort(Configuration.getConfigurationValue("peers"));
-                            String ip = hp.host;
-                            int port = hp.port;
+                            String ip = Configuration.getConfigurationValue("advertisedName");
+                            int port = Integer.parseInt(Configuration.getConfigurationValue("port"));
                             hs_res.put("command", "HANDSHAKE_RESPONSE");
                             hostPort.put("host", ip);
                             hostPort.put("port", port);
@@ -83,9 +80,8 @@ public class Server extends Thread
                             out.write(hs_res + "\n");
                             out.flush();
 
-                            //SyncEvents initSync = new SyncEvents(f);
-                            //initSync.run();
-                            timer.schedule(new SyncEvents(f), 0, Integer.parseInt(Configuration.getConfigurationValue("syncInterval"))*1000);
+                            timer.schedule(new SyncEvents(f), 0,
+                                        Integer.parseInt(Configuration.getConfigurationValue("syncInterval"))*1000);
                         }
                         else
                         {

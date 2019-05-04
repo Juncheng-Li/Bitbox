@@ -23,8 +23,7 @@ public class Peer
         Configuration.getConfiguration();
 
 
-        // Client Start
-
+        // Client Start here
         String peers = Configuration.getConfigurationValue("peers");
         String[] peersArray = peers.split(" ");
         for (String peer : peersArray)
@@ -43,7 +42,7 @@ public class Peer
         }
 
 
-        // Server Start
+        // Server Start here
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
         ArrayList<JSONObject> peerList = new ArrayList<>();
@@ -53,7 +52,8 @@ public class Peer
             listeningSocket = new ServerSocket(Integer.parseInt(Configuration.getConfigurationValue("port")));
             while (true)
             {
-                System.out.println("listening on port 3000");
+                System.out.println("listening on port " +
+                                   Integer.parseInt(Configuration.getConfigurationValue("port")));
                 clientSocket = listeningSocket.accept();
                 i++;
                 // Check if already 10 clients?
@@ -65,9 +65,10 @@ public class Peer
                     peerList.add(peer);
                     System.out.println("Client " + i + " accepted.");
                     Server T_server = new Server(Integer.parseInt(Configuration.getConfigurationValue("port")),
-                            clientSocket, i, listeningSocket);
+                                                 clientSocket, i, listeningSocket);
                     T_server.start();
-                } else
+                }
+                else
                 {
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
                     JSONObject reply = new JSONObject();
@@ -78,10 +79,6 @@ public class Peer
                     out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
-
-
-                //ExecutorService pool = Executors.newFixedThreadPool(10);
-                //pool.execute(T2);
             }
         } catch (SocketException ex)
         {
