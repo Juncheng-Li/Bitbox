@@ -4,7 +4,7 @@
 
     <groupId>unimelb</groupId>
     <artifactId>bitbox</artifactId>
-    <version>0.5</version>
+    <version>11</version>
     <packaging>jar</packaging>
 
     <name>pfs</name>
