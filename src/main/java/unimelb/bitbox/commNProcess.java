@@ -38,72 +38,56 @@ public class commNProcess extends Thread
     {
         try
         {
-
-
             // Handle DIRECTORY_CREATE_REQUEST
             if (command.get("command").toString().equals("DIRECTORY_CREATE_REQUEST"))
             {
-                int count = 0;
-                String[] folders;
                 String pathName = command.get("pathName").toString();
 
-                // Check if parent dirs exists:
-                if (pathName.contains("/"))
-                {
-                    //Split pathName with "/"
-                    folders = pathName.split("/");
-                    System.out.println("Path Spliter");
-                    String temp = "";
-                    for (int i = 0; i < folders.length - 1; i++)
-                    {
-                        temp = temp + folders[i];
-                        //System.out.println(temp);
-                        if (f.fileSystemManager.dirNameExists(temp))
-                        {
-                            count++;
-                        }
-                        temp = temp + "/";
-                    }
-                    count = count - (folders.length - 1);
-                }
-                //System.out.println(count);
                 try
                 {
-                    // Check if parent dir exists
-                    if (count == 0)
+                    //System.out.println("correct");
+                    if (f.fileSystemManager.isSafePathName(pathName))
                     {
-                        //System.out.println("correct");
-                        if (f.fileSystemManager.isSafePathName(pathName))
+                        // Check if parent dirs exists when pathName contains parent dir:
+                        if (pathName.contains("/"))
                         {
-                            if (f.fileSystemManager.dirNameExists(pathName))
+                            File dir = new File(pathName);
+                            String parentDir = dir.getParent();
+                            while (!f.fileSystemManager.dirNameExists(parentDir))
                             {
-                                JSONObject reply = new JSONObject();
-                                reply.put("command", "DIRECTORY_CREATE_RESPONSE");
-                                reply.put("pathName", pathName);
-                                reply.put("message", "pathname already exists");
-                                reply.put("status", false);
-                                System.out.println(reply);
-                                out.write(reply + "\n");
-                                out.flush();
-                            } else
-                            {
-                                f.fileSystemManager.makeDirectory(pathName);
-                                JSONObject reply = new JSONObject();
-                                reply.put("command", "DIRECTORY_CREATE_RESPONSE");
-                                reply.put("pathName", pathName);
-                                reply.put("message", "directory created");
-                                reply.put("status", true);
-                                System.out.println(reply);
-                                out.write(reply + "\n");
-                                out.flush();
+                                //Do nothing and Wait
                             }
-                        } else
+                            System.out.println("waiting for the parent directory creating");
+                            // Create dir when parent dir is ready
+                            f.fileSystemManager.makeDirectory(pathName);
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "DIRECTORY_CREATE_RESPONSE");
+                            reply.put("pathName", pathName);
+                            reply.put("message", "directory created");
+                            reply.put("status", true);
+                            System.out.println(reply);
+                            out.write(reply + "\n");
+                            out.flush();
+                        }
+
+                        if (f.fileSystemManager.dirNameExists(pathName))
                         {
                             JSONObject reply = new JSONObject();
                             reply.put("command", "DIRECTORY_CREATE_RESPONSE");
                             reply.put("pathName", pathName);
-                            reply.put("message", "unsafe pathname given");
+                            reply.put("message", "pathname already exists");
                             reply.put("status", false);
+                            System.out.println(reply);
+                            out.write(reply + "\n");
+                            out.flush();
+                        } else
+                        {
+                            f.fileSystemManager.makeDirectory(pathName);
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "DIRECTORY_CREATE_RESPONSE");
+                            reply.put("pathName", pathName);
+                            reply.put("message", "directory created");
+                            reply.put("status", true);
                             System.out.println(reply);
                             out.write(reply + "\n");
                             out.flush();
@@ -113,12 +97,13 @@ public class commNProcess extends Thread
                         JSONObject reply = new JSONObject();
                         reply.put("command", "DIRECTORY_CREATE_RESPONSE");
                         reply.put("pathName", pathName);
-                        reply.put("message", "there was a problem creating the directory");
+                        reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
                         System.out.println(reply);
                         out.write(reply + "\n");
                         out.flush();
                     }
+
                 } catch (Exception e)
                 {
                     JSONObject reply = new JSONObject();
@@ -134,65 +119,28 @@ public class commNProcess extends Thread
             // Handle DIRECTORY_DELETE_REQUEST
             else if (command.get("command").toString().equals("DIRECTORY_DELETE_REQUEST"))
             {
-                int count = 0;
-                String[] folders;
                 String pathName = command.get("pathName").toString();
-
-                // Check if parent dir exists:
-                if (pathName.contains("/"))
-                {
-                    //Split pathName with "/"
-                    folders = pathName.split("/");
-                    System.out.println("Path Spliter");
-                    String temp = "";
-                    for (int i = 0; i < folders.length - 1; i++)
-                    {
-                        temp = temp + folders[i];
-                        //System.out.println(element);
-                        System.out.println(temp);
-                        if (f.fileSystemManager.dirNameExists(temp))
-                        {
-                            count++;
-                        }
-                        temp = temp + "/";
-                    }
-                    count = count - (folders.length - 1);
-                }
-                //System.out.println(count);
                 try
                 {
-                    if (count == 0)
+                    if (f.fileSystemManager.isSafePathName(pathName))
                     {
-                        if (f.fileSystemManager.isSafePathName(pathName))
+                        if (f.fileSystemManager.dirNameExists(pathName))
                         {
-                            if (f.fileSystemManager.dirNameExists(pathName))
-                            {
-                                f.fileSystemManager.deleteDirectory(pathName);
-                                JSONObject reply = new JSONObject();
-                                reply.put("command", "DIRECTORY_DELETE_RESPONSE");
-                                reply.put("pathName", pathName);
-                                reply.put("message", "directory deleted");
-                                reply.put("status", true);
-                                System.out.println(reply);
-                                out.write(reply + "\n");
-                                out.flush();
-                            } else
-                            {
-                                JSONObject reply = new JSONObject();
-                                reply.put("command", "DIRECTORY_DELETE_RESPONSE");
-                                reply.put("pathName", pathName);
-                                reply.put("message", "pathname does not exist");
-                                reply.put("status", false);
-                                System.out.println(reply);
-                                out.write(reply + "\n");
-                                out.flush();
-                            }
+                            f.fileSystemManager.deleteDirectory(pathName);
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "DIRECTORY_DELETE_RESPONSE");
+                            reply.put("pathName", pathName);
+                            reply.put("message", "directory deleted");
+                            reply.put("status", true);
+                            System.out.println(reply);
+                            out.write(reply + "\n");
+                            out.flush();
                         } else
                         {
                             JSONObject reply = new JSONObject();
                             reply.put("command", "DIRECTORY_DELETE_RESPONSE");
                             reply.put("pathName", pathName);
-                            reply.put("message", "unsafe pathname given");
+                            reply.put("message", "pathname does not exist");
                             reply.put("status", false);
                             System.out.println(reply);
                             out.write(reply + "\n");
@@ -203,7 +151,7 @@ public class commNProcess extends Thread
                         JSONObject reply = new JSONObject();
                         reply.put("command", "DIRECTORY_DELETE_RESPONSE");
                         reply.put("pathName", pathName);
-                        reply.put("message", "there was a problem deleting the directory");
+                        reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
                         System.out.println(reply);
                         out.write(reply + "\n");
@@ -232,6 +180,91 @@ public class commNProcess extends Thread
                 long fileSize = (long) fd.get("fileSize");
                 if (f.fileSystemManager.isSafePathName(pathName))
                 {
+                    // Check if parent dirs exists when pathName contains parent dir:
+                    if (pathName.contains("/"))
+                    {
+                        File dir = new File(pathName);
+                        String parentDir = dir.getParent();
+                        while (!f.fileSystemManager.dirNameExists(parentDir))
+                        {
+                            //Do nothing and Wait
+                        }
+                        System.out.println("waiting for the parent dir creating");
+                        // Create file loader and ask for bytes when parent dir is ready
+                        try
+                        {
+                            f.fileSystemManager.createFileLoader(pathName, md5, fileSize, lastModified);
+                        } catch (NoSuchAlgorithmException e)
+                        {
+                            JSONObject reply = new JSONObject();
+                            reply.put("command", "FILE_CREATE_RESPONSE");
+                            reply.put("fileDescriptor", fd);
+                            reply.put("pathName", pathName);
+                            reply.put("message", "there was a problem creating file");
+                            reply.put("status", false);
+                            System.out.println(reply);
+                            out.write(reply + "\n");
+                            out.flush();
+                            e.printStackTrace();
+                        }
+                        // FILE_CREATE_RESPONSE
+                        JSONObject reply = new JSONObject();
+                        reply.put("command", "FILE_CREATE_RESPONSE");
+                        reply.put("fileDescriptor", fd);
+                        reply.put("pathName", pathName);
+                        reply.put("message", "file loader ready");
+                        reply.put("status", true);
+                        System.out.println(reply);
+                        out.write(reply + "\n");
+                        out.flush();
+                        // FILE_BYTES_REQUEST
+                        if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
+                        {
+                            JSONObject req = new JSONObject();
+                            req.put("command", "FILE_BYTES_REQUEST");
+                            req.put("fileDescriptor", fd);
+                            req.put("pathName", pathName);
+                            req.put("position", 0);
+                            req.put("length", fileSize);
+                            System.out.println(reply);
+                            out.write(req + "\n");
+                            out.flush();
+                        } else
+                        {
+                            long remainingSize = fileSize;
+                            long position = 0;
+                            while (remainingSize > Long.parseLong(Configuration.getConfigurationValue("blockSize")))
+                            {
+                                System.out.println("Large file transfering!");
+                                JSONObject req = new JSONObject();
+                                req.put("command", "FILE_BYTES_REQUEST");
+                                req.put("fileDescriptor", fd);
+                                req.put("pathName", pathName);
+                                req.put("position", position);
+                                req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
+                                System.out.println(reply);
+                                out.write(req + "\n");
+                                out.flush();
+                                // Update position
+                                position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                            }
+                            if (remainingSize != 0)
+                            {
+                                JSONObject req = new JSONObject();
+                                req.put("command", "FILE_BYTES_REQUEST");
+                                req.put("fileDescriptor", fd);
+                                req.put("pathName", pathName);
+                                req.put("position", position);
+                                req.put("length", remainingSize);
+                                System.out.println(reply);
+                                out.write(req + "\n");
+                                out.flush();
+                            }
+                        }
+
+                    }
+
                     if (f.fileSystemManager.fileNameExists(pathName, md5))    //should be if file already exists, should update or not? no need to delete
                     {                                                   //or should use checkShort cut to skip reCreating the file?
                         JSONObject reply = new JSONObject();
@@ -246,7 +279,6 @@ public class commNProcess extends Thread
                     {
                         // do here
                         // create fileLoader
-
                         try
                         {
                             f.fileSystemManager.createFileLoader(pathName, md5, fileSize, lastModified);
@@ -556,7 +588,7 @@ public class commNProcess extends Thread
                     command.get("command").toString().equals("FILE_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_MODIFY_RESPONSE"))
             {
-                // Do nothing
+                // Do nothing when receive these responses
             }
             // If command is invalid
             else

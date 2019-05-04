@@ -21,7 +21,7 @@ public class SyncEvents extends TimerTask
         System.out.println("-----Synchronizing Events-----");
         while (sync.size() > 0)
         {
-            System.out.println(currentEvent = sync.remove(0));
+            currentEvent = sync.remove(0);
             f.processFileSystemEvent(currentEvent);
         }
     }
