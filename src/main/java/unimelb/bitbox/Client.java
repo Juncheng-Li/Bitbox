@@ -118,6 +118,7 @@ class Client extends Thread
                                        +") socket closed...");
                     timer.cancel();
                     timer.purge();
+                    f.fileSystemManager.stop();
                     socket.close();
                 } catch (IOException e)
                 {

@@ -75,7 +75,7 @@ public class Peer
                     reply.put("command", "CONNECTION_REFUSED");
                     reply.put("message", "connection limit reached");
                     reply.put("peers", peerList);
-                    System.out.println(reply.toJSONString());
+                    System.out.println("sent: " + reply.toJSONString());
                     out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
