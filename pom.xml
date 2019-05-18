@@ -7,7 +7,7 @@
     <version>11</version>
     <packaging>jar</packaging>
 
-    <name>pfs</name>
+    <name>bitbox</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -21,6 +21,12 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.60</version>
         </dependency>
     </dependencies>
 

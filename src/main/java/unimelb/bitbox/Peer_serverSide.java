@@ -25,7 +25,7 @@ import unimelb.bitbox.util.*;
 
 import java.nio.file.Files;
 
-public class Server extends Thread
+public class Peer_serverSide extends Thread
 {
     private String ip;
     private int port;
@@ -37,7 +37,7 @@ public class Server extends Thread
     private ServerMain f;
     private Timer timer = new Timer();
 
-    Server(int port, Socket clientSocket, int i, ServerSocket serverSocket)
+    Peer_serverSide(int port, Socket clientSocket, int i, ServerSocket serverSocket)
     {
         this.port = port;
         this.clientSocket = clientSocket;
@@ -49,7 +49,7 @@ public class Server extends Thread
 
     public void run()
     {
-        System.out.println("Thread: Server for client-" + i + " started...");
+        System.out.println("Thread: Peer_serverSide for client-" + i + " started...");
         try
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
@@ -62,7 +62,7 @@ public class Server extends Thread
                 while ((clientMsg = in.readLine()) != null)
                 {
                     command = (JSONObject) parser.parse(clientMsg);
-                    System.out.println("(Server)Message from client " + i + ": " + command.toJSONString());
+                    System.out.println("(Peer_serverSide)Message from client " + i + ": " + command.toJSONString());
                     //doCommand(command, out);
                     if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                     {
@@ -122,7 +122,7 @@ public class Server extends Thread
             timer.purge();
             // kill serverMain
             f.fileSystemManager.stop();
-            System.out.println("Client " + i + " disconnected.");
+            System.out.println("Peer - " + i + " disconnected.");
         }
     }
 

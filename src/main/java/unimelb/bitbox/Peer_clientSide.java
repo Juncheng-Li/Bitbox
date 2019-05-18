@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.Timer;
 
 
-class Client extends Thread
+class Peer_clientSide extends Thread
 {
     private Socket socket;
     private BufferedReader in;
@@ -23,7 +23,7 @@ class Client extends Thread
     private ServerMain f;
     private Timer timer = new Timer();
 
-    Client(Socket socket) throws IOException, NoSuchAlgorithmException
+    Peer_clientSide(Socket socket) throws IOException, NoSuchAlgorithmException
     {
         this.socket = socket;
         System.out.println("Connection established");
@@ -99,7 +99,7 @@ class Client extends Thread
                 System.out.println("Peer working as a server");
             } else
             {
-                System.out.println("Client class IOException error");
+                System.out.println("Peer_clientSide class IOException error");
                 e.printStackTrace();
             }
         } catch (ParseException e)

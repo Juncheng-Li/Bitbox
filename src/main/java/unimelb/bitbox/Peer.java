@@ -23,7 +23,7 @@ public class Peer
         Configuration.getConfiguration();
 
 
-        // Client Start here
+        // Peer_clientSide Start here
         String peers = Configuration.getConfigurationValue("peers");
         String[] peersArray = peers.split(" ");
         for (String peer : peersArray)
@@ -33,7 +33,7 @@ public class Peer
                 //System.out.println(peer);
                 HostPort peer_hp = new HostPort(peer);
                 Socket socket = new Socket(peer_hp.host, peer_hp.port);
-                Client T_client = new Client(socket);
+                Peer_clientSide T_client = new Peer_clientSide(socket);
                 T_client.start();
             }catch (IOException e)
             {
@@ -42,7 +42,7 @@ public class Peer
         }
 
 
-        // Server Start here
+        // Peer_serverSide Start here
         ServerSocket listeningSocket = null;
         Socket clientSocket = null;
         ArrayList<JSONObject> peerList = new ArrayList<>();
@@ -63,8 +63,8 @@ public class Peer
                     peer.put("host", clientSocket.getInetAddress().toString().replaceAll("/", ""));
                     peer.put("port", clientSocket.getLocalPort());
                     peerList.add(peer);
-                    System.out.println("Client " + i + " accepted.");
-                    Server T_server = new Server(Integer.parseInt(Configuration.getConfigurationValue("port")),
+                    System.out.println("Peer_clientSide " + i + " accepted.");
+                    Peer_serverSide T_server = new Peer_serverSide(Integer.parseInt(Configuration.getConfigurationValue("port")),
                                                  clientSocket, i, listeningSocket);
                     T_server.start();
                 }
