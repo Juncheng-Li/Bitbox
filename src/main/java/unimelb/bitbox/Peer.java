@@ -6,6 +6,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,6 +28,8 @@ public class Peer
         log.info("BitBox Peer starting...");
         Configuration.getConfiguration();
 
+        Security.addProvider(new BouncyCastleProvider());
+        System.out.println("BouncyCastle provider added.");
         JSONArray connectedPeer = new JSONArray();
         JSONParser parser = new JSONParser();
 
