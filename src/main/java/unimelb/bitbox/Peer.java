@@ -225,8 +225,9 @@ public class Peer
                                         {
                                             for (int i = 0; i < removeIndex.size(); i++)
                                             {
-                                                socketList.remove(removeIndex.pop());
-                                                connectedPeer.remove(removeIndex.pop());
+                                                int ind = Integer.parseInt(removeIndex.pop().toString());
+                                                socketList.remove(ind);
+                                                connectedPeer.remove(ind);
                                             }
                                         }
                                         //connectedPeers = socketListToJSON(socketList);
