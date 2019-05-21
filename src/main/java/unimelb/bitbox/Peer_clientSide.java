@@ -96,7 +96,7 @@ class Peer_clientSide extends Thread
                 System.out.println("Peer working as a server");
             } else
             {
-                System.out.println("Peer_clientSide class IOException error");
+                System.out.println("Peer_clientSide class IOException error!!");
                 e.printStackTrace();
             }
         } catch (ParseException e)

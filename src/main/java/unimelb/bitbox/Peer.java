@@ -170,22 +170,38 @@ public class Peer
                                         {
                                             if (element.getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
                                             {
-                                                try
+                                                if(!element.isClosed())
                                                 {
-                                                    element.close();
-                                                    socketList.remove(element);
-
-                                                    JSONObject reply = new JSONObject();
-                                                    reply.put("command", "DISCONNECT_PEER_RESPONSE");
-                                                    reply.put("host", host);
-                                                    reply.put("port", port);
-                                                    reply.put("status", true);
-                                                    reply.put("message", "disconnected from peer");
-                                                    System.out.println("Sent encrypted: " + reply);
-                                                    out.write(wrapPayload.payload(reply, secretKey) + "\n");
-                                                    out.flush();
+                                                    try
+                                                    {
+                                                        element.close();
+                                                        socketList.remove(element);
+                                                        //reply
+                                                        JSONObject reply = new JSONObject();
+                                                        reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                                        reply.put("host", host);
+                                                        reply.put("port", port);
+                                                        reply.put("status", true);
+                                                        reply.put("message", "disconnected from peer");
+                                                        System.out.println("Sent encrypted: " + reply);
+                                                        out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                        out.flush();
+                                                    }
+                                                    catch (IOException e)
+                                                    {
+                                                        System.out.println("Socket " + element.getRemoteSocketAddress().toString().replace("/","") + " is inactive");
+                                                        JSONObject reply = new JSONObject();
+                                                        reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                                        reply.put("host", host);
+                                                        reply.put("port", port);
+                                                        reply.put("status", false);
+                                                        reply.put("message", "connection not active");
+                                                        System.out.println("Sent encrypted: " + reply);
+                                                        out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                        out.flush();
+                                                    }
                                                 }
-                                                catch (IOException e)
+                                                else
                                                 {
                                                     System.out.println("Socket " + element.getRemoteSocketAddress().toString().replace("/","") + " is inactive");
                                                     JSONObject reply = new JSONObject();
