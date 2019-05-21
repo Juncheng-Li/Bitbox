@@ -565,7 +565,7 @@ public class commNProcess extends Thread
                     out.flush();
                 }
             }
-            // Moved from client
+            // Moved from Client
             else if (command.get("command").toString().equals("FILE_BYTES_REQUEST"))
             {
                 // Unmarshall request

@@ -9,9 +9,10 @@ import java.security.*;
 import java.security.spec.*;
 import java.util.Base64;
 
-import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import sun.misc.BASE64Decoder;
 import unimelb.bitbox.util.Configuration;
 import unimelb.bitbox.util.Document;
@@ -30,7 +31,7 @@ public class getPrivateKey
     private static PrivateKey priv = null;
 
     public static void main(String[] args) throws FileNotFoundException, InvalidKeySpecException, IOException,
-            NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, GeneralSecurityException
+            NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, GeneralSecurityException, ParseException
     {
         Security.addProvider(new BouncyCastleProvider());
         System.out.println("BouncyCastle provider added.");
@@ -76,7 +77,7 @@ public class getPrivateKey
                 PublicKey pubKey3 = demo(keyContent);
 
                 RSAPublicKeySpec keySpec = decodeOpenSSH(key);
-                PublicKey pubKey = factory.generatePublic(keySpec);
+                PublicKey pubKey = decodeKey.decodeOpenSSH(key);
                 PublicKey pubKey2 = kf.generatePublic(keySpec);
 
                 System.out.println(pubKey.getFormat());  //both X.509
@@ -95,14 +96,12 @@ public class getPrivateKey
                 String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
                 System.out.println("AES: ");
                 System.out.println(encodedKey);
-                //System.out.println(secretKey.getEncoded());  //raw secret Key
 
                 //encrypt AES with public key
                 SecureRandom random = new SecureRandom();
                 Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
                 cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
                 byte[] AESinBag = cipher.doFinal(secretKey.getEncoded());
-                //System.out.println("Encoded: " + new String(AESinBag));//
                 System.out.println("Encoded: " + AESinBag);
                 System.out.println("Bag size: " + AESinBag.length);
 
@@ -126,8 +125,15 @@ public class getPrivateKey
                 byte[] decryptedMsg = cipherAESde.doFinal(EncryptedMsg);
                 System.out.println("final result:");
                 System.out.println(new String(decryptedMsg));
+
+                //String to JSON 1
                 Document alexicia = Document.parse(new String(decryptedMsg));
                 System.out.println(alexicia.toJson());
+
+                //String to JSON 2
+                JSONParser parser = new JSONParser();
+                JSONObject store = (JSONObject) parser.parse(new String(decryptedMsg));
+                System.out.println(store);
             }
         }
 

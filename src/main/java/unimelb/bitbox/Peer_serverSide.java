@@ -27,8 +27,7 @@ import java.nio.file.Files;
 
 public class Peer_serverSide extends Thread
 {
-    private String ip;
-    private int port;
+    private int port;     //can be deleted actually
     private int i = 0;
     private ServerSocket listeningSocket = null;
     private Socket clientSocket = null;
@@ -43,13 +42,12 @@ public class Peer_serverSide extends Thread
         this.clientSocket = clientSocket;
         this.i = i;
         this.listeningSocket = serverSocket;
-        this.ip = ip;
     }
 
 
     public void run()
     {
-        System.out.println("Thread: Peer_serverSide for client-" + i + " started...");
+        System.out.println("Thread: Peer_serverSide for Client-" + i + " started...");
         try
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
@@ -62,7 +60,7 @@ public class Peer_serverSide extends Thread
                 while ((clientMsg = in.readLine()) != null)
                 {
                     command = (JSONObject) parser.parse(clientMsg);
-                    System.out.println("(Peer_serverSide)Message from client " + i + ": " + command.toJSONString());
+                    System.out.println("(Peer_serverSide)Message from Client " + i + ": " + command.toJSONString());
                     //doCommand(command, out);
                     if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                     {
@@ -106,15 +104,15 @@ public class Peer_serverSide extends Thread
                 System.out.println("closed...");
             } catch (ParseException e)
             {
-                e.printStackTrace();
+                System.out.println(e);
             }
             clientSocket.close();
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println(e);
         } catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            System.out.println(e);
         } finally
         {
             // kill timer
@@ -123,6 +121,7 @@ public class Peer_serverSide extends Thread
             // kill serverMain
             f.fileSystemManager.stop();
             System.out.println("Peer - " + i + " disconnected.");
+            peerListStorage.peerNum = 109;
         }
     }
 
