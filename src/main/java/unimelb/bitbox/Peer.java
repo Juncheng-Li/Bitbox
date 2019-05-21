@@ -215,12 +215,23 @@ public class Peer
                                                 }
                                             }
                                         }
-                                        Iterator iterator = socketList.iterator();
+                                        // Remove inactive peers
+                                        if (removeIndex.size() > 0)
+                                        {
+                                            for (int i = 0; i < removeIndex.size(); i++)
+                                            {
+                                                socketList.remove(removeIndex.remove(0));
+                                            }
+                                        }
+                                        connectedPeers = socketListToJSON(socketList);
+                                        /*
+                                        Iterator iterator = removeIndex.iterator();
                                         while (iterator.hasNext())
                                         {
                                             socketList.remove(iterator.next());
                                             connectedPeers = socketListToJSON(socketList);
                                         }
+                                         */
                                     }
                                 }
                                 else
