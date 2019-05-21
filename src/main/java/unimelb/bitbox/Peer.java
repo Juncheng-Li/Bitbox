@@ -146,8 +146,8 @@ public class Peer
                                             //reply
                                             JSONObject reply = new JSONObject();
                                             reply.put("command", "CONNECT_PEER_RESPONSE");
-                                            reply.put("host", command.get("host").toString());
-                                            reply.put("port", Integer.parseInt(command.get("port").toString()));
+                                            reply.put("host", decryptedCommand.get("host").toString());
+                                            reply.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
                                             reply.put("status", false);
                                             reply.put("message", "connection failed");
                                             System.out.println("Sent encrypted: " + reply);
