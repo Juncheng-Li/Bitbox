@@ -55,61 +55,9 @@ public class Peer
 
 
         // Peer_serverSide Start here
-        ServerSocket listeningSocket = null;
-        Socket clientSocket = null;
-        ArrayList<JSONObject> peerList = new ArrayList<>();
-        int i = 0; //counter to keep track of the number of clients
-        try
-        {
-            listeningSocket = new ServerSocket(Integer.parseInt(Configuration.getConfigurationValue("port")));
-            while (true)
-            {
-                System.out.println("listening on port " +
-                        Integer.parseInt(Configuration.getConfigurationValue("port")));
-                clientSocket = listeningSocket.accept();
-                i++;
-                // Check if already 10 clients?
-                if (i <= Integer.parseInt(Configuration.getConfigurationValue("maximumIncommingConnections")))
-                {
-                    JSONObject peer = new JSONObject();
-                    peer.put("host", clientSocket.getInetAddress().toString().replaceAll("/", ""));
-                    peer.put("port", clientSocket.getLocalPort());
-                    peerList.add(peer);
-                    System.out.println("Peer_clientSide " + i + " accepted.");
-                    Peer_serverSide T_server = new Peer_serverSide(Integer.parseInt(Configuration.getConfigurationValue("port")),
-                                                                   clientSocket, i, listeningSocket);
-                    T_server.start();
-                } else
-                {
-                    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
-                    JSONObject reply = new JSONObject();
-                    reply.put("command", "CONNECTION_REFUSED");
-                    reply.put("message", "connection limit reached");
-                    reply.put("peers", peerList);
-                    System.out.println("sent: " + reply.toJSONString());
-                    out.write(reply.toJSONString() + "\n");
-                    out.flush();
-                }
-            }
-        } catch (SocketException ex)
-        {
-            ex.printStackTrace();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        } finally
-        {
-            if (listeningSocket != null)
-            {
-                try
-                {
-                    listeningSocket.close();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
+        listening Listening = new listening();
+        Listening.start();
+
 
         // Server for Client - not finished
 
@@ -117,7 +65,7 @@ public class Peer
         Socket clientSocket_client = null;
         try
         {
-            listeningSocket = new ServerSocket(Integer.parseInt(Configuration.getConfigurationValue("clientPort")));
+            listeningSocket_client = new ServerSocket(Integer.parseInt(Configuration.getConfigurationValue("clientPort")));
             while (true)
             {
                 System.out.println("listening on port " +
@@ -321,11 +269,11 @@ public class Peer
             e.printStackTrace();
         } finally
         {
-            if (listeningSocket != null)
+            if (listeningSocket_client != null)
             {
                 try
                 {
-                    listeningSocket.close();
+                    listeningSocket_client.close();
                 } catch (IOException e)
                 {
                     e.printStackTrace();
