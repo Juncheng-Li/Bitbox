@@ -98,7 +98,7 @@ public class Client
                 try
                 {
                     priv = generatePrivateKey(factory, keyDir);
-                    System.out.println(String.format("Instantiated private key: %s", priv));
+                    //System.out.println(String.format("Instantiated private key: %s", priv));
                 }
                 catch (InvalidKeySpecException e)
                 {

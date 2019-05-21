@@ -115,14 +115,14 @@ public class Peer
                                         try
                                         {
                                             //Connect
-                                            String host = command.get("host").toString();
-                                            int port = Integer.parseInt(command.get("port").toString());
+                                            String host = decryptedCommand.get("host").toString();
+                                            int port = Integer.parseInt(decryptedCommand.get("port").toString());
                                             Socket socket = new Socket(host, port);
                                             System.out.println(host + ":" + port + " successfully connected.");
                                             //add to successful connected peerList
                                             JSONObject peer = new JSONObject();
-                                            peer.put("host", command.get("host").toString());
-                                            peer.put("port", Integer.parseInt(command.get("port").toString()));
+                                            peer.put("host", decryptedCommand.get("host").toString());
+                                            peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
                                             connectedPeer.add(peer);
                                             //Start thread
                                             Peer_clientSide T_client = new Peer_clientSide(socket);
