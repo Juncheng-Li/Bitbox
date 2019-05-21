@@ -173,6 +173,8 @@ public class Peer
                                                 try
                                                 {
                                                     element.close();
+                                                    socketList.remove(element);
+
                                                     JSONObject reply = new JSONObject();
                                                     reply.put("command", "DISCONNECT_PEER_RESPONSE");
                                                     reply.put("host", host);

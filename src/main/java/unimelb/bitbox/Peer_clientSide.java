@@ -25,11 +25,18 @@ class Peer_clientSide extends Thread
 
     Peer_clientSide(Socket socket) throws IOException, NoSuchAlgorithmException
     {
-        this.socket = socket;
-        System.out.println("Connection established");
-        this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
-        this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
-        this.f = new ServerMain(this.socket);
+        try
+        {
+            this.socket = socket;
+            System.out.println("Connection established");
+            this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
+            this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
+            this.f = new ServerMain(this.socket);
+        }
+        catch (IOException e)
+        {
+            System.out.println("IOException happens here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
     }
 
     public void run()
