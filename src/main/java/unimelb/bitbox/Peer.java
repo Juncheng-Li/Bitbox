@@ -166,16 +166,17 @@ public class Peer
                                         System.out.println("how to close a socket with address and port number");
                                         String host = decryptedCommand.get("host").toString();
                                         int port = Integer.parseInt(decryptedCommand.get("port").toString());
-                                        for (Socket element : socketList)
+                                        ArrayList removeIndex = new ArrayList();
+                                        for (int i = 0 ; i < socketList.size(); i++)
                                         {
-                                            if (element.getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
+                                            if (socketList.get(i).getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
                                             {
-                                                if(!element.isClosed())
+                                                if(!socketList.get(i).isClosed())
                                                 {
                                                     try
                                                     {
-                                                        element.close();
-                                                        socketList.remove(element);
+                                                        socketList.get(i).close();
+                                                        removeIndex.add(i);
                                                         //reply
                                                         JSONObject reply = new JSONObject();
                                                         reply.put("command", "DISCONNECT_PEER_RESPONSE");
@@ -189,7 +190,7 @@ public class Peer
                                                     }
                                                     catch (IOException e)
                                                     {
-                                                        System.out.println("Socket " + element.getRemoteSocketAddress().toString().replace("/","") + " is inactive");
+                                                        System.out.println("Socket " + socketList.get(i).getRemoteSocketAddress().toString().replace("/","") + " is inactive");
                                                         JSONObject reply = new JSONObject();
                                                         reply.put("command", "DISCONNECT_PEER_RESPONSE");
                                                         reply.put("host", host);
@@ -203,7 +204,8 @@ public class Peer
                                                 }
                                                 else
                                                 {
-                                                    System.out.println("Socket " + element.getRemoteSocketAddress().toString().replace("/","") + " is inactive");
+                                                    removeIndex.add(i);
+                                                    System.out.println("Socket " + socketList.get(i).getRemoteSocketAddress().toString().replace("/","") + " is inactive");
                                                     JSONObject reply = new JSONObject();
                                                     reply.put("command", "DISCONNECT_PEER_RESPONSE");
                                                     reply.put("host", host);
@@ -215,6 +217,12 @@ public class Peer
                                                     out.flush();
                                                 }
                                             }
+                                        }
+                                        Iterator iterator = socketList.iterator();
+                                        while (iterator.hasNext())
+                                        {
+                                            socketList.remove(iterator.next());
+                                            connectedPeer.remove(iterator.next());
                                         }
                                     }
                                 }

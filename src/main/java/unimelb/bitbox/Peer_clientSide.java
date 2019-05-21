@@ -94,10 +94,14 @@ class Peer_clientSide extends Thread
             if (e.toString().contains("ConnectException"))
             {
                 System.out.println("Peer working as a server");
-            } else
+            }
+            else
             {
+                /*
                 System.out.println("Peer_clientSide class IOException error!!");
                 e.printStackTrace();
+                 */
+                System.out.println("Peer_clientSide class socket close caught!");
             }
         } catch (ParseException e)
         {
