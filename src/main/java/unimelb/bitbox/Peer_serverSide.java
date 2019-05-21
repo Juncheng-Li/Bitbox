@@ -121,7 +121,6 @@ public class Peer_serverSide extends Thread
             // kill serverMain
             f.fileSystemManager.stop();
             System.out.println("Peer - " + i + " disconnected.");
-            peerListStorage.peerNum = 109;
         }
     }
 
