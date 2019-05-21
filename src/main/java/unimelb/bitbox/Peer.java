@@ -30,7 +30,6 @@ public class Peer
 
         Security.addProvider(new BouncyCastleProvider());
         System.out.println("BouncyCastle provider added.");
-        JSONArray connectedPeer = new JSONArray();
         JSONParser parser = new JSONParser();
 
 
@@ -38,6 +37,7 @@ public class Peer
         String peers = Configuration.getConfigurationValue("peers");
         String[] peersArray = peers.split(" ");
         ArrayList<Socket> socketList = new ArrayList<>();
+        JSONArray connectedPeers = new JSONArray();
         for (String peer : peersArray)
         {
             try
@@ -47,15 +47,12 @@ public class Peer
                 Socket socket = new Socket(peer_hp.host, peer_hp.port);
                 socketList.add(socket);
                 System.out.println(socketList);
-                connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
+                connectedPeers = socketListToJSON(socketList);
                 Peer_clientSide T_client = new Peer_clientSide(socket);
                 T_client.start();
             } catch (IOException e)
             {
                 System.out.println(peer + " cannot be connected.");
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
             }
         }
 
@@ -106,7 +103,7 @@ public class Peer
                                     {
                                         JSONObject reply = new JSONObject();
                                         reply.put("command", "LIST_PEERS_RESPONSE");
-                                        reply.put("peers", connectedPeer);
+                                        reply.put("peers", connectedPeers);
                                         System.out.println("Sent encrypted: " + reply);
                                         out.write(wrapPayload.payload(reply, secretKey) + "\n");
                                         out.flush();
@@ -127,7 +124,7 @@ public class Peer
                                             JSONObject peer = new JSONObject();
                                             peer.put("host", decryptedCommand.get("host").toString());
                                             peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
-                                            connectedPeer.add(peer);
+                                            connectedPeers = socketListToJSON(socketList);
                                             //Start thread
                                             Peer_clientSide T_client = new Peer_clientSide(socket);
                                             T_client.start();
@@ -222,7 +219,7 @@ public class Peer
                                         while (iterator.hasNext())
                                         {
                                             socketList.remove(iterator.next());
-                                            connectedPeer.remove(iterator.next());
+                                            connectedPeers = socketListToJSON(socketList);
                                         }
                                     }
                                 }
@@ -287,7 +284,6 @@ public class Peer
                                     System.out.println("Received unknown request");
                                 }
                             }
-
                         }
                         else
                         {
@@ -348,9 +344,22 @@ public class Peer
                 }
             }
         }
+    }
 
 
-
+    public static JSONArray socketListToJSON (ArrayList<Socket> socketList)
+    {
+        JSONArray connectedPeers = new JSONArray();
+        for (Socket ele : socketList)
+        {
+            String host = ele.getInetAddress().toString().replace("/", "");
+            int port = ele.getPort();
+            JSONObject peer = new JSONObject();
+            peer.put("host", host);
+            peer.put("port", port);
+            connectedPeers.add(peer);
+        }
+        return connectedPeers;
     }
 
 
