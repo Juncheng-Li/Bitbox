@@ -122,9 +122,10 @@ public class Peer
                                             int port = Integer.parseInt(decryptedCommand.get("port").toString());
                                             Socket socket = new Socket(host, port);
                                             System.out.println(host + ":" + port + " successfully connected.");
-                                            socketList.add(socket);
-                                            System.out.println(socketList);
                                             //add to successful connected peerList
+                                            socketList.add(socket);
+                                            System.out.println(socketList.get(0).getRemoteSocketAddress());
+                                            System.out.println(socketList);
                                             JSONObject peer = new JSONObject();
                                             peer.put("host", decryptedCommand.get("host").toString());
                                             peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
