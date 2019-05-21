@@ -37,6 +37,7 @@ public class Peer
         // Peer_clientSide Start here
         String peers = Configuration.getConfigurationValue("peers");
         String[] peersArray = peers.split(" ");
+        ArrayList<Socket> socketList = new ArrayList<>();
         for (String peer : peersArray)
         {
             try
@@ -44,6 +45,8 @@ public class Peer
                 //System.out.println(peer);
                 HostPort peer_hp = new HostPort(peer);
                 Socket socket = new Socket(peer_hp.host, peer_hp.port);
+                socketList.add(socket);
+                System.out.println(socketList);
                 connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
                 Peer_clientSide T_client = new Peer_clientSide(socket);
                 T_client.start();
@@ -160,6 +163,11 @@ public class Peer
                                     {
                                         //Disconnect peer
                                         System.out.println("how to close a socket with address and port number");
+                                        String host = decryptedCommand.get("host").toString();
+                                        int port = Integer.parseInt(decryptedCommand.get("port").toString());
+
+
+
                                     }
                                 }
                                 else
@@ -220,6 +228,7 @@ public class Peer
                                 } else
                                 {
                                     //other options
+                                    System.out.println("Unknown request");
                                 }
                             }
 

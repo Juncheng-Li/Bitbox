@@ -18,7 +18,7 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;   //maybe public key is not X509?
+import java.security.spec.X509EncodedKeySpec;
 
 import java.io.*;
 import java.security.*;
