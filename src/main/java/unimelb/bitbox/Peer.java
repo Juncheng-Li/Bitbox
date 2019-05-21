@@ -167,7 +167,7 @@ public class Peer
                             else
                             {
                                 //Handle AUTH_RESPONSE
-                                if (command.get("command").toString().equals("AUTH_RESPONSE"))
+                                if (command.get("command").toString().equals("AUTH_REQUEST"))
                                 {
                                     String id = command.get("identity").toString();
                                     String[] keys = Configuration.getConfigurationValue("authorized_keys").split(",");

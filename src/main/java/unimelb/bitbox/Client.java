@@ -62,14 +62,14 @@ public class Client
         //Connect to server
         HostPort server = new HostPort(argsBean.getServer());
         Socket socket = new Socket(server.host, server.port);
-        System.out.println("Secure Client connection established.");
+        System.out.println("Secure server connection established.");
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
         JSONObject req = new JSONObject();
         req.put("command", "AUTH_REQUEST");
         req.put("identity", argsBean.getId());
-        System.out.println(req.toJSONString());
-        out.write("sent: " + req + "\n");
+        System.out.println("Sent: " + req.toJSONString());
+        out.write(req + "\n");
         out.flush();
 
         // Receive incoming reply
