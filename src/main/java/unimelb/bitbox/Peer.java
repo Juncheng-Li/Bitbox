@@ -141,8 +141,8 @@ public class Peer
                                         // If connection unsuccessful
                                         catch (IOException e)
                                         {
-                                            System.out.println(command.get("host").toString() + ":" +
-                                                    command.get("port").toString() + " cannot be connected.");
+                                            System.out.println(decryptedCommand.get("host").toString() + ":" +
+                                                    decryptedCommand.get("port").toString() + " cannot be connected.");
                                             //reply
                                             JSONObject reply = new JSONObject();
                                             reply.put("command", "CONNECT_PEER_RESPONSE");
