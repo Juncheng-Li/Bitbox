@@ -125,7 +125,11 @@ public class Peer
                                             //add to successful connected peerList
                                             socketList.add(socket);
                                             System.out.println(socketList.get(0).getRemoteSocketAddress());
-                                            System.out.println(socketList);
+                                            System.out.println(socketList.get(0).getInetAddress());
+                                            System.out.println(socketList.get(0).getLocalAddress());
+                                            System.out.println(socketList.get(0).getPort());
+                                            System.out.println(socketList.get(0).getLocalPort());
+                                            System.out.println(socketList.get(0).getTrafficClass());
                                             JSONObject peer = new JSONObject();
                                             peer.put("host", decryptedCommand.get("host").toString());
                                             peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
