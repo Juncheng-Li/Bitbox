@@ -84,7 +84,8 @@ public class Client
             if (command.containsKey("payload"))
             {
                 JSONObject decryptedCommand = wrapPayload.unWrap(command, secretKey);
-                System.out.println(decryptedCommand);
+                System.out.println("Peers: " + decryptedCommand.get("peers"));
+                break;
             }
 
             //If server has key
