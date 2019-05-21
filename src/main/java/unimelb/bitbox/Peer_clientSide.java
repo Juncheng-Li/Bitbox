@@ -25,18 +25,11 @@ class Peer_clientSide extends Thread
 
     Peer_clientSide(Socket socket) throws IOException, NoSuchAlgorithmException
     {
-        try
-        {
-            this.socket = socket;
-            System.out.println("Connection established");
-            this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
-            this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
-            this.f = new ServerMain(this.socket);
-        }
-        catch (IOException e)
-        {
-            System.out.println("IOException happens here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
+        this.socket = socket;
+        System.out.println("Connection established");
+        this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
+        this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
+        this.f = new ServerMain(this.socket);
     }
 
     public void run()
@@ -64,28 +57,25 @@ class Peer_clientSide extends Thread
                 System.out.println("Message from peer: " + command.toJSONString());
 
                 //Copied from server
-                if(command.getClass().getName().equals("org.json.simple.JSONObject"))
+                if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                 {
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
-                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
-                    }
-                    else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
+                                Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                    } else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
                     {
-                        System.out.println("Peer("+
-                                           socket.getRemoteSocketAddress().toString().replaceAll("/", "")
-                                           + ") maximum connection limit reached...");
+                        System.out.println("Peer(" +
+                                socket.getRemoteSocketAddress().toString().replaceAll("/", "")
+                                + ") maximum connection limit reached...");
                         break;
-                    }
-                    else
+                    } else
                     {
                         commNProcess process_T = new commNProcess(command, socket, f);
                         process_T.start();
                     }
-                }
-                else
+                } else
                 {
                     // If not a JSONObject
                     JSONObject reply = new JSONObject();
@@ -112,8 +102,7 @@ class Peer_clientSide extends Thread
         } catch (ParseException e)
         {
             e.printStackTrace();
-        }
-        finally
+        } finally
         {
             // Close the socket
             if (socket != null)
@@ -121,8 +110,8 @@ class Peer_clientSide extends Thread
                 try
                 {
                     System.out.println("Peer("
-                                       + socket.getRemoteSocketAddress().toString().replaceAll("/", "")
-                                       +") socket closed...");
+                            + socket.getRemoteSocketAddress().toString().replaceAll("/", "")
+                            + ") socket closed...");
                     timer.cancel();
                     timer.purge();
                     f.fileSystemManager.stop();
