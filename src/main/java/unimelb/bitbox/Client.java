@@ -80,7 +80,7 @@ public class Client
             JSONObject command = (JSONObject) parser.parse(message);
             System.out.println("Message from peer: " + command.toJSONString());
 
-            //If encrypted message
+            //Sout the final result
             if (command.containsKey("payload"))
             {
                 JSONObject decryptedCommand = wrapPayload.unWrap(command, secretKey);
@@ -89,6 +89,11 @@ public class Client
                     System.out.println("Peers: " + decryptedCommand.get("peers"));
                 }
                 else if (decryptedCommand.get("command").equals("CONNECT_PEER_RESPONSE"))
+                {
+                    System.out.println(decryptedCommand.get("message") + " " + decryptedCommand.get("host")
+                            + ":" + decryptedCommand.get("port"));
+                }
+                else if (decryptedCommand.get("command").equals("DISCONNECT_PEER_RESPONSE"))
                 {
                     System.out.println(decryptedCommand.get("message") + " " + decryptedCommand.get("host")
                             + ":" + decryptedCommand.get("port"));

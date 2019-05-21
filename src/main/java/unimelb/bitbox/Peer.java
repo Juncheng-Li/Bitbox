@@ -124,12 +124,6 @@ public class Peer
                                             System.out.println(host + ":" + port + " successfully connected.");
                                             //add to successful connected peerList
                                             socketList.add(socket);
-                                            System.out.println(socketList.get(0).getRemoteSocketAddress());
-                                            System.out.println(socketList.get(0).getInetAddress());
-                                            System.out.println(socketList.get(0).getLocalAddress());
-                                            System.out.println(socketList.get(0).getPort());
-                                            System.out.println(socketList.get(0).getLocalPort());
-                                            System.out.println(socketList.get(0).getTrafficClass());
                                             JSONObject peer = new JSONObject();
                                             peer.put("host", decryptedCommand.get("host").toString());
                                             peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
@@ -172,9 +166,38 @@ public class Peer
                                         System.out.println("how to close a socket with address and port number");
                                         String host = decryptedCommand.get("host").toString();
                                         int port = Integer.parseInt(decryptedCommand.get("port").toString());
-
-
-
+                                        for (Socket element : socketList)
+                                        {
+                                            if (element.getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
+                                            {
+                                                try
+                                                {
+                                                    element.close();
+                                                    JSONObject reply = new JSONObject();
+                                                    reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                                    reply.put("host", host);
+                                                    reply.put("port", port);
+                                                    reply.put("status", true);
+                                                    reply.put("message", "disconnected from peer");
+                                                    System.out.println("Sent encrypted: " + reply);
+                                                    out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                    out.flush();
+                                                }
+                                                catch (IOException e)
+                                                {
+                                                    System.out.println("Socket " + element.getRemoteSocketAddress().toString().replace("/","") + " is inactive");
+                                                    JSONObject reply = new JSONObject();
+                                                    reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                                    reply.put("host", host);
+                                                    reply.put("port", port);
+                                                    reply.put("status", false);
+                                                    reply.put("message", "connection not active");
+                                                    System.out.println("Sent encrypted: " + reply);
+                                                    out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                    out.flush();
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 else
@@ -235,7 +258,7 @@ public class Peer
                                 } else
                                 {
                                     //other options
-                                    System.out.println("Unknown request");
+                                    System.out.println("Received unknown request");
                                 }
                             }
 
