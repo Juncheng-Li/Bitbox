@@ -16,7 +16,6 @@ import unimelb.bitbox.util.HostPort;
 
 import javax.crypto.*;
 import java.net.*;
-import java.util.logging.SocketHandler;
 
 public class Peer
 {
@@ -49,7 +48,6 @@ public class Peer
                 Socket socket = new Socket(peer_hp.host, peer_hp.port);
                 socketList.add(socket);
                 System.out.println(socketList);
-                //connectedPeers = socketListToJSON(socketList);
                 connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
                 Peer_clientSide T_client = new Peer_clientSide(socket);
                 T_client.start();
@@ -107,6 +105,18 @@ public class Peer
                                     // Handle LIST_PEERS_REQUEST
                                     if (decryptedCommand.get("command").equals("LIST_PEERS_REQUEST"))
                                     {
+                                        //Check if sockets are active
+                                        LinkedList<Integer> removeIndex = new LinkedList<>();
+                                        for (int i = 0; i < socketList.size(); i++)
+                                        {
+                                            if (socketList.get(i).isClosed())
+                                            {
+                                                removeIndex.add(i);
+                                            }
+                                        }
+                                        // Remove inactive sockets
+                                        removeSocket(socketList, connectedPeer, removeIndex);
+                                        // Send reply
                                         JSONObject reply = new JSONObject();
                                         reply.put("command", "LIST_PEERS_RESPONSE");
                                         reply.put("peers", connectedPeer);
@@ -169,7 +179,7 @@ public class Peer
                                         System.out.println("how to close a socket with address and port number");
                                         String host = decryptedCommand.get("host").toString();
                                         int port = Integer.parseInt(decryptedCommand.get("port").toString());
-                                        LinkedList removeIndex = new LinkedList();
+                                        LinkedList<Integer> removeIndex = new LinkedList<>();
                                         for (int i = 0 ; i < socketList.size(); i++)
                                         {
                                             if (socketList.get(i).getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
@@ -222,16 +232,7 @@ public class Peer
                                             }
                                         }
                                         // Remove inactive peers
-                                        if (removeIndex.size() > 0)
-                                        {
-                                            for (int i = 0; i < removeIndex.size(); i++)
-                                            {
-                                                int ind = Integer.parseInt(removeIndex.pop().toString());
-                                                socketList.remove(ind);
-                                                connectedPeer.remove(ind);
-                                            }
-                                        }
-                                        //connectedPeers = socketListToJSON(socketList);
+                                        removeSocket(socketList, connectedPeer, removeIndex);
                                     }
                                 }
                                 else
@@ -357,29 +358,18 @@ public class Peer
         }
     }
 
-    public static JSONArray socketRemove(ArrayList<Socket> socketList, ArrayList indexArray)
+
+    private static void removeSocket (ArrayList<Socket> socketList, JSONArray connectedPeer, LinkedList<Integer> removeIndex)
     {
-        Collections.sort(indexArray);
-        for (int i = indexArray.size(); i >= 0; i--)
+        if (removeIndex.size() > 0)
         {
-            indexArray
+            removeIndex.sort(Comparator.reverseOrder());
+            for (int i = 0; i < removeIndex.size(); i++)
+            {
+                int ind = Integer.parseInt(removeIndex.pop().toString());
+                socketList.remove(ind);
+                connectedPeer.remove(ind);
+            }
         }
     }
-
-    public static JSONArray socketListToJSON (ArrayList<Socket> socketList)
-    {
-        JSONArray connectedPeers = new JSONArray();
-        for (Socket ele : socketList)
-        {
-            String host = ele.getInetAddress().toString().replace("/", "");
-            int port = ele.getPort();
-            JSONObject peer = new JSONObject();
-            peer.put("host", host);
-            peer.put("port", port);
-            connectedPeers.add(peer);
-        }
-        return connectedPeers;
-    }
-
-
 }
