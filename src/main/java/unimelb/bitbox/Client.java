@@ -32,7 +32,7 @@ import unimelb.bitbox.util.HostPort;
 
 public class Client
 {
-    private final static String keyDir = "bitboxclient-rsa";
+    private final static String keyDir = "bitboxclient_rsa";
     private static PrivateKey priv = null;
     private static SecretKey secretKey = null;
 

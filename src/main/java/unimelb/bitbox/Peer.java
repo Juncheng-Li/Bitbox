@@ -16,6 +16,7 @@ import unimelb.bitbox.util.HostPort;
 
 import javax.crypto.*;
 import java.net.*;
+import java.util.logging.SocketHandler;
 
 public class Peer
 {
@@ -356,6 +357,14 @@ public class Peer
         }
     }
 
+    public static JSONArray socketRemove(ArrayList<Socket> socketList, ArrayList indexArray)
+    {
+        Collections.sort(indexArray);
+        for (int i = indexArray.size(); i >= 0; i--)
+        {
+            indexArray
+        }
+    }
 
     public static JSONArray socketListToJSON (ArrayList<Socket> socketList)
     {

@@ -41,14 +41,14 @@ public class getPrivateKey
 
         try
         {
-            priv = generatePrivateKey(factory, RESOURCES_DIR + "bitboxclient-rsa");
-            //PrivateKey priv2 = generatePrivateKey(kf, RESOURCES_DIR + "bitboxclient-rsa");
+            priv = generatePrivateKey(factory, RESOURCES_DIR + "bitboxclient_rsa");
+            //PrivateKey priv2 = generatePrivateKey(kf, RESOURCES_DIR + "bitboxclient_rsa");
             System.out.println(String.format("Instantiated private key: %s", priv));
             //System.out.println(String.format("Instantiated private key2: %s", priv2));
             //Cipher cipher = Cipher.getInstance("RSA");
             //cipher.init(Cipher.ENCRYPT_MODE, priv);
 
-            //PublicKey pub = generatePublicKey(factory, RESOURCES_DIR + "bitboxclient-rsa.pub");
+            //PublicKey pub = generatePublicKey(factory, RESOURCES_DIR + "bitboxclient_rsa.pub");
             //System.out.println(String.format("Instantiated public key: %s", pub));
         } catch (InvalidKeySpecException e)
         {
