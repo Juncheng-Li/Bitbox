@@ -180,12 +180,12 @@ public class Peer
                                         String host = decryptedCommand.get("host").toString();
                                         int port = Integer.parseInt(decryptedCommand.get("port").toString());
                                         LinkedList<Integer> removeIndex = new LinkedList<>();
-                                        boolean existance = false;
+                                        boolean existence = false;
                                         for (int i = 0 ; i < socketList.size(); i++)
                                         {
                                             if (socketList.get(i).getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
                                             {
-                                                existance = true;
+                                                existence = true;
                                                 if(!socketList.get(i).isClosed())
                                                 {
                                                     try
@@ -235,7 +235,7 @@ public class Peer
                                             }
                                         }
                                         // disconnect peer does not exist in the list
-                                        if (!existance)
+                                        if (!existence)
                                         {
                                             System.out.println("The peer want to disconnect does not exist in peer");
                                             JSONObject reply = new JSONObject();
