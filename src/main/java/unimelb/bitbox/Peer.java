@@ -180,10 +180,12 @@ public class Peer
                                         String host = decryptedCommand.get("host").toString();
                                         int port = Integer.parseInt(decryptedCommand.get("port").toString());
                                         LinkedList<Integer> removeIndex = new LinkedList<>();
+                                        boolean existance = false;
                                         for (int i = 0 ; i < socketList.size(); i++)
                                         {
                                             if (socketList.get(i).getRemoteSocketAddress().toString().replace("/","").equals(host+":"+port))
                                             {
+                                                existance = true;
                                                 if(!socketList.get(i).isClosed())
                                                 {
                                                     try
@@ -217,6 +219,7 @@ public class Peer
                                                 }
                                                 else
                                                 {
+                                                    // The peer that want to connect is already inactive, therefore add to removeIndex
                                                     removeIndex.add(i);
                                                     System.out.println("Socket " + socketList.get(i).getRemoteSocketAddress().toString().replace("/","") + " is inactive");
                                                     JSONObject reply = new JSONObject();
@@ -230,6 +233,20 @@ public class Peer
                                                     out.flush();
                                                 }
                                             }
+                                        }
+                                        // disconnect peer does not exist in the list
+                                        if (!existance)
+                                        {
+                                            System.out.println("The peer want to disconnect does not exist in peer");
+                                            JSONObject reply = new JSONObject();
+                                            reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                            reply.put("host", host);
+                                            reply.put("port", port);
+                                            reply.put("status", false);
+                                            reply.put("message", "connection not active");
+                                            System.out.println("Sent encrypted: " + reply);
+                                            out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                            out.flush();
                                         }
                                         // Remove inactive peers
                                         removeSocket(socketList, connectedPeer, removeIndex);
