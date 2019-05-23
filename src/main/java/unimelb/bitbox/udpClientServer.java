@@ -71,6 +71,8 @@ public class udpClientServer extends Thread
                 // Step 3 : receive the data in byte buffer.
                 dsServerSocket.receive(serverPacket);  //
                 StringBuilder message = data(receive);
+                InetAddress clientIp = null;
+                int clientPort = -1;
                 System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
                 System.out.println(serverPacket.getLength());
 
@@ -81,6 +83,8 @@ public class udpClientServer extends Thread
                 {
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
+                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
@@ -99,22 +103,30 @@ public class udpClientServer extends Thread
                     }
 
                     //Server side
-                    if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
+                    //check has handshaked
+                    if (clientPort != -1 && clientIp != null)
                     {
-                        JSONObject hs_res = new JSONObject();
-                        hostPort = new JSONObject();
-                        hs_res.put("command", "HANDSHAKE_RESPONSE");
-                        hostPort.put("host", ip.getHostAddress());
-                        hostPort.put("port", udpPort);
-                        hs_res.put("hostPort", hostPort);
-                        send(hs_res, ip, udpPort);
+                        if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
+                        {
+                            JSONObject hs_res = new JSONObject();
+                            hostPort = new JSONObject();
+                            hs_res.put("command", "HANDSHAKE_RESPONSE");
+                            hostPort.put("host", ip.getHostAddress());
+                            hostPort.put("port", udpPort);
+                            hs_res.put("hostPort", hostPort);
+                            send(hs_res, clientIp, clientPort);
 
-                        timer.schedule(new SyncEvents(f), 0,
-                                Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
-                    } else
+                            timer.schedule(new SyncEvents(f), 0,
+                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                        } else
+                        {
+                            udpCommNProcess command_T = new udpCommNProcess(command, ip, udpPort, f);
+                            command_T.start();
+                        }
+                    }
+                    else
                     {
-                        udpCommNProcess command_T = new udpCommNProcess(command, ip, udpPort, f);
-                        command_T.start();
+                        System.out.println("have not handshaked!");
                     }
                 }
                 else
