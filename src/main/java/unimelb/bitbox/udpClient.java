@@ -83,7 +83,11 @@ public class udpClient extends Thread
 
                 // Step 3 : revieve the data in byte buffer.
                 dsSocket.receive(packet);  //
-
+                System.out.println(packet.getAddress());
+                System.out.println(packet.getSocketAddress());
+                System.out.println(packet.getPort());
+                System.out.println(packet.getData());
+                System.out.println(packet.getLength());
                 System.out.println("udpClient: " + data(receive));
 
                 // Exit the server if the client sends "bye"
