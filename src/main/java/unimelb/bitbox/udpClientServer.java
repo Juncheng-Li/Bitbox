@@ -115,44 +115,27 @@ public class udpClientServer extends Thread
                     }
                     else
                     {
-                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
-                        process_T.start();
-                    }
-
-                    //Server side
-                    //check has handshaked
-                    System.out.println(clientPort);
-                    if (clientPort != -1 && clientIp != null)
-                    {
-                        if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
+                        // do other commands
+                        // check if it is available first
+                        if (clientPort != -1 && clientIp != null)
                         {
-                            JSONObject hs_res = new JSONObject();
-                            hostPort = new JSONObject();
-                            hs_res.put("command", "HANDSHAKE_RESPONSE");
-                            hostPort.put("host", ip.getHostAddress());
-                            hostPort.put("port", udpPort);
-                            hs_res.put("hostPort", hostPort);
-                            send(hs_res, clientIp, clientPort);
-
-                            timer.schedule(new SyncEvents(f), 0,
-                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
-                        } else
+                            udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
+                            process_T.start();
+                        }
+                        else
                         {
-                            udpCommNProcess command_T = new udpCommNProcess(command, ip, udpPort, f);
-                            command_T.start();
+                            //check has handshaked
+                            System.out.println("have not handshaked!");
                         }
                     }
-                    else
-                    {
-                        System.out.println("have not handshaked!");
-                    }
+
                 }
                 else
                 {
                     // If not a JSONObject
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
-                    reply.put("message", "message must contain a command field as string0");
+                    reply.put("message", "message must contain a command field as string");
                     send(reply, ip, udpPort);
                 }
 

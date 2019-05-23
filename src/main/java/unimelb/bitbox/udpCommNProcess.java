@@ -527,7 +527,8 @@ public class udpCommNProcess extends Thread
                     command.get("command").toString().equals("FILE_DELETE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_MODIFY_RESPONSE") ||
-                    command.get("command").toString().equals("INVALID_PROTOCOL"))
+                    command.get("command").toString().equals("INVALID_PROTOCOL") ||
+                    command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
             {
                 // Do nothing when receive these responses
             }
