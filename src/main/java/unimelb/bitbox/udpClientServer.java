@@ -116,16 +116,14 @@ public class udpClientServer extends Thread
                         udpCommNProcess command_T = new udpCommNProcess(command, ip, udpPort, f);
                         command_T.start();
                     }
-                } else
+                }
+                else
                 {
                     // If not a JSONObject
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
                     reply.put("message", "message must contain a command field as string");
-                    System.out.println("udp Sent: " + reply);
-                    buf = reply.toJSONString().getBytes();
-                    packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-                    dsSocket.send(packet);
+                    send(reply, ip, udpPort);
                 }
 
                 //Refresh receive block
