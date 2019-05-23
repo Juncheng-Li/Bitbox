@@ -69,8 +69,10 @@ public class udpClient extends Thread
         try
         {
             // Step 1 : Create a socket to listen at port 1234
-            DatagramSocket dsSocket = new DatagramSocket(5000); //
+            int udpPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
+            DatagramSocket dsSocket = new DatagramSocket(udpPort); //
             byte[] receive = new byte[65535];
+            System.out.println("UDP port " + udpPort);
 
             DatagramPacket packet = null;
             while (true)
