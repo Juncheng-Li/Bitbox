@@ -29,42 +29,55 @@ public class Peer
         Configuration.getConfiguration();
 
         Security.addProvider(new BouncyCastleProvider());
-        System.out.println("BouncyCastle provider added.");
         JSONParser parser = new JSONParser();
-
-
-        // Peer_clientSide Start here
         String peers = Configuration.getConfigurationValue("peers");
         String[] peersArray = peers.split(" ");
         ArrayList<Socket> socketList = new ArrayList<>();
-        //JSONArray connectedPeers = new JSONArray();
         JSONArray connectedPeer = new JSONArray();
-        for (String peer : peersArray)
+
+        if (Configuration.getConfigurationValue("mode").equals("tcp"))
         {
-            try
+            // Peer_clientSide Start here
+            for (String peer : peersArray)
             {
-                //System.out.println(peer);
-                HostPort peer_hp = new HostPort(peer);
-                Socket socket = new Socket(peer_hp.host, peer_hp.port);
-                socketList.add(socket);
-                System.out.println(socketList);
-                connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
-                Peer_clientSide T_client = new Peer_clientSide(socket);
-                T_client.start();
-            } catch (IOException e)
-            {
-                System.out.println(peer + " cannot be connected.");
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
+                try
+                {
+                    //System.out.println(peer);
+                    HostPort peer_hp = new HostPort(peer);
+                    Socket socket = new Socket(peer_hp.host, peer_hp.port);
+                    socketList.add(socket);
+                    System.out.println(socketList);
+                    connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
+                    Peer_clientSide T_client = new Peer_clientSide(socket);
+                    T_client.start();
+                } catch (IOException e)
+                {
+                    System.out.println(peer + " cannot be connected.");
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                }
             }
+
+            // Peer_serverSide Start here
+            listening Listening = new listening();
+            Listening.start();
         }
+        else if (Configuration.getConfigurationValue("mode").equals("tcp"))
+        {
+            // UDP client
+            udpClient udpclient = new udpClient();
+            udpclient.start();
 
 
-        // Peer_serverSide Start here
-        listening Listening = new listening();
-        Listening.start();
-
+            // UDP server
+            udpServer udpserver = new udpServer();
+            udpserver.start();
+        }
+        else
+        {
+            System.out.println("Wrong mode: please choose udp or tcp");
+        }
 
         // Server for Client - not finished
 
@@ -75,7 +88,7 @@ public class Peer
             listeningSocket_client = new ServerSocket(Integer.parseInt(Configuration.getConfigurationValue("clientPort")));
             while (true)
             {
-                System.out.println("listening on port " +
+                System.out.println("listening on clientPort " +
                         Integer.parseInt(Configuration.getConfigurationValue("clientPort")));
                 clientSocket_client = listeningSocket_client.accept();
                 System.out.println("Secure Client accepted.");

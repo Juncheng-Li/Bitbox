@@ -44,4 +44,11 @@ put cancel file loader before creating file loader
 
 **Part 2 improvements**
 
-Change Peer_serverForClient to Object instead of Thread.
+change padding
+
+disconnect when connection is not established - ok
+
+
+**Finalizing**
+
+remove all unneccessary souts
