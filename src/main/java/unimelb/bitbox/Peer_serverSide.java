@@ -19,8 +19,6 @@ import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import javax.net.ServerSocketFactory;
-
 import unimelb.bitbox.util.*;
 
 import java.nio.file.Files;
@@ -61,7 +59,6 @@ public class Peer_serverSide extends Thread
                 {
                     command = (JSONObject) parser.parse(clientMsg);
                     System.out.println("(Peer_serverSide)Message from Client " + i + ": " + command.toJSONString());
-                    //doCommand(command, out);
                     if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                     {
                         if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))

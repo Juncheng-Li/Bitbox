@@ -52,3 +52,5 @@ disconnect when connection is not established - ok
 **Finalizing**
 
 remove all unneccessary souts
+
+merge filesystem manager(i.e. shoulde we not creating new FSM after receving new peer, and not creating new FSM when connect new client)
