@@ -121,6 +121,7 @@ public class udpClientServer extends Thread
 
                     //Server side
                     //check has handshaked
+                    System.out.println(clientPort);
                     if (clientPort != -1 && clientIp != null)
                     {
                         if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
