@@ -63,16 +63,17 @@ public class Peer
             listening Listening = new listening();
             Listening.start();
         }
-        else if (Configuration.getConfigurationValue("mode").equals("tcp"))
+        else if (Configuration.getConfigurationValue("mode").equals("udp"))
         {
             // UDP client
             udpClient udpclient = new udpClient();
             udpclient.start();
 
-
+            /*
             // UDP server
             udpServer udpserver = new udpServer();
             udpserver.start();
+             */
         }
         else
         {
