@@ -97,26 +97,8 @@ public class udpClientServer extends Thread
                         udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
                         process_T.start();
                     }
-                } else
-                {
-                    // If not a JSONObject
-                    JSONObject reply = new JSONObject();
-                    reply.put("command", "INVALID_PROTOCOL");
-                    reply.put("message", "message must contain a command field as string");
-                    System.out.println("udp Sent: " + reply);
-                    buf = reply.toJSONString().getBytes();
-                    packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-                    dsSocket.send(packet);
-                }
 
-
-                //Server side
-                //System.out.println("Thread: Peer_serverSide for Client-" + i + " started...");
-
-                //f = new ServerMain(clientSocket);
-                //System.out.println("(Peer_serverSide)Message from Client " + i + ": " + command.toJSONString());
-                if (command.getClass().getName().equals("org.json.simple.JSONObject"))
-                {
+                    //Server side
                     if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
                     {
                         JSONObject hs_res = new JSONObject();
@@ -140,7 +122,10 @@ public class udpClientServer extends Thread
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
                     reply.put("message", "message must contain a command field as string");
-                    send(reply, ip, udpPort);
+                    System.out.println("udp Sent: " + reply);
+                    buf = reply.toJSONString().getBytes();
+                    packet = new DatagramPacket(buf, buf.length, ip, udpPort);
+                    dsSocket.send(packet);
                 }
 
                 //Refresh receive block
