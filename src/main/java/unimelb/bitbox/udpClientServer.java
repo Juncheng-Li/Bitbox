@@ -152,7 +152,7 @@ public class udpClientServer extends Thread
                     // If not a JSONObject
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
-                    reply.put("message", "message must contain a command field as string");
+                    reply.put("message", "message must contain a command field as string0");
                     send(reply, ip, udpPort);
                 }
 
