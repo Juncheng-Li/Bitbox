@@ -31,6 +31,11 @@ public class ServerMain implements FileSystemObserver
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
+    public ServerMain() throws IOException, NoSuchAlgorithmException
+    {
+        fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
+    }
+
     @Override
     public void processFileSystemEvent(FileSystemEvent fileSystemEvent)
     {

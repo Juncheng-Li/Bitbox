@@ -18,15 +18,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 import java.util.Timer;
 
-public class udpClient extends Thread
+public class udpClientServer extends Thread
 {
     private JSONParser parser = new JSONParser();
-    private ServerMain f;
     private Timer timer = new Timer();
+    private ServerMain f;
 
-    udpClient()
+    udpClientServer() throws IOException, NoSuchAlgorithmException
     {
-
+        f = new ServerMain();
     }
 
     public void run()
@@ -46,7 +46,7 @@ public class udpClient extends Thread
             JSONObject hs = new JSONObject();
             JSONObject hostPort = new JSONObject();
             hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
-            hostPort.put("port", Integer.parseInt(Configuration.getConfigurationValue("port")));
+            hostPort.put("port", udpPort);
             hs.put("command", "HANDSHAKE_REQUEST");
             hs.put("hostPort", hostPort);
             buf = hs.toJSONString().getBytes();
@@ -71,12 +71,11 @@ public class udpClient extends Thread
                 // Step 3 : receive the data in byte buffer.
                 dsServerSocket.receive(serverPacket);  //
                 StringBuilder message = data(receive);
-                System.out.println("udpClient(" + serverPacket.getSocketAddress() + "): " + message);
+                System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
 
 
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
-                System.out.println("Message from UDP peer: " + command.toJSONString());
 
                 if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                 {
@@ -85,13 +84,15 @@ public class udpClient extends Thread
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
-                    } else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
+                    }
+                    else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
                     {
                         System.out.println("Peer(" +
                                 serverPacket.getSocketAddress().toString().replaceAll("/", "")
                                 + ") maximum connection limit reached...");
                         break;
-                    } else
+                    }
+                    else
                     {
                         udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
                         process_T.start();
@@ -121,7 +122,7 @@ public class udpClient extends Thread
                         JSONObject hs_res = new JSONObject();
                         hostPort = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
-                        hostPort.put("host", ip);
+                        hostPort.put("host", ip.getHostAddress());
                         hostPort.put("port", udpPort);
                         hs_res.put("hostPort", hostPort);
                         send(hs_res, ip, udpPort);
@@ -153,7 +154,7 @@ public class udpClient extends Thread
         }
         catch (IOException e)
         {
-            System.out.println(e);
+            e.printStackTrace();
         }
         finally
         {

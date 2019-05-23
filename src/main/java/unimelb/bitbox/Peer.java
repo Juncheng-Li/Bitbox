@@ -65,15 +65,9 @@ public class Peer
         }
         else if (Configuration.getConfigurationValue("mode").equals("udp"))
         {
-            // UDP client
-            udpClient udpclient = new udpClient();
-            udpclient.start();
-
-            /*
-            // UDP server
-            udpServer udpserver = new udpServer();
-            udpserver.start();
-             */
+            // UDP clientServer
+            udpClientServer udpCS_T = new udpClientServer();
+            udpCS_T.start();
         }
         else
         {
