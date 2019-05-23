@@ -26,12 +26,11 @@ public class udpClientServer extends Thread
 
     udpClientServer() throws IOException, NoSuchAlgorithmException
     {
-        f = new ServerMain();
+
     }
 
     public void run()
     {
-
         try
         {
             // Step 1: Preparing
@@ -83,8 +82,11 @@ public class udpClientServer extends Thread
                 {
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
-                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+                        //clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        //clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+                        clientIp = ip;
+                        clientPort = udpPort;
+                        f = new ServerMain(clientIp, clientPort);
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
@@ -101,7 +103,7 @@ public class udpClientServer extends Thread
                         // get client Ip and port from HANDSHAKE_REQUEST
                         clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
-
+                        f = new ServerMain(clientIp, clientPort);
                         JSONObject hs_res = new JSONObject();
                         hostPort = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
@@ -149,6 +151,10 @@ public class udpClientServer extends Thread
             e.printStackTrace();
         }
         catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
         }

@@ -48,6 +48,8 @@ change padding
 
 disconnect when connection is not established - ok
 
+yao bu yao ba handshake request n response ye fang dao udpCommNProcess li.
+
 
 **Finalizing**
 

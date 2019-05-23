@@ -1,8 +1,7 @@
 package unimelb.bitbox;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -21,6 +20,8 @@ public class ServerMain implements FileSystemObserver
     private BufferedWriter out;
     protected FileSystemManager fileSystemManager;
     private Socket socket = null;
+    private InetAddress udpIP;
+    private int udpPort;
 
     public ServerMain(Socket socket) throws NumberFormatException, IOException, NoSuchAlgorithmException
     {
@@ -31,8 +32,10 @@ public class ServerMain implements FileSystemObserver
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
-    public ServerMain() throws IOException, NoSuchAlgorithmException
+    public ServerMain(InetAddress udpIP, int udpPort) throws IOException, NoSuchAlgorithmException
     {
+        this.udpIP = udpIP;
+        this.udpPort = udpPort;
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
@@ -54,9 +57,20 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_CREATE_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
-                System.out.println("sent: " + req.toJSONString());
-                out.write(req.toJSONString() + "\n");
-                out.flush();
+                if (Configuration.getConfigurationValue("mode").equals("tcp"))
+                {
+                    System.out.println("sent: " + req.toJSONString());
+                    out.write(req.toJSONString() + "\n");
+                    out.flush();
+                }
+                else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                {
+                    send(req, udpIP, udpPort);
+                }
+                else
+                {
+                    System.out.println("wrong mode!");
+                }
             }
 
             if (fileSystemEvent.event.toString().equals("FILE_DELETE"))
@@ -70,9 +84,20 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_DELETE_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
-                System.out.println("sent: " + req.toJSONString());
-                out.write(req.toJSONString() + "\n");
-                out.flush();
+                if (Configuration.getConfigurationValue("mode").equals("tcp"))
+                {
+                    System.out.println("sent: " + req.toJSONString());
+                    out.write(req.toJSONString() + "\n");
+                    out.flush();
+                }
+                else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                {
+                    send(req, udpIP, udpPort);
+                }
+                else
+                {
+                    System.out.println("wrong mode!");
+                }
             }
 
             if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
@@ -86,9 +111,20 @@ public class ServerMain implements FileSystemObserver
                 req.put("command", "FILE_MODIFY_REQUEST");
                 req.put("fileDescriptor", fileDescriptor);
                 req.put("pathName", fileSystemEvent.pathName);
-                System.out.println("sent: " + req.toJSONString());
-                out.write(req.toJSONString() + "\n");
-                out.flush();
+                if (Configuration.getConfigurationValue("mode").equals("tcp"))
+                {
+                    System.out.println("sent: " + req.toJSONString());
+                    out.write(req.toJSONString() + "\n");
+                    out.flush();
+                }
+                else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                {
+                    send(req, udpIP, udpPort);
+                }
+                else
+                {
+                    System.out.println("wrong mode!");
+                }
             }
 
             if (fileSystemEvent.event.toString().equals("DIRECTORY_CREATE"))
@@ -98,9 +134,20 @@ public class ServerMain implements FileSystemObserver
                 String pathName = fileSystemEvent.pathName;
                 req.put("command", "DIRECTORY_CREATE_REQUEST");
                 req.put("pathName", pathName);
-                System.out.println("sent: " + req.toJSONString());
-                out.write(req.toJSONString() + "\n");
-                out.flush();
+                if (Configuration.getConfigurationValue("mode").equals("tcp"))
+                {
+                    System.out.println("sent: " + req.toJSONString());
+                    out.write(req.toJSONString() + "\n");
+                    out.flush();
+                }
+                else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                {
+                    send(req, udpIP, udpPort);
+                }
+                else
+                {
+                    System.out.println("wrong mode!");
+                }
             }
 
             if (fileSystemEvent.event.toString().equals("DIRECTORY_DELETE"))
@@ -110,11 +157,22 @@ public class ServerMain implements FileSystemObserver
                 String pathName = fileSystemEvent.pathName;
                 req.put("command", "DIRECTORY_DELETE_REQUEST");
                 req.put("pathName", pathName);
-                System.out.println("sent: " + req.toJSONString());
-                out.write(req + "\n");
-                out.flush();
+                if (Configuration.getConfigurationValue("mode").equals("tcp"))
+                {
+                    System.out.println("sent: " + req.toJSONString());
+                    out.write(req.toJSONString() + "\n");
+                    out.flush();
+                }
+                else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                {
+                    send(req, udpIP, udpPort);
+                }
+                else
+                {
+                    System.out.println("wrong mode!");
+                }
             }
-        }catch (IOException e)
+        } catch (IOException e)
         {
             if (e.toString().equals("java.net.SocketException: Socket closed"))
             {
@@ -122,16 +180,30 @@ public class ServerMain implements FileSystemObserver
                 {
                     socket.close();
                     System.out.println("Socket closed!");
-                }catch (IOException es)
+                }
+                catch (IOException es)
                 {
                     es.printStackTrace();
                 }
-            }
-            else
+            } else
             {
                 System.out.println(e.toString());
                 e.printStackTrace();
             }
         }
     }
+
+
+    public static void send(JSONObject message, InetAddress ip, int port) throws IOException
+    {
+
+        DatagramSocket dsSocket = new DatagramSocket();
+        byte[] buf = message.toJSONString().getBytes();
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+        dsSocket.send(packet);
+        System.out.println("udp sent: " + message.toJSONString());
+
+    }
+
+
 }
