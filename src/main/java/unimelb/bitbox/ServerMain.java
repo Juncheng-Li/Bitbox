@@ -196,13 +196,11 @@ public class ServerMain implements FileSystemObserver
 
     public static void send(JSONObject message, InetAddress ip, int port) throws IOException
     {
-
         DatagramSocket dsSocket = new DatagramSocket();
         byte[] buf = message.toJSONString().getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
         dsSocket.send(packet);
         System.out.println("udp sent: " + message.toJSONString());
-
     }
 
 

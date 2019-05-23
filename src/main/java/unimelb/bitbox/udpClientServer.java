@@ -38,6 +38,8 @@ public class udpClientServer extends Thread
             InetAddress ip = InetAddress.getByName("10.0.0.79"); //UnknownHostException
             int udpPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
             byte buf[] = null;
+            InetAddress clientIp = null;
+            int clientPort = -1;
 
 
             // udp Client side
@@ -70,8 +72,6 @@ public class udpClientServer extends Thread
                 // Step 3 : receive the data in byte buffer.
                 dsServerSocket.receive(serverPacket);  //
                 StringBuilder message = data(receive);
-                InetAddress clientIp = null;
-                int clientPort = -1;
                 System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
                 //System.out.println(serverPacket.getLength());
 
