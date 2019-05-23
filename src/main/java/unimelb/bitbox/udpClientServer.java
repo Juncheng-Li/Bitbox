@@ -98,6 +98,10 @@ public class udpClientServer extends Thread
                     }
                     else if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
                     {
+                        // get client Ip and port from HANDSHAKE_REQUEST
+                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+
                         JSONObject hs_res = new JSONObject();
                         hostPort = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
@@ -106,8 +110,6 @@ public class udpClientServer extends Thread
                         hs_res.put("hostPort", hostPort);
                         send(hs_res, clientIp, clientPort);
 
-                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     }
