@@ -83,8 +83,8 @@ public class udpClientServer extends Thread
                 {
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
-                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+                        //clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        //clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
@@ -95,6 +95,21 @@ public class udpClientServer extends Thread
                                 serverPacket.getSocketAddress().toString().replaceAll("/", "")
                                 + ") maximum connection limit reached...");
                         break;
+                    }
+                    else if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
+                    {
+                        JSONObject hs_res = new JSONObject();
+                        hostPort = new JSONObject();
+                        hs_res.put("command", "HANDSHAKE_RESPONSE");
+                        hostPort.put("host", ip.getHostAddress());
+                        hostPort.put("port", udpPort);
+                        hs_res.put("hostPort", hostPort);
+                        send(hs_res, clientIp, clientPort);
+
+                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+                        timer.schedule(new SyncEvents(f), 0,
+                                Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     }
                     else
                     {
