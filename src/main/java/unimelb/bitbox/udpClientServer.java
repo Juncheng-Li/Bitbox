@@ -74,7 +74,7 @@ public class udpClientServer extends Thread
                 InetAddress clientIp = null;
                 int clientPort = -1;
                 System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
-                System.out.println(serverPacket.getLength());
+                //System.out.println(serverPacket.getLength());
 
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
