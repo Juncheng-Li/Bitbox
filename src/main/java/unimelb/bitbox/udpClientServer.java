@@ -72,7 +72,7 @@ public class udpClientServer extends Thread
                 dsServerSocket.receive(serverPacket);  //
                 StringBuilder message = data(receive);
                 System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
-
+                System.out.println(serverPacket.getLength());
 
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());

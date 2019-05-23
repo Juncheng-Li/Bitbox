@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="138043c4-3300-42fb-b19f-dea4a4d88c19" name="Default Changelist" comment="test no disconnection">
-      <change afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverForClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="138043c4-3300-42fb-b19f-dea4a4d88c19" name="Default Changelist" comment="test disconnection">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configuration.properties" beforeDir="false" afterPath="$PROJECT_DIR$/configuration.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpClientServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpClientServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/unimelb/bitbox/Peer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/unimelb/bitbox/Peer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/unimelb/bitbox/ServerMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/unimelb/bitbox/ServerMain.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -36,11 +34,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Client.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpClientServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2591">
-              <caret line="140" column="17" lean-forward="true" selection-start-line="140" selection-start-column="17" selection-end-line="140" selection-end-column="17" />
+            <state relative-caret-position="173">
+              <caret line="70" column="60" lean-forward="true" selection-start-line="70" selection-start-column="60" selection-end-line="70" selection-end-column="60" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -49,13 +47,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/getPrivateKey.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpCommNProcess.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="36" selection-end-column="59" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="9785">
+              <caret line="529" column="78" selection-start-line="529" selection-start-column="62" selection-end-line="529" selection-end-column="78" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/configuration.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="8" selection-start-line="8" selection-end-line="8" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -63,17 +67,23 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+            <state relative-caret-position="1395">
+              <caret line="75" selection-start-line="75" selection-end-line="75" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/configuration.properties">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_clientSide.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="3" column="23" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
+            <state relative-caret-position="-437">
+              <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="23" selection-end-column="38" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -89,16 +99,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>runTest</find>
-      <find>test.pem</find>
-      <find>id_rsa</find>
-      <find>write</find>
-      <find>peerList</find>
-      <find>args</find>
-      <find>listen</find>
-      <find>sent</find>
-      <find>out.write</find>
+      <find>successfully</find>
+      <find>socket</find>
+      <find>socketList</find>
+      <find>connectedpeer</find>
+      <find>IOException</find>
+      <find>how to</find>
+      <find>socke</find>
+      <find>host</find>
+      <find>port</find>
+      <find>socketlist</find>
+      <find>iterator</find>
+      <find>connectedPeers</find>
+      <find>connectedPee</find>
+      <find>linked</find>
+      <find>sort</find>
+      <find>list_peer</find>
+      <find>Arraylist</find>
+      <find>list_peers</find>
+      <find>remove</find>
+      <find>connectedPeer</find>
+      <find>socketList.add</find>
+      <find>how to close a socket with address and port number</find>
+      <find>listening on</find>
+      <find>send(</find>
+      <find>packet</find>
+      <find>hostPort</find>
+      <find>getsocket</find>
       <find>message</find>
+      <find>invalid_protocol</find>
+      <find>handshake_response</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -120,18 +150,24 @@
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/getPrivateKey.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/CmdLineArgs.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Demo.java" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/wrapPayload.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverForClient.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/socketTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerlistT.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerListStorage.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerT.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverSide.java" />
         <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/listening.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Client.java" />
         <option value="$PROJECT_DIR$/configuration.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Client.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerlistT.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_clientSide.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpCommNProcess.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverSide.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java" />
+        <option value="$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpClientServer.java" />
       </list>
     </option>
   </component>
@@ -229,11 +265,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Client">
+  <component name="RunManager" selected="Application.Peer">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="unimelb.bitbox.Client" />
       <module name="bitbox" />
-      <option name="PROGRAM_PARAMETERS" value="-i jcl@Jcl-Akilos -s 10.0.0.79:3500 -c list_peers" />
+      <option name="PROGRAM_PARAMETERS" value="-i jcl@Jcl-Akilos -c disconnect_peer -s 10.0.0.79:3500 -p 10.0.0.50:3001" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="unimelb.bitbox.*" />
@@ -246,32 +282,6 @@
     </configuration>
     <configuration name="Peer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="unimelb.bitbox.Peer" />
-      <module name="bitbox" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="unimelb.bitbox.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="peerListStorage" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="unimelb.bitbox.peerListStorage" />
-      <module name="bitbox" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="unimelb.bitbox.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="peerT" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="unimelb.bitbox.peerT" />
       <module name="bitbox" />
       <extension name="coverage">
         <pattern>
@@ -296,20 +306,46 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="udpClientServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="unimelb.bitbox.udpClientServer" />
+      <module name="bitbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="unimelb.bitbox.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="udpServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="unimelb.bitbox.udpServer" />
+      <module name="bitbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="unimelb.bitbox.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.peerlistT" />
-      <item itemvalue="Application.peerListStorage" />
-      <item itemvalue="Application.peerT" />
       <item itemvalue="Application.Client" />
       <item itemvalue="Application.Peer" />
+      <item itemvalue="Application.udpServer" />
+      <item itemvalue="Application.udpClientServer" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Client" />
         <item itemvalue="Application.Peer" />
-        <item itemvalue="Application.peerT" />
+        <item itemvalue="Application.udpClientServer" />
+        <item itemvalue="Application.udpServer" />
+        <item itemvalue="Application.Client" />
         <item itemvalue="Application.peerlistT" />
-        <item itemvalue="Application.peerListStorage" />
       </list>
     </recent_temporary>
   </component>
@@ -327,7 +363,9 @@
       <workItem from="1558235642711" duration="27149000" />
       <workItem from="1558323458344" duration="2964000" />
       <workItem from="1558327369377" duration="15472000" />
-      <workItem from="1558403175543" duration="16973000" />
+      <workItem from="1558403175543" duration="35133000" />
+      <workItem from="1558521598913" duration="9856000" />
+      <workItem from="1558575139216" duration="10541000" />
     </task>
     <task id="LOCAL-00001" summary="0">
       <created>1558186201127</created>
@@ -413,17 +451,220 @@
       <option name="project" value="LOCAL" />
       <updated>1558426511676</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="test no disconnection">
+      <created>1558426732278</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1558426732278</updated>
+    </task>
+    <task id="LOCAL-00014" summary="test no disconnection">
+      <created>1558433571471</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1558433571471</updated>
+    </task>
+    <task id="LOCAL-00015" summary="test no disconnection">
+      <created>1558434828732</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1558434828732</updated>
+    </task>
+    <task id="LOCAL-00016" summary="test no disconnection">
+      <created>1558434940871</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1558434940871</updated>
+    </task>
+    <task id="LOCAL-00017" summary="test disconnection">
+      <created>1558438909609</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1558438909609</updated>
+    </task>
+    <task id="LOCAL-00018" summary="test disconnection">
+      <created>1558439376035</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1558439376035</updated>
+    </task>
+    <task id="LOCAL-00019" summary="test disconnection">
+      <created>1558439952499</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1558439952499</updated>
+    </task>
+    <task id="LOCAL-00020" summary="test disconnection">
+      <created>1558440554628</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1558440554628</updated>
+    </task>
+    <task id="LOCAL-00021" summary="test disconnection">
+      <created>1558442633492</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1558442633492</updated>
+    </task>
+    <task id="LOCAL-00022" summary="test disconnection">
+      <created>1558444551979</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1558444551979</updated>
+    </task>
+    <task id="LOCAL-00023" summary="test disconnection">
+      <created>1558444802240</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1558444802240</updated>
+    </task>
+    <task id="LOCAL-00024" summary="test disconnection">
+      <created>1558445506258</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1558445506258</updated>
+    </task>
+    <task id="LOCAL-00025" summary="test disconnection">
+      <created>1558447447469</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1558447447469</updated>
+    </task>
+    <task id="LOCAL-00026" summary="test disconnection">
+      <created>1558448831240</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1558448831240</updated>
+    </task>
+    <task id="LOCAL-00027" summary="test disconnection">
+      <created>1558449701825</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1558449701825</updated>
+    </task>
+    <task id="LOCAL-00028" summary="test disconnection">
+      <created>1558450399131</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1558450399131</updated>
+    </task>
+    <task id="LOCAL-00029" summary="test disconnection">
+      <created>1558450669181</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1558450669181</updated>
+    </task>
+    <task id="LOCAL-00030" summary="test disconnection">
+      <created>1558526025939</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1558526025939</updated>
+    </task>
+    <task id="LOCAL-00031" summary="test disconnection">
+      <created>1558527102132</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1558527102132</updated>
+    </task>
+    <task id="LOCAL-00032" summary="test disconnection stage1">
+      <created>1558527325308</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1558527325308</updated>
+    </task>
+    <task id="LOCAL-00033" summary="test udp">
+      <created>1558576001558</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1558576001558</updated>
+    </task>
+    <task id="LOCAL-00034" summary="test disconnection">
+      <created>1558576839765</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1558576839765</updated>
+    </task>
+    <task id="LOCAL-00035" summary="test udp">
+      <created>1558577070940</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1558577070940</updated>
+    </task>
+    <task id="LOCAL-00036" summary="test udp">
+      <created>1558577357800</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1558577357800</updated>
+    </task>
+    <task id="LOCAL-00037" summary="test udp">
+      <created>1558582754849</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1558582754849</updated>
+    </task>
+    <task id="LOCAL-00038" summary="test udp">
+      <created>1558586215070</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1558586215070</updated>
+    </task>
+    <task id="LOCAL-00039" summary="test udp">
+      <created>1558587347167</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1558587347167</updated>
+    </task>
+    <task id="LOCAL-00040" summary="test udp">
+      <created>1558588308302</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1558588308302</updated>
+    </task>
+    <task id="LOCAL-00041" summary="test udp">
+      <created>1558588683366</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1558588683366</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="82588000" />
+    <option name="totallyTimeSpent" value="121145000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17321527" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17321527" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -432,7 +673,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32937366" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3347732" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3347732" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39956802" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -466,18 +707,15 @@
     <MESSAGE value="command line args class" />
     <MESSAGE value="server moved to listening" />
     <MESSAGE value="test no disconnection" />
-    <option name="LAST_COMMIT_MESSAGE" value="test no disconnection" />
+    <MESSAGE value="test disconnection stage1" />
+    <MESSAGE value="test disconnection" />
+    <MESSAGE value="test udp" />
+    <option name="LAST_COMMIT_MESSAGE" value="test udp" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/client2.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/RSAToy.java" />
-    <entry file="file://$PROJECT_DIR$/bitboxclient-rsa">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="64" selection-start-line="15" selection-start-column="64" selection-end-line="15" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/bitboxclient-rsa" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/PemFile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="118">
@@ -485,13 +723,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_clientSide.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1235">
-          <caret line="77" column="42" lean-forward="true" selection-start-line="77" selection-start-column="42" selection-end-line="77" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -509,24 +740,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bitboxclient-rsa.pub">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="395" selection-end-column="395" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/bitboxclient-rsa.pub" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/SyncEvents.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/commNProcess.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-38">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -540,77 +758,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="622">
-            <caret line="34" column="11" lean-forward="true" selection-start-line="34" selection-start-column="11" selection-end-line="34" selection-end-column="11" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/CmdLineArgs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Demo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverForClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="511">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerListStorage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerlistT.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="23" column="46" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerT.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#93#94#0" expanded="true" />
-            <element signature="e#129#130#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerListStorage.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/wrapPayload.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
@@ -621,26 +769,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/listening.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="20" column="67" selection-start-line="20" selection-start-column="67" selection-end-line="20" selection-end-column="67" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverSide.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1507">
-          <caret line="122" column="65" selection-start-line="122" selection-start-column="65" selection-end-line="122" selection-end-column="65" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/ParserTest.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/pubkey.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/getPrivateKey.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
@@ -651,47 +781,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/ParserTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerT.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/socketTest.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Demo.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverForClient.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/CmdLineArgs.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="83" column="54" lean-forward="true" selection-start-line="83" selection-start-column="54" selection-end-line="83" selection-end-column="54" />
+        <state relative-caret-position="570">
+          <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/pubkey.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/peerlistT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="22" column="59" lean-forward="true" selection-start-line="22" selection-start-column="59" selection-end-line="22" selection-end-column="59" />
+        <state relative-caret-position="374">
+          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1522#1523#0" expanded="true" />
+            <element signature="e#1554#1555#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/socketTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="11" column="58" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2591">
-          <caret line="140" column="17" lean-forward="true" selection-start-line="140" selection-start-column="17" selection-end-line="140" selection-end-column="17" />
+        <state relative-caret-position="165">
+          <caret line="149" column="78" lean-forward="true" selection-start-line="149" selection-start-column="78" selection-end-line="149" selection-end-column="78" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -700,8 +819,96 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/configuration.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="3" column="23" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
+        <state relative-caret-position="152">
+          <caret line="8" selection-start-line="8" selection-end-line="8" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/commNProcess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8246">
+          <caret line="446" column="44" selection-start-line="446" selection-start-column="44" selection-end-line="446" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/listening.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-190">
+          <caret line="20" column="67" selection-start-line="20" selection-start-column="67" selection-end-line="20" selection-end-column="67" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="988">
+          <caret line="56" column="18" lean-forward="true" selection-start-line="56" selection-start-column="18" selection-end-line="56" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1395">
+          <caret line="75" selection-start-line="75" selection-end-line="75" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="474">
+            <caret line="57" column="35" selection-start-line="57" selection-start-column="35" selection-end-line="57" selection-end-column="35" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/ServerMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="507">
+          <caret line="39" column="71" selection-start-line="39" selection-start-column="71" selection-end-line="39" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpCommNProcess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9785">
+          <caret line="529" column="78" selection-start-line="529" selection-start-column="62" selection-end-line="529" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_serverSide.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1425">
+          <caret line="111" column="34" lean-forward="true" selection-start-line="111" selection-start-column="34" selection-end-line="111" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/Peer_clientSide.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-437">
+          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="23" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/unimelb/bitbox/udpClientServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="70" column="60" lean-forward="true" selection-start-line="70" selection-start-column="60" selection-end-line="70" selection-end-column="60" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
