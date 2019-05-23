@@ -83,8 +83,8 @@ public class udpClientServer extends Thread
                 {
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
-                        //clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        //clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+                        clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
