@@ -23,13 +23,13 @@ class Peer_clientSide extends Thread
     private ServerMain f;
     private Timer timer = new Timer();
 
-    Peer_clientSide(Socket socket) throws IOException, NoSuchAlgorithmException
+    Peer_clientSide(Socket socket, ServerMain f) throws IOException, NoSuchAlgorithmException
     {
         this.socket = socket;
         System.out.println("Connection established");
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
         this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
-        this.f = new ServerMain(this.socket);
+        this.f = f;
     }
 
     public void run()

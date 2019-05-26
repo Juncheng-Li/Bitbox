@@ -13,6 +13,15 @@ import java.util.ArrayList;
 
 public class listening extends Thread
 {
+    private  ServerMain f;
+    socketStorage ss;
+
+    listening(socketStorage ss, ServerMain f)
+    {
+        this.f = f;
+        this.ss = ss;
+    }
+
     public void run()
     {
         ServerSocket listeningSocket = null;
@@ -35,11 +44,12 @@ public class listening extends Thread
                     peer.put("host", clientSocket.getInetAddress().toString().replaceAll("/", ""));
                     peer.put("port", clientSocket.getLocalPort());
                     peerList.add(peer);
+                    ss.add(clientSocket);
                     System.out.println("Peer_clientSide " + i + " accepted.");
-                    Peer_serverSide T_server = new Peer_serverSide(Integer.parseInt(Configuration.getConfigurationValue("port")),
-                            clientSocket, i, listeningSocket);
+                    Peer_serverSide T_server = new Peer_serverSide(clientSocket, i, f);
                     T_server.start();
-                } else
+                }
+                else
                 {
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
                     JSONObject reply = new JSONObject();

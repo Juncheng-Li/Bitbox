@@ -25,21 +25,18 @@ import java.nio.file.Files;
 
 public class Peer_serverSide extends Thread
 {
-    private int port;     //can be deleted actually
     private int i = 0;
-    private ServerSocket listeningSocket = null;
     private Socket clientSocket = null;
     private String clientMsg = null;
     private JSONObject command = null;
     private ServerMain f;
     private Timer timer = new Timer();
 
-    Peer_serverSide(int port, Socket clientSocket, int i, ServerSocket serverSocket)
+    Peer_serverSide(Socket clientSocket, int i, ServerMain f)
     {
-        this.port = port;
         this.clientSocket = clientSocket;
         this.i = i;
-        this.listeningSocket = serverSocket;
+        this.f = f;
     }
 
 
@@ -51,7 +48,6 @@ public class Peer_serverSide extends Thread
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
             JSONParser parser = new JSONParser();
-            f = new ServerMain(clientSocket);
 
             try
             {
@@ -107,16 +103,12 @@ public class Peer_serverSide extends Thread
         } catch (IOException e)
         {
             System.out.println(e);
-        } catch (NoSuchAlgorithmException e)
-        {
-            System.out.println(e);
         } finally
         {
             // kill timer
             timer.cancel();
             timer.purge();
             // kill serverMain
-            f.fileSystemManager.stop();
             System.out.println("Peer - " + i + " disconnected.");
         }
     }

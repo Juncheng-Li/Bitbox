@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public class socketStorage
 {
-    private ArrayList<Socket> sockets;
-    private ArrayList<DatagramSocket> udpSockets;
+    private ArrayList<Socket> sockets = new ArrayList<>();
+    private ArrayList<DatagramSocket> udpSockets = new ArrayList<>();
 
-
+    // TCP
     public ArrayList<Socket> getSockets()
     {
         return sockets;
@@ -20,6 +20,12 @@ public class socketStorage
         this.sockets = sockets;
     }
 
+    public void add(Socket socket)
+    {
+        sockets.add(socket);
+    }
+
+    // UDP
     public ArrayList<DatagramSocket> getUdpSockets()
     {
         return udpSockets;
@@ -28,5 +34,10 @@ public class socketStorage
     public void setUdpSockets(ArrayList<DatagramSocket> udpSockets)
     {
         this.udpSockets = udpSockets;
+    }
+
+    public void add(DatagramSocket udpSocket)
+    {
+        udpSockets.add(udpSocket);
     }
 }
