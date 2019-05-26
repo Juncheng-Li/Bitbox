@@ -265,7 +265,7 @@ public class commNProcess extends Thread
                                     remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                     try
                                     {
-                                        Thread.sleep(500);
+                                        Thread.sleep(50);
                                     }
                                     catch (InterruptedException e)
                                     {
@@ -365,7 +365,7 @@ public class commNProcess extends Thread
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 try
                                 {
-                                    Thread.sleep(500);
+                                    Thread.sleep(50);
                                 }
                                 catch (InterruptedException e)
                                 {
@@ -561,7 +561,7 @@ public class commNProcess extends Thread
                             remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                             try
                             {
-                                Thread.sleep(500);
+                                Thread.sleep(50);
                             }
                             catch (InterruptedException e)
                             {
