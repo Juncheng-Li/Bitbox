@@ -406,19 +406,27 @@ public class commNProcess extends Thread
                 String pathName = command.get("pathName").toString();
                 String content = command.get("content").toString();
                 long position = (long) command.get("position");
+                long length = (long) command.get("length");
+
+                JSONObject fd = (JSONObject) command.get("fileDescriptor");
+                long fileSize = (long) fd.get("fileSize");
+
                 //convert contentStr to byte then put into buffer
                 byte[] arr = Base64.getDecoder().decode(content);
                 ByteBuffer buf = ByteBuffer.wrap(arr);
                 //Writing file
                 System.out.println("Writing file " + pathName + " Position: " + position);
                 f.fileSystemManager.writeFile(pathName, buf, position);
-                /*
-                if (f.fileSystemManager.checkWriteComplete(pathName))
+
+                if (fileSize - position == length)
                 {
-                    System.out.println(pathName + " write complete!");
+                    if (f.fileSystemManager.checkWriteComplete(pathName))
+                    {
+                        System.out.println(pathName + " write complete!");
+                    }
                 }
 
-                 */
+
             }
             //Handle FILE_DELETE_REQUEST
             else if (command.get("command").toString().equals("FILE_DELETE_REQUEST"))
