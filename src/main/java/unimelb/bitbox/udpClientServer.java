@@ -84,7 +84,9 @@ public class udpClientServer extends Thread
                 // if receive message
                 clientAnswer = true;
                 StringBuilder message = data(receive);
-                System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
+                System.out.println("udpClientServer(" +
+                        serverPacket.getSocketAddress().toString().replace("/", "") +
+                        "): " + message);
                 //System.out.println(serverPacket.getLength());
 
                 // Client side, copied from server
