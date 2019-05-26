@@ -78,7 +78,7 @@ public class Peer
                 HostPort peer_hp = new HostPort(peer);
                 InetAddress ip = InetAddress.getByName(peer_hp.host); //UnknownHostException
                 int udpPort = peer_hp.port;
-                udpClientServer udpCS_T = new udpClientServer(ip, udpPort, f);
+                udpClientServer udpCS_T = new udpClientServer(ip, udpPort, f, ss);
                 udpCS_T.start();
             }
         }
