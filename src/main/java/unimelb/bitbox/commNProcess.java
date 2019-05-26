@@ -265,7 +265,7 @@ public class commNProcess extends Thread
                                     remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                     try
                                     {
-                                        Thread.sleep(1000);
+                                        Thread.sleep(500);
                                     }
                                     catch (InterruptedException e)
                                     {
@@ -365,7 +365,7 @@ public class commNProcess extends Thread
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 try
                                 {
-                                    Thread.sleep(1000);
+                                    Thread.sleep(500);
                                 }
                                 catch (InterruptedException e)
                                 {
@@ -409,6 +409,8 @@ public class commNProcess extends Thread
                 //convert contentStr to byte then put into buffer
                 byte[] arr = Base64.getDecoder().decode(content);
                 ByteBuffer buf = ByteBuffer.wrap(arr);
+                //Writing file
+                System.out.println("Writing file " + pathName + " Position: " + position);
                 f.fileSystemManager.writeFile(pathName, buf, position);
                 if (f.fileSystemManager.checkWriteComplete(pathName))
                 {
@@ -559,7 +561,7 @@ public class commNProcess extends Thread
                             remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                             try
                             {
-                                Thread.sleep(1000);
+                                Thread.sleep(500);
                             }
                             catch (InterruptedException e)
                             {
