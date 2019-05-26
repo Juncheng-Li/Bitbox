@@ -22,6 +22,7 @@ public class commNProcess extends Thread
     private BufferedWriter out;
     private ServerMain f;
     private Socket socket;
+    private Timer timer = new Timer();
 
     public commNProcess(JSONObject command, Socket socket, ServerMain f) throws IOException
     {
@@ -262,6 +263,15 @@ public class commNProcess extends Thread
                                     // Update position
                                     position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                     remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                    try
+                                    {
+                                        Thread.sleep(1000);
+                                    }
+                                    catch (InterruptedException e)
+                                    {
+                                        System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
+                                        e.printStackTrace();
+                                    }
                                 }
                                 if (remainingSize != 0)
                                 {
@@ -333,7 +343,8 @@ public class commNProcess extends Thread
                             System.out.println("sent: " + req);
                             out.write(req.toJSONString() + "\n");
                             out.flush();
-                        } else
+                        }
+                        else
                         {
                             long remainingSize = fileSize;
                             long position = 0;
@@ -352,6 +363,15 @@ public class commNProcess extends Thread
                                 // Update position
                                 position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                try
+                                {
+                                    Thread.sleep(1000);
+                                }
+                                catch (InterruptedException e)
+                                {
+                                    System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
+                                    e.printStackTrace();
+                                }
                             }
                             if (remainingSize != 0)
                             {
@@ -537,6 +557,15 @@ public class commNProcess extends Thread
                             // Update position
                             position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                             remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                            try
+                            {
+                                Thread.sleep(1000);
+                            }
+                            catch (InterruptedException e)
+                            {
+                                System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
+                                e.printStackTrace();
+                            }
                         }
                         if (remainingSize != 0)
                         {
@@ -585,7 +614,7 @@ public class commNProcess extends Thread
                 byte[] arr = new byte[buf.remaining()];
                 buf.get(arr, 0, arr.length);
                 String content = Base64.getEncoder().encodeToString(arr);
-                System.out.println("Content: " + content);
+                //System.out.println("Content: " + content);
                 System.out.println();
 
                 // Send BYTE
