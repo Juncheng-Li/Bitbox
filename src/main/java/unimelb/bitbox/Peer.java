@@ -38,6 +38,7 @@ public class Peer
         socketStorage ss = new socketStorage();
         ServerMain f = new ServerMain(ss);
 
+        // Peer part
         if (Configuration.getConfigurationValue("mode").equals("tcp"))
         {
             // Peer_clientSide Start here
@@ -52,7 +53,7 @@ public class Peer
                     //socketList.add(socket);
                     System.out.println(ss.getSockets());
                     connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
-                    Peer_clientSide T_client = new Peer_clientSide(socket, f);
+                    Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
                     T_client.start();
                 }
                 catch (IOException e)
@@ -157,7 +158,7 @@ public class Peer
                                             peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
                                             connectedPeer.add(peer);
                                             //Start thread
-                                            Peer_clientSide T_client = new Peer_clientSide(socket, f);
+                                            Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
                                             T_client.start();
                                             //reply
                                             JSONObject reply = new JSONObject();

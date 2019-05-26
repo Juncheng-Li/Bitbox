@@ -31,12 +31,14 @@ public class Peer_serverSide extends Thread
     private JSONObject command = null;
     private ServerMain f;
     private Timer timer = new Timer();
+    private socketStorage ss;
 
-    Peer_serverSide(Socket clientSocket, int i, ServerMain f)
+    Peer_serverSide(Socket clientSocket, int i, ServerMain f, socketStorage ss)
     {
         this.clientSocket = clientSocket;
         this.i = i;
         this.f = f;
+        this.ss = ss;
     }
 
 
@@ -108,6 +110,7 @@ public class Peer_serverSide extends Thread
             // kill timer
             timer.cancel();
             timer.purge();
+            ss.remove(clientSocket);
             // kill serverMain
             System.out.println("Peer - " + i + " disconnected.");
         }

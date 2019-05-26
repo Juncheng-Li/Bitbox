@@ -22,14 +22,16 @@ class Peer_clientSide extends Thread
     private BufferedWriter out;
     private ServerMain f;
     private Timer timer = new Timer();
+    private socketStorage ss;
 
-    Peer_clientSide(Socket socket, ServerMain f) throws IOException, NoSuchAlgorithmException
+    Peer_clientSide(Socket socket, ServerMain f, socketStorage ss) throws IOException, NoSuchAlgorithmException
     {
         this.socket = socket;
         System.out.println("Connection established");
         this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream(), "UTF-8"));
         this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream(), "UTF-8"));
         this.f = f;
+        this.ss = ss;
     }
 
     public void run()
@@ -118,7 +120,11 @@ class Peer_clientSide extends Thread
                             + ") socket closed...");
                     timer.cancel();
                     timer.purge();
-                    f.fileSystemManager.stop();
+                    ss.remove(socket);
+                    in.close();
+                    out.close();
+                    socket.shutdownInput();
+                    socket.shutdownOutput();
                     socket.close();
                 } catch (IOException e)
                 {

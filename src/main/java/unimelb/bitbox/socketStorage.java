@@ -25,6 +25,11 @@ public class socketStorage
         sockets.add(socket);
     }
 
+    public void remove(Socket socket)
+    {
+        sockets.remove(socket);
+    }
+
     // UDP
     public ArrayList<DatagramSocket> getUdpSockets()
     {
@@ -39,5 +44,10 @@ public class socketStorage
     public void add(DatagramSocket udpSocket)
     {
         udpSockets.add(udpSocket);
+    }
+
+    public void remove(DatagramSocket udpSocket)
+    {
+        udpSockets.remove(udpSocket);
     }
 }
