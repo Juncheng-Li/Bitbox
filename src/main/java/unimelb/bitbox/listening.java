@@ -46,7 +46,7 @@ public class listening extends Thread
                     peerList.add(peer);
                     ss.add(clientSocket);
                     System.out.println("Peer_clientSide " + i + " accepted.");
-                    Peer_serverSide T_server = new Peer_serverSide(clientSocket, i, f);
+                    Peer_serverSide T_server = new Peer_serverSide(clientSocket, i, f, ss);
                     T_server.start();
                 }
                 else
