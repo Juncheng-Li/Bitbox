@@ -1,5 +1,7 @@
 package unimelb.bitbox;
 
+import unimelb.bitbox.util.HostPort;
+
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 public class socketStorage
 {
     private ArrayList<Socket> sockets = new ArrayList<>();
-    private ArrayList<DatagramSocket> udpSockets = new ArrayList<>();
+    private ArrayList<HostPort> udpSockets = new ArrayList<>();
 
     // TCP
     public ArrayList<Socket> getSockets()
@@ -31,22 +33,22 @@ public class socketStorage
     }
 
     // UDP
-    public ArrayList<DatagramSocket> getUdpSockets()
+    public ArrayList<HostPort> getUdpSockets()
     {
         return udpSockets;
     }
 
-    public void setUdpSockets(ArrayList<DatagramSocket> udpSockets)
+    public void setUdpSockets(ArrayList<HostPort> udpSockets)
     {
         this.udpSockets = udpSockets;
     }
 
-    public void add(DatagramSocket udpSocket)
+    public void add(HostPort udpSocket)
     {
         udpSockets.add(udpSocket);
     }
 
-    public void remove(DatagramSocket udpSocket)
+    public void remove(HostPort udpSocket)
     {
         udpSockets.remove(udpSocket);
     }

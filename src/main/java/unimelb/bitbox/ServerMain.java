@@ -12,6 +12,7 @@ import unimelb.bitbox.util.Configuration;
 import unimelb.bitbox.util.FileSystemManager;
 import unimelb.bitbox.util.FileSystemObserver;
 import unimelb.bitbox.util.FileSystemManager.FileSystemEvent;
+import unimelb.bitbox.util.HostPort;
 
 public class ServerMain implements FileSystemObserver
 {
@@ -73,7 +74,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    send(req, udpIP, udpPort);
+                    sendUDP(req, ss);
                 }
                 else
                 {
@@ -98,7 +99,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    send(req, udpIP, udpPort);
+                    sendUDP(req, ss);
                 }
                 else
                 {
@@ -123,7 +124,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    send(req, udpIP, udpPort);
+                    sendUDP(req, ss);
                 }
                 else
                 {
@@ -144,7 +145,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    send(req, udpIP, udpPort);
+                    sendUDP(req, ss);
                 }
                 else
                 {
@@ -165,7 +166,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    send(req, udpIP, udpPort);
+                    sendUDP(req, ss);
                 }
                 else
                 {
@@ -175,43 +176,55 @@ public class ServerMain implements FileSystemObserver
         }
         catch (IOException e)
         {
-            if (e.toString().equals("java.net.SocketException: Socket closed"))
+            System.out.println("ServerMain " + e);
+        }
+    }
+
+
+    private static void send(JSONObject message, socketStorage ss)
+    {
+        for (Socket socket : ss.getSockets())
+        {
+            try
             {
-                try
-                {
-                    socket.close();
-                    System.out.println("Socket closed!");
-                }
-                catch (IOException es)
-                {
-                    es.printStackTrace();
-                }
-            } else
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+                out.write(message.toJSONString() + "\n");
+                out.flush();
+                System.out.println("sent: " + message.toJSONString());
+            } catch (IOException e)
             {
-                System.out.println(e.toString());
-                e.printStackTrace();
+                if (e.toString().equals("java.net.SocketException: Socket closed"))
+                {
+                    try
+                    {
+                        socket.close();
+                        System.out.println("ServerMain Socket closed!");
+                    }
+                    catch (IOException es)
+                    {
+                        es.printStackTrace();
+                    }
+                } else
+                {
+                    System.out.println(e.toString());
+                    e.printStackTrace();
+                }
             }
         }
     }
 
 
-    public static void send(JSONObject message, InetAddress ip, int port) throws IOException
+    private static void sendUDP(JSONObject message, socketStorage ss) throws IOException
     {
-        DatagramSocket dsSocket = new DatagramSocket();
-        byte[] buf = message.toJSONString().getBytes();
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
-        dsSocket.send(packet);
-        System.out.println("udp sent: " + message.toJSONString());
-    }
-
-    private static void send(JSONObject message, socketStorage ss) throws IOException
-    {
-        for (Socket socket : ss.getSockets())
+        for (HostPort hp : ss.getUdpSockets())
         {
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-            out.write(message.toJSONString() + "\n");
-            out.flush();
-            System.out.println("sent: " + message.toJSONString());
+            InetAddress ip = InetAddress.getByName(hp.host);
+            int port = hp.port;
+            DatagramSocket dsSocket = new DatagramSocket();
+            byte[] buf = message.toJSONString().getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+            dsSocket.send(packet);
+            System.out.println("udp sent: " + message.toJSONString());
         }
     }
 
