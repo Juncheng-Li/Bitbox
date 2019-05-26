@@ -265,7 +265,7 @@ public class commNProcess extends Thread
                                     remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                     try
                                     {
-                                        Thread.sleep(50);
+                                        Thread.sleep(10);
                                     }
                                     catch (InterruptedException e)
                                     {
@@ -365,7 +365,7 @@ public class commNProcess extends Thread
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 try
                                 {
-                                    Thread.sleep(50);
+                                    Thread.sleep(10);
                                 }
                                 catch (InterruptedException e)
                                 {
@@ -412,10 +412,13 @@ public class commNProcess extends Thread
                 //Writing file
                 System.out.println("Writing file " + pathName + " Position: " + position);
                 f.fileSystemManager.writeFile(pathName, buf, position);
+                /*
                 if (f.fileSystemManager.checkWriteComplete(pathName))
                 {
                     System.out.println(pathName + " write complete!");
                 }
+
+                 */
             }
             //Handle FILE_DELETE_REQUEST
             else if (command.get("command").toString().equals("FILE_DELETE_REQUEST"))
@@ -561,7 +564,7 @@ public class commNProcess extends Thread
                             remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                             try
                             {
-                                Thread.sleep(50);
+                                Thread.sleep(10);
                             }
                             catch (InterruptedException e)
                             {
