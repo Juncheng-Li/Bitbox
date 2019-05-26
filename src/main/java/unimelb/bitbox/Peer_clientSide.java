@@ -45,7 +45,7 @@ class Peer_clientSide extends Thread
             hostPort.put("port", Integer.parseInt(Configuration.getConfigurationValue("port")));
             hs.put("command", "HANDSHAKE_REQUEST");
             hs.put("hostPort", hostPort);
-            out.write(hs + "\n");
+            out.write(hs.toJSONString() + "\n");
             out.flush();
             System.out.println("sent: " + hs);
 
@@ -84,7 +84,7 @@ class Peer_clientSide extends Thread
                     reply.put("command", "INVALID_PROTOCOL");
                     reply.put("message", "message must contain a command field as string");
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
             }
@@ -123,8 +123,6 @@ class Peer_clientSide extends Thread
                     ss.remove(socket);
                     in.close();
                     out.close();
-                    socket.shutdownInput();
-                    socket.shutdownOutput();
                     socket.close();
                 } catch (IOException e)
                 {

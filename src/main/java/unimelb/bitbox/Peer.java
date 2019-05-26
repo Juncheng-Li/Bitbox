@@ -137,7 +137,7 @@ public class Peer
                                         reply.put("command", "LIST_PEERS_RESPONSE");
                                         reply.put("peers", connectedPeer);
                                         System.out.println("Sent encrypted: " + reply);
-                                        out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                        out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                         out.flush();
                                     }
                                     // Handle CONNECT_PEER_REQUEST
@@ -168,7 +168,7 @@ public class Peer
                                             reply.put("status", true);
                                             reply.put("message", "connected to peer");
                                             System.out.println("Sent encrypted: " + reply);
-                                            out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                             out.flush();
                                         }
                                         // If connection unsuccessful
@@ -184,7 +184,7 @@ public class Peer
                                             reply.put("status", false);
                                             reply.put("message", "connection failed");
                                             System.out.println("Sent encrypted: " + reply);
-                                            out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                             out.flush();
                                         }
                                     }
@@ -216,7 +216,7 @@ public class Peer
                                                         reply.put("status", true);
                                                         reply.put("message", "disconnected from peer");
                                                         System.out.println("Sent encrypted: " + reply);
-                                                        out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                        out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                                         out.flush();
                                                     } catch (IOException e)
                                                     {
@@ -228,7 +228,7 @@ public class Peer
                                                         reply.put("status", false);
                                                         reply.put("message", "connection not active");
                                                         System.out.println("Sent encrypted: " + reply);
-                                                        out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                        out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                                         out.flush();
                                                     }
                                                 } else
@@ -243,7 +243,7 @@ public class Peer
                                                     reply.put("status", false);
                                                     reply.put("message", "connection not active");
                                                     System.out.println("Sent encrypted: " + reply);
-                                                    out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                                    out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                                     out.flush();
                                                 }
                                             }
@@ -259,7 +259,7 @@ public class Peer
                                             reply.put("status", false);
                                             reply.put("message", "connection not active");
                                             System.out.println("Sent encrypted: " + reply);
-                                            out.write(wrapPayload.payload(reply, secretKey) + "\n");
+                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                             out.flush();
                                         }
                                         // Remove inactive peers
@@ -304,7 +304,7 @@ public class Peer
                                             reply.put("status", true);
                                             reply.put("message", "public key found");
                                             System.out.println("Sent: " + reply);
-                                            out.write(reply + "\n");
+                                            out.write(reply.toJSONString() + "\n");
                                             out.flush();
                                         }
                                     }
@@ -316,7 +316,7 @@ public class Peer
                                         reply.put("status", false);
                                         reply.put("message", "public key found");
                                         System.out.println("Sent: " + reply);
-                                        out.write(reply + "\n");
+                                        out.write(reply.toJSONString() + "\n");
                                         out.flush();
                                     }
                                 } else
@@ -332,7 +332,7 @@ public class Peer
                             reply.put("command", "INVALID_PROTOCOL");
                             reply.put("message", "message must contain a command field as string");
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         }
                     }

@@ -61,7 +61,7 @@ public class commNProcess extends Thread
                             reply.put("message", "directory created");
                             reply.put("status", true);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         }
 
@@ -73,7 +73,7 @@ public class commNProcess extends Thread
                             reply.put("message", "pathname already exists");
                             reply.put("status", false);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         } else
                         {
@@ -84,7 +84,7 @@ public class commNProcess extends Thread
                             reply.put("message", "directory created");
                             reply.put("status", true);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         }
                     } else
@@ -95,7 +95,7 @@ public class commNProcess extends Thread
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
                         System.out.println("sent: " + reply);
-                        out.write(reply + "\n");
+                        out.write(reply.toJSONString() + "\n");
                         out.flush();
                     }
 
@@ -107,7 +107,7 @@ public class commNProcess extends Thread
                     reply.put("message", "there was a problem creating the directory");
                     reply.put("status", false);
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
             }
@@ -128,7 +128,7 @@ public class commNProcess extends Thread
                             reply.put("message", "directory deleted");
                             reply.put("status", true);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         } else
                         {
@@ -138,7 +138,7 @@ public class commNProcess extends Thread
                             reply.put("message", "pathname does not exist");
                             reply.put("status", false);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         }
                     } else
@@ -149,7 +149,7 @@ public class commNProcess extends Thread
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
                         System.out.println("sent: " + reply);
-                        out.write(reply + "\n");
+                        out.write(reply.toJSONString() + "\n");
                         out.flush();
                     }
                 } catch (Exception e)
@@ -161,7 +161,7 @@ public class commNProcess extends Thread
                     reply.put("message", "there was a problem deleting the directory");
                     reply.put("status", false);
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
             }
@@ -196,7 +196,7 @@ public class commNProcess extends Thread
                             reply.put("message", "file with same content already exists");
                             reply.put("status", false);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         } else
                         {
@@ -214,7 +214,7 @@ public class commNProcess extends Thread
                                 reply.put("message", "there was a problem creating file");
                                 reply.put("status", false);
                                 System.out.println("sent: " + reply);
-                                out.write(reply + "\n");
+                                out.write(reply.toJSONString() + "\n");
                                 out.flush();
                                 e.printStackTrace();
                             }
@@ -227,7 +227,7 @@ public class commNProcess extends Thread
                             reply.put("message", "file loader ready");
                             reply.put("status", true);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                             // FILE_BYTES_REQUEST
                             if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
@@ -239,7 +239,7 @@ public class commNProcess extends Thread
                                 req.put("position", 0);
                                 req.put("length", fileSize);
                                 System.out.println("sent: " + req);
-                                out.write(req + "\n");
+                                out.write(req.toJSONString() + "\n");
                                 out.flush();
                             }
                             else
@@ -256,7 +256,7 @@ public class commNProcess extends Thread
                                     req.put("position", position);
                                     req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
                                     System.out.println("sent: " + req);
-                                    out.write(req + "\n");
+                                    out.write(req.toJSONString() + "\n");
                                     out.flush();
                                     // Update position
                                     position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -271,7 +271,7 @@ public class commNProcess extends Thread
                                     req.put("position", position);
                                     req.put("length", remainingSize);
                                     System.out.println("sent: " + req);
-                                    out.write(req + "\n");
+                                    out.write(req.toJSONString() + "\n");
                                     out.flush();
                                 }
                             }
@@ -287,7 +287,7 @@ public class commNProcess extends Thread
                         reply.put("message", "file with same content already exists");
                         reply.put("status", false);
                         System.out.println("sent: " + reply);
-                        out.write(reply + "\n");
+                        out.write(reply.toJSONString() + "\n");
                         out.flush();
                     } else
                     {
@@ -305,7 +305,7 @@ public class commNProcess extends Thread
                             reply.put("message", "there was a problem creating file");
                             reply.put("status", false);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                             e.printStackTrace();
                         }
@@ -318,7 +318,7 @@ public class commNProcess extends Thread
                         reply.put("message", "file loader ready");
                         reply.put("status", true);
                         System.out.println("sent: " + reply);
-                        out.write(reply + "\n");
+                        out.write(reply.toJSONString() + "\n");
                         out.flush();
                         // FILE_BYTES_REQUEST
                         if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
@@ -330,7 +330,7 @@ public class commNProcess extends Thread
                             req.put("position", 0);
                             req.put("length", fileSize);
                             System.out.println("sent: " + req);
-                            out.write(req + "\n");
+                            out.write(req.toJSONString() + "\n");
                             out.flush();
                         } else
                         {
@@ -346,7 +346,7 @@ public class commNProcess extends Thread
                                 req.put("position", position);
                                 req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
                                 System.out.println("sent: " + req);
-                                out.write(req + "\n");
+                                out.write(req.toJSONString() + "\n");
                                 out.flush();
                                 // Update position
                                 position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -361,7 +361,7 @@ public class commNProcess extends Thread
                                 req.put("position", position);
                                 req.put("length", remainingSize);
                                 System.out.println("sent: " + req);
-                                out.write(req + "\n");
+                                out.write(req.toJSONString() + "\n");
                                 out.flush();
                             }
                         }
@@ -375,7 +375,7 @@ public class commNProcess extends Thread
                     reply.put("message", "unsafe pathname given");
                     reply.put("status", false);
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
             }
@@ -421,7 +421,7 @@ public class commNProcess extends Thread
                                     reply.put("message", "file deleted");
                                     reply.put("status", true);
                                     System.out.println("sent: " + reply);
-                                    out.write(reply + "\n");
+                                    out.write(reply.toJSONString() + "\n");
                                     out.flush();
                                 } else
                                 {
@@ -432,7 +432,7 @@ public class commNProcess extends Thread
                                     reply.put("message", "there is a problem deleting the file");
                                     reply.put("status", false);
                                     System.out.println("sent: " + reply);
-                                    out.write(reply + "\n");
+                                    out.write(reply.toJSONString() + "\n");
                                     out.flush();
                                 }
                             } else
@@ -444,7 +444,7 @@ public class commNProcess extends Thread
                                 reply.put("message", "md5 does not match");
                                 reply.put("status", false);
                                 System.out.println("sent: " + reply);
-                                out.write(reply + "\n");
+                                out.write(reply.toJSONString() + "\n");
                                 out.flush();
                             }
                         } else
@@ -456,7 +456,7 @@ public class commNProcess extends Thread
                             reply.put("message", "pathname does not exist");
                             reply.put("status", false);
                             System.out.println("sent: " + reply);
-                            out.write(reply + "\n");
+                            out.write(reply.toJSONString() + "\n");
                             out.flush();
                         }
                     } else
@@ -468,7 +468,7 @@ public class commNProcess extends Thread
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
                         System.out.println("sent: " + reply);
-                        out.write(reply + "\n");
+                        out.write(reply.toJSONString() + "\n");
                         out.flush();
                     }
                 } catch (Exception e)
@@ -481,7 +481,7 @@ public class commNProcess extends Thread
                     reply.put("message", "There was a problem deleting the file");
                     reply.put("status", false);
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
             }
@@ -503,7 +503,7 @@ public class commNProcess extends Thread
                     reply.put("message", "file loader ready");
                     reply.put("status", true);
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                     //FILE_BYTES_REQUEST
                     if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
@@ -515,7 +515,7 @@ public class commNProcess extends Thread
                         req.put("position", 0);
                         req.put("length", fileSize);
                         System.out.println("sent: " + req);
-                        out.write(req + "\n");
+                        out.write(req.toJSONString() + "\n");
                         out.flush();
                     } else
                     {
@@ -531,7 +531,7 @@ public class commNProcess extends Thread
                             req.put("position", position);
                             req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
                             System.out.println("sent: " + req);
-                            out.write(req + "\n");
+                            out.write(req.toJSONString() + "\n");
                             out.flush();
                             // Update position
                             position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -549,7 +549,7 @@ public class commNProcess extends Thread
                             req.put("position", position);
                             req.put("length", remainingSize);
                             System.out.println("sent: " + req);
-                            out.write(req + "\n");
+                            out.write(req.toJSONString() + "\n");
                             out.flush();
                         }
                     }
@@ -562,7 +562,7 @@ public class commNProcess extends Thread
                     reply.put("message", "file with same content");
                     reply.put("status", false);
                     System.out.println("sent: " + reply);
-                    out.write(reply + "\n");
+                    out.write(reply.toJSONString() + "\n");
                     out.flush();
                 }
             }
@@ -595,7 +595,7 @@ public class commNProcess extends Thread
                 rep.put("message", "successful read");
                 rep.put("status", true);
                 System.out.println("sent: " + rep);
-                out.write(rep + "\n");
+                out.write(rep.toJSONString() + "\n");
                 out.flush();
             } else if (command.get("command").toString().equals("DIRECTORY_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("DIRECTORY_DELETE_RESPONSE") ||
@@ -614,7 +614,7 @@ public class commNProcess extends Thread
                 reply.put("command", "INVALID_PROTOCOL");
                 reply.put("message", "message must contain a command field as string");
                 System.out.println("sent: " + reply);
-                out.write(reply + "\n");
+                out.write(reply.toJSONString() + "\n");
                 out.flush();
             }
 

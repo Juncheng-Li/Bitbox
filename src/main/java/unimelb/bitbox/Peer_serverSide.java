@@ -70,7 +70,7 @@ public class Peer_serverSide extends Thread
                             hostPort.put("port", port);
                             hs_res.put("hostPort", hostPort);
                             System.out.println("sent: " + hs_res.toJSONString());
-                            out.write(hs_res + "\n");
+                            out.write(hs_res.toJSONString() + "\n");
                             out.flush();
 
                             timer.schedule(new SyncEvents(f), 0,
@@ -89,7 +89,7 @@ public class Peer_serverSide extends Thread
                         reply.put("command", "INVALID_PROTOCOL");
                         reply.put("message", "message must contain a command field as string");
                         System.out.println("sent: " + reply);
-                        out.write(reply + "\n");
+                        out.write(reply.toJSONString() + "\n");
                         out.flush();
                     }
                 }
