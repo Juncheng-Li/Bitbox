@@ -124,7 +124,7 @@ public class udpClientServer extends Thread
                         hs_res.put("hostPort", hostPort);
                         send(hs_res, clientIp, clientPort);
 
-                        HostPort hp = new HostPort(clientIp + ":" + clientPort);
+                        HostPort hp = new HostPort(clientIp.getHostAddress() + ":" + clientPort);
                         ss.add(hp);
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
