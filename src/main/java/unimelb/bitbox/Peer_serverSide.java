@@ -55,6 +55,7 @@ public class Peer_serverSide extends Thread
             {
                 while ((clientMsg = in.readLine()) != null)
                 {
+                    System.out.println("Before parse: " + clientMsg);
                     command = (JSONObject) parser.parse(clientMsg);
                     System.out.println("(Peer_serverSide)Message from Client " + i + ": " + command.toJSONString());
                     if (command.getClass().getName().equals("org.json.simple.JSONObject"))
