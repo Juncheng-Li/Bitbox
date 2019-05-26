@@ -73,8 +73,14 @@ public class Peer
         else if (Configuration.getConfigurationValue("mode").equals("udp"))
         {
             // UDP clientServer
-            udpClientServer udpCS_T = new udpClientServer();
-            udpCS_T.start();
+            for (String peer : peersArray)
+            {
+                HostPort peer_hp = new HostPort(peer);
+                InetAddress ip = InetAddress.getByName(peer_hp.host); //UnknownHostException
+                int udpPort = peer_hp.port;
+                udpClientServer udpCS_T = new udpClientServer(ip, udpPort, f);
+                udpCS_T.start();
+            }
         }
         else
         {

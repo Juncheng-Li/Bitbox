@@ -1,23 +1,30 @@
 package unimelb.bitbox;
 
+import com.sun.security.ntlm.Server;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import unimelb.bitbox.util.Configuration;
+import unimelb.bitbox.util.Document;
+import unimelb.bitbox.util.HostPort;
 
-import javax.xml.crypto.Data;
 import java.io.*;
-import java.net.*;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.net.*;
+import java.util.Timer;
 
 public class udpCommNProcess extends Thread
 {
     private JSONObject command;
-    private ServerMain f;
     private InetAddress ip;
     private int udpPort;
+    private ServerMain f;
 
-    public udpCommNProcess(JSONObject command, InetAddress ip, int udpPort, ServerMain f) throws IOException
+
+    public udpCommNProcess(JSONObject command, InetAddress ip, int udpPort, ServerMain f)
     {
         this.command = command;
         this.ip = ip;
@@ -226,6 +233,14 @@ public class udpCommNProcess extends Thread
                                     // Update position
                                     position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                     remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                    try
+                                    {
+                                        Thread.sleep(20);
+                                    } catch (InterruptedException e)
+                                    {
+                                        System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
+                                        e.printStackTrace();
+                                    }
                                 }
                                 if (remainingSize != 0)
                                 {
@@ -304,6 +319,14 @@ public class udpCommNProcess extends Thread
                                 // Update position
                                 position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                                try
+                                {
+                                    Thread.sleep(20);
+                                } catch (InterruptedException e)
+                                {
+                                    System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
+                                    e.printStackTrace();
+                                }
                             }
                             if (remainingSize != 0)
                             {
@@ -334,13 +357,24 @@ public class udpCommNProcess extends Thread
                 String pathName = command.get("pathName").toString();
                 String content = command.get("content").toString();
                 long position = (long) command.get("position");
+                long length = (long) command.get("length");
+
+                JSONObject fd = (JSONObject) command.get("fileDescriptor");
+                long fileSize = (long) fd.get("fileSize");
+
                 //convert contentStr to byte then put into buffer
                 byte[] arr = Base64.getDecoder().decode(content);
                 ByteBuffer buf = ByteBuffer.wrap(arr);
+                //Writing file
+                System.out.println("Writing file " + pathName + " Position: " + position);
                 f.fileSystemManager.writeFile(pathName, buf, position);
-                if (f.fileSystemManager.checkWriteComplete(pathName))
+
+                if (fileSize - position == length)
                 {
-                    System.out.println(pathName + " write complete!");
+                    if (f.fileSystemManager.checkWriteComplete(pathName))
+                    {
+                        System.out.println(pathName + " write complete!");
+                    }
                 }
             }
             //Handle FILE_DELETE_REQUEST
@@ -467,6 +501,14 @@ public class udpCommNProcess extends Thread
                             // Update position
                             position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                             remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
+                            try
+                            {
+                                Thread.sleep(20);
+                            } catch (InterruptedException e)
+                            {
+                                System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
+                                e.printStackTrace();
+                            }
                         }
                         if (remainingSize != 0)
                         {
@@ -499,6 +541,7 @@ public class udpCommNProcess extends Thread
                 // Unmarshall request
                 String pathName = command.get("pathName").toString();
                 JSONObject fd = (JSONObject) command.get("fileDescriptor");
+                //Document fd2 = (Document) command.get("fileDescriptor");
                 String md5 = fd.get("md5").toString();
                 long lastModified = (long) fd.get("lastModified");
                 long fileSize = (long) fd.get("fileSize");
@@ -510,6 +553,8 @@ public class udpCommNProcess extends Thread
                 byte[] arr = new byte[buf.remaining()];
                 buf.get(arr, 0, arr.length);
                 String content = Base64.getEncoder().encodeToString(arr);
+                //System.out.println("Content: " + content);
+                System.out.println();
 
                 // Send BYTE
                 JSONObject rep = new JSONObject();
@@ -522,13 +567,13 @@ public class udpCommNProcess extends Thread
                 rep.put("message", "successful read");
                 rep.put("status", true);
                 send(rep, ip, udpPort);
+
             } else if (command.get("command").toString().equals("DIRECTORY_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("DIRECTORY_DELETE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_DELETE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_MODIFY_RESPONSE") ||
-                    command.get("command").toString().equals("INVALID_PROTOCOL") ||
-                    command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
+                    command.get("command").toString().equals("INVALID_PROTOCOL"))
             {
                 // Do nothing when receive these responses
             }
@@ -544,8 +589,10 @@ public class udpCommNProcess extends Thread
 
         } catch (SocketException e)
         {
-            System.out.println(e + "in class udpCommNProcess");
-
+            System.out.println("Socket Exception cought!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println(e.toString());
+            //e.printStackTrace();
+            System.out.println("Socket closed.");
         } catch (IOException e)
         {
             // Includes no dir
@@ -553,10 +600,9 @@ public class udpCommNProcess extends Thread
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e)
         {
-            System.out.println(e + "in class udpCommNProcess");
+            e.printStackTrace();
         }
     }
-
 
     public static void send(JSONObject message, InetAddress ip, int udpPort) throws IOException
     {

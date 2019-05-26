@@ -646,20 +646,6 @@ public class commNProcess extends Thread
                 out.flush();
                 System.out.println("sent: " + mess);
 
-                /*
-                // Send Byte Doc
-                Document reply = new Document();
-                reply.append("command", "FILE_BYTES_RESPONSE");
-                reply.append("fileDescriptor", fd2);
-                reply.append("pathName", pathName);
-                reply.append("position", position);
-                reply.append("length", length);
-                reply.append("content", content);
-                reply.append("message", "successful read");
-                reply.append("status", true);
-                 */
-
-
 
             } else if (command.get("command").toString().equals("DIRECTORY_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("DIRECTORY_DELETE_RESPONSE") ||

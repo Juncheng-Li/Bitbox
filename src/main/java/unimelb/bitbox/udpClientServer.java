@@ -1,32 +1,34 @@
 package unimelb.bitbox;
 
-// Java program to illustrate Client side
-// Implementation using DatagramSocket
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import unimelb.bitbox.util.Configuration;
 
-import javax.swing.text.html.parser.Parser;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Scanner;
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class udpClientServer extends Thread
 {
     private JSONParser parser = new JSONParser();
     private Timer timer = new Timer();
     private ServerMain f;
+    private InetAddress ip = null;
+    private int udpPort;
+    private static final ScheduledExecutorService delayedTask = Executors.newSingleThreadScheduledExecutor();
+    private static boolean clientAnswer = false;
 
-    udpClientServer() throws IOException, NoSuchAlgorithmException
+    udpClientServer(InetAddress ip, int udpPort, ServerMain f)
     {
-
+        this.ip = ip;
+        this.udpPort = udpPort;
+        this.f = f;
     }
 
     public void run()
@@ -34,34 +36,23 @@ public class udpClientServer extends Thread
         try
         {
             // Step 1: Preparing
-            DatagramSocket dsSocket = new DatagramSocket();  //SocketException
-            InetAddress ip = InetAddress.getByName("10.0.0.79"); //UnknownHostException
-            int udpPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
+            DatagramSocket dsSocket = new DatagramSocket();  //SocketException  //self socket]
             byte buf[] = null;
             InetAddress clientIp = null;
-            int clientPort = -1;
+            int clientPort;
 
 
             // udp Client side
             // Handshake - fixed!
-            JSONObject hs = new JSONObject();
-            JSONObject hostPort = new JSONObject();
-            hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
-            hostPort.put("port", udpPort);
-            hs.put("command", "HANDSHAKE_REQUEST");
-            hs.put("hostPort", hostPort);
-            buf = hs.toJSONString().getBytes();
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-            dsSocket.send(packet);  //IOException  //need "/n" ?
-            System.out.println("udp sent: " + hs);
+            handShake(udpPort, ip, dsSocket);
 
 
             //ServerSide
             // Step 1 : Create a socket to listen at port 1234
-            //int udpPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
-            DatagramSocket dsServerSocket = new DatagramSocket(udpPort); //
+            int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
+            DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
             byte[] receive = new byte[65535];
-            System.out.println("UDP port " + udpPort);
+            System.out.println("listening on UDP port " + udpServerPort);
 
             DatagramPacket serverPacket = null;
             while (true)
@@ -70,7 +61,24 @@ public class udpClientServer extends Thread
                 serverPacket = new DatagramPacket(receive, receive.length);
 
                 // Step 3 : receive the data in byte buffer.
+                // If time out N seconds
+
+                Runnable task = new Runnable()
+                {
+                    public void run()
+                    {
+                        if (!clientAnswer)
+                        {
+                            /* Send a message to the client */
+                            System.out.println("no reply");
+                        }
+                    }
+                };
+                delayedTask.schedule(task, 5, TimeUnit.SECONDS);
+
                 dsServerSocket.receive(serverPacket);  //
+                System.out.println("receive message!");
+                clientAnswer = true;
                 StringBuilder message = data(receive);
                 System.out.println("udpClientServer(" + serverPacket.getSocketAddress() + "): " + message);
                 //System.out.println(serverPacket.getLength());
@@ -82,57 +90,38 @@ public class udpClientServer extends Thread
                 {
                     if (command.get("command").toString().equals("HANDSHAKE_RESPONSE"))
                     {
-                        //clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        //clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
-                        clientIp = ip;
-                        clientPort = udpPort;
-                        f = new ServerMain(clientIp, clientPort);
+
+
                         // Synchronizing Events after Handshake!!!
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
-                    }
-                    else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
+                    } else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
                     {
                         System.out.println("Peer(" +
                                 serverPacket.getSocketAddress().toString().replaceAll("/", "")
                                 + ") maximum connection limit reached...");
                         break;
-                    }
-                    else if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
+                    } else if (command.get("command").toString().equals("HANDSHAKE_REQUEST"))
                     {
                         // get client Ip and port from HANDSHAKE_REQUEST
                         clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
-                        f = new ServerMain(clientIp, clientPort);
                         JSONObject hs_res = new JSONObject();
-                        hostPort = new JSONObject();
+                        JSONObject hostPort = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
                         hostPort.put("host", ip.getHostAddress());
-                        hostPort.put("port", udpPort);
+                        hostPort.put("port", udpServerPort);
                         hs_res.put("hostPort", hostPort);
                         send(hs_res, clientIp, clientPort);
 
                         timer.schedule(new SyncEvents(f), 0,
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
-                    }
-                    else
+                    } else
                     {
-                        // do other commands
-                        // check if it is available first
-                        if (clientPort != -1 && clientIp != null)
-                        {
-                            udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
-                            process_T.start();
-                        }
-                        else
-                        {
-                            //check has handshaked
-                            System.out.println("have not handshaked!");
-                        }
+                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
+                        process_T.start();
                     }
-
-                }
-                else
+                } else
                 {
                     // If not a JSONObject
                     JSONObject reply = new JSONObject();
@@ -145,26 +134,17 @@ public class udpClientServer extends Thread
                 receive = new byte[65535];
 
             }
-        }
-        catch (ParseException e)
+        } catch (ParseException e)
         {
             e.printStackTrace();
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            e.printStackTrace();
-        }
-        finally
+        } finally
         {
             // kill timer
             timer.cancel();
             timer.purge();
-            // kill serverMain
-            f.fileSystemManager.stop();
             System.out.println("Peer - " + " disconnected.");
         }
 
@@ -173,7 +153,7 @@ public class udpClientServer extends Thread
 
     // A utility method to convert the byte array
     // data into a string representation.
-    public static StringBuilder data(byte[] a)
+    private static StringBuilder data(byte[] a)
     {
         if (a == null)
             return null;
@@ -187,12 +167,27 @@ public class udpClientServer extends Thread
         return ret;
     }
 
-    public static void send(JSONObject message, InetAddress ip, int udpPort) throws IOException
+    private static void send(JSONObject message, InetAddress ip, int udpPort) throws IOException
     {
         DatagramSocket dsSocket = new DatagramSocket();
         byte[] buf = message.toJSONString().getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
         dsSocket.send(packet);
         System.out.println("udp sent: " + message.toJSONString());
+    }
+
+    private static void handShake(int udpPort, InetAddress ip, DatagramSocket dsSocket) throws IOException
+    {
+        byte[] buf = null;
+        JSONObject hs = new JSONObject();
+        JSONObject hostPort = new JSONObject();
+        hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
+        hostPort.put("port", udpPort);
+        hs.put("command", "HANDSHAKE_REQUEST");
+        hs.put("hostPort", hostPort);
+        buf = hs.toJSONString().getBytes();
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
+        dsSocket.send(packet);  //IOException  //need "/n" ?
+        System.out.println("udp sent: " + hs);
     }
 }
