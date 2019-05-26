@@ -27,7 +27,6 @@ public class Peer_serverSide extends Thread
 {
     private int i = 0;
     private Socket clientSocket = null;
-    private String clientMsg = null;
     private JSONObject command = null;
     private ServerMain f;
     private Timer timer = new Timer();
@@ -53,6 +52,7 @@ public class Peer_serverSide extends Thread
 
             try
             {
+                String clientMsg = null;
                 while ((clientMsg = in.readLine()) != null)
                 {
                     System.out.println("Before parse: " + clientMsg);

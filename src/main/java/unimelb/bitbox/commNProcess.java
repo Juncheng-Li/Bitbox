@@ -3,6 +3,7 @@ package unimelb.bitbox;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import unimelb.bitbox.util.Configuration;
+import unimelb.bitbox.util.Document;
 import unimelb.bitbox.util.HostPort;
 
 import java.io.*;
@@ -572,6 +573,7 @@ public class commNProcess extends Thread
                 // Unmarshall request
                 String pathName = command.get("pathName").toString();
                 JSONObject fd = (JSONObject) command.get("fileDescriptor");
+                //Document fd2 = (Document) command.get("fileDescriptor");
                 String md5 = fd.get("md5").toString();
                 long lastModified = (long) fd.get("lastModified");
                 long fileSize = (long) fd.get("fileSize");
@@ -583,6 +585,8 @@ public class commNProcess extends Thread
                 byte[] arr = new byte[buf.remaining()];
                 buf.get(arr, 0, arr.length);
                 String content = Base64.getEncoder().encodeToString(arr);
+                System.out.println("Content: " + content);
+                System.out.println();
 
                 // Send BYTE
                 JSONObject rep = new JSONObject();
@@ -594,9 +598,27 @@ public class commNProcess extends Thread
                 rep.put("content", content);
                 rep.put("message", "successful read");
                 rep.put("status", true);
-                System.out.println("sent: " + rep);
-                out.write(rep.toJSONString() + "\n");
+                String mess = rep.toJSONString();
+                out.write(mess);
+                out.newLine();
                 out.flush();
+                System.out.println("sent: " + mess);
+
+                /*
+                // Send Byte Doc
+                Document reply = new Document();
+                reply.append("command", "FILE_BYTES_RESPONSE");
+                reply.append("fileDescriptor", fd2);
+                reply.append("pathName", pathName);
+                reply.append("position", position);
+                reply.append("length", length);
+                reply.append("content", content);
+                reply.append("message", "successful read");
+                reply.append("status", true);
+                 */
+
+
+
             } else if (command.get("command").toString().equals("DIRECTORY_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("DIRECTORY_DELETE_RESPONSE") ||
                     command.get("command").toString().equals("FILE_DELETE_RESPONSE") ||
@@ -624,7 +646,7 @@ public class commNProcess extends Thread
             try
             {
                 System.out.println(e.toString());
-                e.printStackTrace();
+                //e.printStackTrace();
                 socket.close();
                 System.out.println("Socket closed.");
             } catch (IOException ee)
@@ -640,6 +662,13 @@ public class commNProcess extends Thread
         {
             e.printStackTrace();
         }
+    }
+
+    public static void send(Document message, BufferedWriter out) throws IOException
+    {
+        out.write(message.toJson() + "\n");
+        out.flush();
+        System.out.println("sent: " + message.toJson());
     }
 
 }
