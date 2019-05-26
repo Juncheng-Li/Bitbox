@@ -105,11 +105,13 @@ public class udpClientServer extends Thread
                     {
                         // get client Ip and port from HANDSHAKE_REQUEST
                         clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
+                        System.out.println("clientIP: " + clientIp);
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
+                        System.out.println("clientPort" + clientPort);
                         JSONObject hs_res = new JSONObject();
                         JSONObject hostPort = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
-                        hostPort.put("host", ip.getHostAddress());
+                        hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
                         hostPort.put("port", udpServerPort);
                         hs_res.put("hostPort", hostPort);
                         send(hs_res, clientIp, clientPort);
