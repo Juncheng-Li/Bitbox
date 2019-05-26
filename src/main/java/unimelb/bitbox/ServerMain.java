@@ -108,7 +108,7 @@ public class ServerMain implements FileSystemObserver
 
             if (fileSystemEvent.event.toString().equals("FILE_MODIFY"))
             {
-                System.out.println("Yes, there is a file modified");
+                //System.out.println("Yes, there is a file modified");
                 JSONObject req = new JSONObject();
                 JSONObject fileDescriptor = new JSONObject();
                 fileDescriptor.put("md5", fileSystemEvent.fileDescriptor.md5);

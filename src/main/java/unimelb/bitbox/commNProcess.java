@@ -238,10 +238,11 @@ public class commNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", 0);
                                 req.put("length", fileSize);
-                                System.out.println("sent: " + reply);
+                                System.out.println("sent: " + req);
                                 out.write(req + "\n");
                                 out.flush();
-                            } else
+                            }
+                            else
                             {
                                 long remainingSize = fileSize;
                                 long position = 0;
@@ -254,7 +255,7 @@ public class commNProcess extends Thread
                                     req.put("pathName", pathName);
                                     req.put("position", position);
                                     req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                    System.out.println("sent: " + reply);
+                                    System.out.println("sent: " + req);
                                     out.write(req + "\n");
                                     out.flush();
                                     // Update position
@@ -269,7 +270,7 @@ public class commNProcess extends Thread
                                     req.put("pathName", pathName);
                                     req.put("position", position);
                                     req.put("length", remainingSize);
-                                    System.out.println("sent: " + reply);
+                                    System.out.println("sent: " + req);
                                     out.write(req + "\n");
                                     out.flush();
                                 }
@@ -328,7 +329,7 @@ public class commNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", 0);
                             req.put("length", fileSize);
-                            System.out.println("sent: " + reply);
+                            System.out.println("sent: " + req);
                             out.write(req + "\n");
                             out.flush();
                         } else
@@ -344,7 +345,7 @@ public class commNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                System.out.println("sent: " + reply);
+                                System.out.println("sent: " + req);
                                 out.write(req + "\n");
                                 out.flush();
                                 // Update position
@@ -359,7 +360,7 @@ public class commNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", remainingSize);
-                                System.out.println("sent: " + reply);
+                                System.out.println("sent: " + req);
                                 out.write(req + "\n");
                                 out.flush();
                             }
@@ -513,7 +514,7 @@ public class commNProcess extends Thread
                         req.put("pathName", pathName);
                         req.put("position", 0);
                         req.put("length", fileSize);
-                        System.out.println("sent: " + reply);
+                        System.out.println("sent: " + req);
                         out.write(req + "\n");
                         out.flush();
                     } else
@@ -529,7 +530,7 @@ public class commNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", position);
                             req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                            System.out.println("sent: " + reply);
+                            System.out.println("sent: " + req);
                             out.write(req + "\n");
                             out.flush();
                             // Update position
@@ -547,7 +548,7 @@ public class commNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", position);
                             req.put("length", remainingSize);
-                            System.out.println("sent: " + reply);
+                            System.out.println("sent: " + req);
                             out.write(req + "\n");
                             out.flush();
                         }
@@ -623,6 +624,7 @@ public class commNProcess extends Thread
             try
             {
                 System.out.println(e.toString());
+                e.printStackTrace();
                 socket.close();
                 System.out.println("Socket closed.");
             } catch (IOException ee)
