@@ -44,6 +44,7 @@ public class udpClientServer extends Thread
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
             DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
+            ackStorage ack = new ackStorage();
 
 
             // udp Client side
@@ -59,9 +60,10 @@ public class udpClientServer extends Thread
             dsSocket.send(packet);  //IOException  //need "/n" ?
             System.out.println("udp sent: " + hs);
             // Handle packet loss
-            //UDPErrorHandling errorHandling = new UDPErrorHandling(hs, udpServerPort, ip, udpPort, dsServerSocket, ss);
-            //errorHandling.start();
-
+            ack.init();
+            ack.set(hs, ip, udpPort);
+            UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
+            errorHandling.start();
 
             //ServerSide
             // Step 1 : Create a socket to listen
@@ -70,10 +72,8 @@ public class udpClientServer extends Thread
             DatagramPacket serverPacket = null;
             while (true)
             {
-                // Step 2 : create a DatagramPacket to receive the data.
                 serverPacket = new DatagramPacket(receive, receive.length);
 
-                // Step 3 : receive the data in byte buffer.
                 // If time out N seconds
 
 
@@ -87,6 +87,16 @@ public class udpClientServer extends Thread
 
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
+                if (command.get("command").toString().equals(ack.desiredRespond())
+                        && serverPacket.getAddress().getHostAddress().equals(ack.getIp()))
+                {
+                    //System.out.println("desired response");
+                    ack.setAnswered(true);
+                }
+                else
+                {
+                    System.out.println("not desired response.");
+                }
 
                 if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                 {
