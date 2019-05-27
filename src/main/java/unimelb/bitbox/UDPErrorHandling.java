@@ -56,7 +56,7 @@ public class UDPErrorHandling extends Thread
                     ss.remove(udpSocket);
                     timer.cancel();
                     timer.purge();
-                    //return;
+                    return;
                 }
 
                 send(command, ack.getInetIp(), ack.getUdpPort());
