@@ -84,11 +84,12 @@ public class UDPErrorHandling extends Thread
                 }
             };
 
+            int timeout = 1000*Integer.parseInt(Configuration.getConfigurationValue("timeout"));
+            timer.schedule(tt, timeout, timeout);
+
             while (true)
             {
                 serverPacket = new DatagramPacket(receive, receive.length);
-                int timeout = 1000*Integer.parseInt(Configuration.getConfigurationValue("timeout"));
-                timer.schedule(tt, timeout, timeout);
 
                 dsServerSocket.receive(serverPacket);  //
                 // if receive desired message
