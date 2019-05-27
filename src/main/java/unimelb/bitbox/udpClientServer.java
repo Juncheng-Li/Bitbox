@@ -23,8 +23,6 @@ public class udpClientServer extends Thread
     private ServerMain f;
     private InetAddress ip = null;
     private int udpPort;
-    private static final ScheduledExecutorService delayedTask = Executors.newSingleThreadScheduledExecutor();
-    private static boolean clientAnswer = false;
     private socketStorage ss;
 
     udpClientServer(InetAddress ip, int udpPort, ServerMain f, socketStorage ss)
@@ -41,24 +39,34 @@ public class udpClientServer extends Thread
         {
             // Step 1: Preparing
             DatagramSocket dsSocket = new DatagramSocket();  //SocketException  //self socket]
-
-            byte buf[] = null;
+            byte[] buf = null;
             InetAddress clientIp = null;
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
+            DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
+
 
             // udp Client side
             // Handshake - fixed!
-            handShake(udpServerPort, ip, udpPort, dsSocket);
+            JSONObject hs = new JSONObject();
+            JSONObject hostPort = new JSONObject();
+            hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
+            hostPort.put("port", udpServerPort);
+            hs.put("command", "HANDSHAKE_REQUEST");
+            hs.put("hostPort", hostPort);
+            buf = hs.toJSONString().getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
+            dsSocket.send(packet);  //IOException  //need "/n" ?
+            System.out.println("udp sent: " + hs);
+            // Handle packet loss
+            UDPErrorHandling errorHandling = new UDPErrorHandling(hs, udpServerPort, ip, udpPort, dsServerSocket, ss);
+            errorHandling.start();
 
 
             //ServerSide
-            // Step 1 : Create a socket to listen at port 1234
-
-            DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
+            // Step 1 : Create a socket to listen
             byte[] receive = new byte[65535];
             System.out.println("listening on UDP port " + udpServerPort);
-
             DatagramPacket serverPacket = null;
             while (true)
             {
@@ -67,22 +75,10 @@ public class udpClientServer extends Thread
 
                 // Step 3 : receive the data in byte buffer.
                 // If time out N seconds
-                Runnable task = new Runnable()
-                {
-                    public void run()
-                    {
-                        if (!clientAnswer)
-                        {
-                            /* Send a message to the client */
-                            System.out.println("no reply");
-                        }
-                    }
-                };
-                delayedTask.schedule(task, Integer.parseInt(Configuration.getConfigurationValue("timeout")), TimeUnit.SECONDS);
+
 
                 dsServerSocket.receive(serverPacket);  //
                 // if receive message
-                clientAnswer = true;
                 StringBuilder message = data(receive);
                 System.out.println("udpClientServer(" +
                         serverPacket.getSocketAddress().toString().replace("/", "") +
@@ -119,11 +115,8 @@ public class udpClientServer extends Thread
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
                         System.out.println("clientPort" + clientPort);
                         JSONObject hs_res = new JSONObject();
-                        JSONObject hostPort = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
-                        hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
-                        hostPort.put("port", udpServerPort);
-                        hs_res.put("hostPort", hostPort);
+                        hs_res.put("hostPort", hostPort); //use the hostPort defined in the handshake
                         send(hs_res, clientIp, clientPort);
 
                         HostPort hp = new HostPort(clientIp.getHostAddress() + ":" + clientPort);
@@ -165,8 +158,6 @@ public class udpClientServer extends Thread
     }
 
 
-    // A utility method to convert the byte array
-    // data into a string representation.
     private static StringBuilder data(byte[] a)
     {
         if (a == null)
@@ -180,6 +171,7 @@ public class udpClientServer extends Thread
         }
         return ret;
     }
+
 
     private static void send(JSONObject message, InetAddress ip, int udpPort) throws IOException
     {
