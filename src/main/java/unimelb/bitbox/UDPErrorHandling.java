@@ -53,9 +53,8 @@ public class UDPErrorHandling extends Thread
                 @Override
                 public void run()
                 {
-                    try
-                    {
-                        send(command, ip, udpPort);
+
+                        //send(command, ip, udpPort);
                         System.out.println("Packet loss!! - Retransmitting time " + count + ": " + command.toJSONString());
 
                         count++;
@@ -76,11 +75,14 @@ public class UDPErrorHandling extends Thread
                             timer.purge();
                             //return;
                         }
-                    }
+
+                    /*
                     catch (IOException e)
                     {
                         e.printStackTrace();
                     }
+
+                     */
                 }
             };
 
@@ -90,17 +92,24 @@ public class UDPErrorHandling extends Thread
             while (true)
             {
                 serverPacket = new DatagramPacket(receive, receive.length);
-
+                System.out.println("Error handling start listening");
                 dsServerSocket.receive(serverPacket);  //
                 // if receive desired message
-                String respondIP = serverPacket.getSocketAddress().toString().replace("/", "");
+                String respondIP = serverPacket.getAddress().toString().replace("/", "");
+                System.out.println("Message from " + respondIP);
+                System.out.println(ip.getHostAddress());
                 StringBuilder message = data(receive);
                 respondCommand = (JSONObject) parser.parse(message.toString());
+                if (respondIP.equals(ip.getHostAddress()))
+                {
+                    System.out.println("right Address");
+                }
                 // check if desired command name, if desired address
                 if ((respondCommand.get("command").equals("INVALID_COMMAND")
                         || respondCommand.get("command").equals(requiredCommand))
                         && (respondIP.equals(ip.getHostAddress())))
                 {
+                    System.out.println("yes desired respond");
                     //Kill retransmitting thread
                     respond = true;
                     //Kill this thread (listening)

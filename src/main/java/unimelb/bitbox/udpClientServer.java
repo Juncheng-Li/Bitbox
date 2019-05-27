@@ -59,8 +59,8 @@ public class udpClientServer extends Thread
             dsSocket.send(packet);  //IOException  //need "/n" ?
             System.out.println("udp sent: " + hs);
             // Handle packet loss
-            UDPErrorHandling errorHandling = new UDPErrorHandling(hs, udpServerPort, ip, udpPort, dsServerSocket, ss);
-            errorHandling.start();
+            //UDPErrorHandling errorHandling = new UDPErrorHandling(hs, udpServerPort, ip, udpPort, dsServerSocket, ss);
+            //errorHandling.start();
 
 
             //ServerSide
