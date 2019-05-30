@@ -26,6 +26,7 @@ public class ServerMain implements FileSystemObserver
 
     private ArrayList<Socket> sockets;
     socketStorage ss;
+    private DatagramSocket dsServerSocket = null;
     /*
     public ServerMain(Socket socket) throws NumberFormatException, IOException, NoSuchAlgorithmException
     {
@@ -44,9 +45,10 @@ public class ServerMain implements FileSystemObserver
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
-    public ServerMain(socketStorage ss) throws IOException, NoSuchAlgorithmException
+    public ServerMain(socketStorage ss, DatagramSocket dsServerSocket) throws IOException, NoSuchAlgorithmException
     {
         this.ss = ss;
+        this.dsServerSocket = dsServerSocket;
         fileSystemManager = new FileSystemManager(Configuration.getConfigurationValue("path"), this);
     }
 
@@ -74,7 +76,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    sendUDP(req, ss);
+                    sendUDP(req, ss, dsServerSocket);
                 }
                 else
                 {
@@ -99,7 +101,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    sendUDP(req, ss);
+                    sendUDP(req, ss, dsServerSocket);
                 }
                 else
                 {
@@ -124,7 +126,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    sendUDP(req, ss);
+                    sendUDP(req, ss, dsServerSocket);
                 }
                 else
                 {
@@ -145,7 +147,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    sendUDP(req, ss);
+                    sendUDP(req, ss, dsServerSocket);
                 }
                 else
                 {
@@ -166,7 +168,7 @@ public class ServerMain implements FileSystemObserver
                 }
                 else if (Configuration.getConfigurationValue("mode").equals("udp"))
                 {
-                    sendUDP(req, ss);
+                    sendUDP(req, ss, dsServerSocket);
                 }
                 else
                 {
@@ -214,16 +216,16 @@ public class ServerMain implements FileSystemObserver
     }
 
 
-    private static void sendUDP(JSONObject message, socketStorage ss) throws IOException
+    private static void sendUDP(JSONObject message, socketStorage ss, DatagramSocket dsServerSocket) throws IOException
     {
         for (HostPort hp : ss.getUdpSockets())
         {
             InetAddress ip = InetAddress.getByName(hp.host);
             int port = hp.port;
-            DatagramSocket dsSocket = new DatagramSocket();
+            //DatagramSocket dsSocket = new DatagramSocket();
             byte[] buf = message.toJSONString().getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
-            dsSocket.send(packet);
+            dsServerSocket.send(packet);
             System.out.println("udp sent: " + message.toJSONString());
         }
     }

@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import unimelb.bitbox.util.Configuration;
 import unimelb.bitbox.util.HostPort;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -21,13 +22,15 @@ public class udpClientServer extends Thread
     private InetAddress ip = null;
     private int udpPort;
     private socketStorage ss;
+    private DatagramSocket dsServerSocket = null;
 
-    udpClientServer(InetAddress ip, int udpPort, ServerMain f, socketStorage ss)
+    udpClientServer(InetAddress ip, int udpPort, ServerMain f, socketStorage ss, DatagramSocket dsServerSocket)
     {
         this.ip = ip;
         this.udpPort = udpPort;
         this.f = f;
         this.ss = ss;
+        this.dsServerSocket = dsServerSocket;
     }
 
     public void run()
@@ -35,12 +38,12 @@ public class udpClientServer extends Thread
         try
         {
             // Step 1: Preparing
-            DatagramSocket dsSocket = new DatagramSocket();  //SocketException  //self socket]
+            //DatagramSocket dsSocket = new DatagramSocket();  //SocketException  //self socket]
             byte[] buf = null;
             InetAddress clientIp = null;
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
-            DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
+            //DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
             ackStorage as = new ackStorage();
 
 
