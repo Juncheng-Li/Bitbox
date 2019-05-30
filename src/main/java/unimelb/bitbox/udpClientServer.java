@@ -149,7 +149,7 @@ public class udpClientServer extends Thread
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     } else
                     {
-                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f, dsServerSocket);
+                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f, dsServerSocket, ss, as);
                         process_T.start();
                     }
                 } else

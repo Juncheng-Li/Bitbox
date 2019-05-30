@@ -23,14 +23,19 @@ public class udpCommNProcess extends Thread
     private int udpPort;
     private ServerMain f;
     private DatagramSocket dsServerSocket = null;
+    private socketStorage ss;
+    private ackStorage as;
 
-    public udpCommNProcess(JSONObject command, InetAddress ip, int udpPort, ServerMain f, DatagramSocket dsServerSocket)
+    public udpCommNProcess(JSONObject command, InetAddress ip, int udpPort, ServerMain f,
+                           DatagramSocket dsServerSocket, socketStorage ss, ackStorage as)
     {
         this.command = command;
         this.ip = ip;
         this.udpPort = udpPort;
         this.f = f;
         this.dsServerSocket = dsServerSocket;
+        this.ss = ss;
+        this.as = as;
     }
 
     public void run()
@@ -62,7 +67,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "directory created");
                             reply.put("status", true);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         }
 
                         if (f.fileSystemManager.dirNameExists(pathName))
@@ -72,7 +77,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "pathname already exists");
                             reply.put("status", false);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         } else
                         {
                             f.fileSystemManager.makeDirectory(pathName);
@@ -81,7 +86,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "directory created");
                             reply.put("status", true);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         }
                     } else
                     {
@@ -90,7 +95,7 @@ public class udpCommNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
-                        send(reply, ip, udpPort, dsServerSocket);
+                        send(reply, ip, udpPort, dsServerSocket, ss, as);
                     }
 
                 } catch (Exception e)
@@ -100,7 +105,7 @@ public class udpCommNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "there was a problem creating the directory");
                     reply.put("status", false);
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                 }
             }
             // Handle DIRECTORY_DELETE_REQUEST
@@ -119,7 +124,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "directory deleted");
                             reply.put("status", true);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         } else
                         {
                             JSONObject reply = new JSONObject();
@@ -127,7 +132,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "pathname does not exist");
                             reply.put("status", false);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         }
                     } else
                     {
@@ -136,7 +141,7 @@ public class udpCommNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
-                        send(reply, ip, udpPort, dsServerSocket);
+                        send(reply, ip, udpPort, dsServerSocket, ss, as);
                     }
                 } catch (Exception e)
                 {
@@ -146,7 +151,7 @@ public class udpCommNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "there was a problem deleting the directory");
                     reply.put("status", false);
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                 }
             }
             // Handle FILE_CREATE_REQUEST
@@ -179,7 +184,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "file with same content already exists");
                             reply.put("status", false);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         } else
                         {
                             // do here
@@ -195,7 +200,7 @@ public class udpCommNProcess extends Thread
                                 reply.put("pathName", pathName);
                                 reply.put("message", "there was a problem creating file");
                                 reply.put("status", false);
-                                send(reply, ip, udpPort, dsServerSocket);
+                                send(reply, ip, udpPort, dsServerSocket, ss, as);
                                 e.printStackTrace();
                             }
 
@@ -206,7 +211,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "file loader ready");
                             reply.put("status", true);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                             // FILE_BYTES_REQUEST
                             if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
                             {
@@ -216,7 +221,7 @@ public class udpCommNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", 0);
                                 req.put("length", fileSize);
-                                send(req, ip, udpPort, dsServerSocket);
+                                send(req, ip, udpPort, dsServerSocket, ss, as);
                             } else
                             {
                                 long remainingSize = fileSize;
@@ -230,7 +235,7 @@ public class udpCommNProcess extends Thread
                                     req.put("pathName", pathName);
                                     req.put("position", position);
                                     req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                    send(req, ip, udpPort, dsServerSocket);
+                                    send(req, ip, udpPort, dsServerSocket, ss, as);
                                     // Update position
                                     position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                     remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -251,7 +256,7 @@ public class udpCommNProcess extends Thread
                                     req.put("pathName", pathName);
                                     req.put("position", position);
                                     req.put("length", remainingSize);
-                                    send(req, ip, udpPort, dsServerSocket);
+                                    send(req, ip, udpPort, dsServerSocket, ss, as);
                                 }
                             }
                         }
@@ -265,7 +270,7 @@ public class udpCommNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "file with same content already exists");
                         reply.put("status", false);
-                        send(reply, ip, udpPort, dsServerSocket);
+                        send(reply, ip, udpPort, dsServerSocket, ss, as);
                     } else
                     {
                         // do here
@@ -281,7 +286,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "there was a problem creating file");
                             reply.put("status", false);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                             e.printStackTrace();
                         }
 
@@ -292,7 +297,7 @@ public class udpCommNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "file loader ready");
                         reply.put("status", true);
-                        send(reply, ip, udpPort, dsServerSocket);
+                        send(reply, ip, udpPort, dsServerSocket, ss, as);
                         // FILE_BYTES_REQUEST
                         if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
                         {
@@ -302,7 +307,7 @@ public class udpCommNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", 0);
                             req.put("length", fileSize);
-                            send(req, ip, udpPort, dsServerSocket);
+                            send(req, ip, udpPort, dsServerSocket, ss, as);
                         } else
                         {
                             long remainingSize = fileSize;
@@ -316,7 +321,7 @@ public class udpCommNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                send(req, ip, udpPort, dsServerSocket);
+                                send(req, ip, udpPort, dsServerSocket, ss, as);
                                 // Update position
                                 position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -337,7 +342,7 @@ public class udpCommNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", remainingSize);
-                                send(req, ip, udpPort, dsServerSocket);
+                                send(req, ip, udpPort, dsServerSocket, ss, as);
                             }
                         }
                     }
@@ -349,7 +354,7 @@ public class udpCommNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "unsafe pathname given");
                     reply.put("status", false);
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                 }
             }
             // Handle FILE_BYTES_RESPONSE
@@ -404,7 +409,7 @@ public class udpCommNProcess extends Thread
                                     reply.put("pathName", pathName);
                                     reply.put("message", "file deleted");
                                     reply.put("status", true);
-                                    send(reply, ip, udpPort, dsServerSocket);
+                                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                                 } else
                                 {
                                     JSONObject reply = new JSONObject();
@@ -413,7 +418,7 @@ public class udpCommNProcess extends Thread
                                     reply.put("pathName", pathName);
                                     reply.put("message", "there is a problem deleting the file");
                                     reply.put("status", false);
-                                    send(reply, ip, udpPort, dsServerSocket);
+                                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                                 }
                             } else
                             {
@@ -423,7 +428,7 @@ public class udpCommNProcess extends Thread
                                 reply.put("pathName", pathName);
                                 reply.put("message", "md5 does not match");
                                 reply.put("status", false);
-                                send(reply, ip, udpPort, dsServerSocket);
+                                send(reply, ip, udpPort, dsServerSocket, ss, as);
                             }
                         } else
                         {
@@ -433,7 +438,7 @@ public class udpCommNProcess extends Thread
                             reply.put("pathName", pathName);
                             reply.put("message", "pathname does not exist");
                             reply.put("status", false);
-                            send(reply, ip, udpPort, dsServerSocket);
+                            send(reply, ip, udpPort, dsServerSocket, ss, as);
                         }
                     } else
                     {
@@ -443,7 +448,7 @@ public class udpCommNProcess extends Thread
                         reply.put("pathName", pathName);
                         reply.put("message", "unsafe pathname given");
                         reply.put("status", false);
-                        send(reply, ip, udpPort, dsServerSocket);
+                        send(reply, ip, udpPort, dsServerSocket, ss, as);
                     }
                 } catch (Exception e)
                 {
@@ -454,7 +459,7 @@ public class udpCommNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "There was a problem deleting the file");
                     reply.put("status", false);
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                 }
             }
             //Handle FILE_MODIFY_REQUEST
@@ -474,7 +479,7 @@ public class udpCommNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "file loader ready");
                     reply.put("status", true);
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                     //FILE_BYTES_REQUEST
                     if (fileSize <= Long.parseLong(Configuration.getConfigurationValue("blockSize")))
                     {
@@ -484,7 +489,7 @@ public class udpCommNProcess extends Thread
                         req.put("pathName", pathName);
                         req.put("position", 0);
                         req.put("length", fileSize);
-                        send(req, ip, udpPort, dsServerSocket);
+                        send(req, ip, udpPort, dsServerSocket, ss, as);
                     } else
                     {
                         long remainingSize = fileSize;
@@ -498,7 +503,7 @@ public class udpCommNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", position);
                             req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                            send(req, ip, udpPort, dsServerSocket);
+                            send(req, ip, udpPort, dsServerSocket, ss, as);
                             // Update position
                             position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                             remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -522,7 +527,7 @@ public class udpCommNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", position);
                             req.put("length", remainingSize);
-                            send(req, ip, udpPort, dsServerSocket);
+                            send(req, ip, udpPort, dsServerSocket, ss, as);
                         }
                     }
                 } else
@@ -533,7 +538,7 @@ public class udpCommNProcess extends Thread
                     reply.put("pathName", pathName);
                     reply.put("message", "file with same content");
                     reply.put("status", false);
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, udpPort, dsServerSocket, ss, as);
                 }
             }
             // Moved from Client
@@ -567,7 +572,7 @@ public class udpCommNProcess extends Thread
                 rep.put("content", content);
                 rep.put("message", "successful read");
                 rep.put("status", true);
-                send(rep, ip, udpPort, dsServerSocket);
+                send(rep, ip, udpPort, dsServerSocket, ss, as);
 
             } else if (command.get("command").toString().equals("DIRECTORY_CREATE_RESPONSE") ||
                     command.get("command").toString().equals("DIRECTORY_DELETE_RESPONSE") ||
@@ -585,7 +590,7 @@ public class udpCommNProcess extends Thread
                 JSONObject reply = new JSONObject();
                 reply.put("command", "INVALID_PROTOCOL");
                 reply.put("message", "message must contain a command field as string");
-                send(reply, ip, udpPort, dsServerSocket);
+                send(reply, ip, udpPort, dsServerSocket, ss, as);
             }
 
         } catch (SocketException e)
@@ -605,13 +610,27 @@ public class udpCommNProcess extends Thread
         }
     }
 
-    public static void send(JSONObject message, InetAddress ip, int udpPort, DatagramSocket dsServerSocket) throws IOException
+    public static void send(JSONObject message, InetAddress ip, int udpPort,
+                            DatagramSocket dsServerSocket, socketStorage ss, ackStorage as)
+                                throws IOException
     {
         //DatagramSocket dsSocket = new DatagramSocket();
         byte[] buf = message.toJSONString().getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
         dsServerSocket.send(packet);
         System.out.println("udp sent: " + message.toJSONString());
+
+        //Error handling
+        ackObject ack = new ackObject(message, ip, udpPort);
+        if (!as.getAckMap().containsKey(ip.getHostAddress()))
+        {
+            //System.out.println("no such host");
+            ArrayList<ackObject> newACKlist = new ArrayList<>();
+            as.getAckMap().put(ip.getHostAddress(), newACKlist);
+        }
+        as.getAckMap().get(ip.getHostAddress()).add(ack);
+        UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss);
+        errorHandling.start();
     }
 
 }
