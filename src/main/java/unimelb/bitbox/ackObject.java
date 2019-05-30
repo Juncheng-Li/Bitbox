@@ -61,7 +61,7 @@ public class ackObject
                 && serverPacket.getAddress().getHostAddress().equals(getIp()))
         {
             //System.out.println("desired response");
-            setAnswered(true);
+            this.answered = true;
         }
         /*
         else

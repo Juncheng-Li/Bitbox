@@ -55,8 +55,10 @@ public class udpClientServer extends Thread
             hs.put("hostPort", hostPort);
             buf = hs.toJSONString().getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-            dsSocket.send(packet);  //IOException  //need "/n" ?
+            dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
             System.out.println("udp sent: " + hs);
+
+
             // Handle packet loss
             ackObject ack = new ackObject(hs, ip, udpPort);
             ArrayList<ackObject> newACKlist = new ArrayList<>();
@@ -82,23 +84,12 @@ public class udpClientServer extends Thread
                         serverPacket.getSocketAddress().toString().replace("/", "") +
                         "): " + message);
                 //System.out.println(serverPacket.getLength());
-
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
                 // Match ACK
-                //ack.match(command, serverPacket);
-
                 for (ackObject i : as.getAckMap().get(serverPacket.getAddress().getHostAddress()))
                 {
-                    String currentCOmmand = command.get("command").toString();
-                    System.out.println(currentCOmmand);
-                    if (i.desiredRespond().equals(currentCOmmand));
-                    {
-                        System.out.println(i.desiredRespond());
-
-                        System.out.println("True!!!!!!!!!!");
-                        i.setAnswered(true);
-                    }
+                    i.match(command, serverPacket);
                 }
 
                 if (command.getClass().getName().equals("org.json.simple.JSONObject"))
@@ -130,7 +121,7 @@ public class udpClientServer extends Thread
                         JSONObject hs_res = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
                         hs_res.put("hostPort", hostPort); //use the hostPort defined in the handshake
-                        send(hs_res, clientIp, clientPort);
+                        send(hs_res, clientIp, clientPort, dsServerSocket);
 
                         HostPort hp = new HostPort(clientIp.getHostAddress() + ":" + clientPort);
                         ss.add(hp);
@@ -138,7 +129,7 @@ public class udpClientServer extends Thread
                                 Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
                     } else
                     {
-                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f);
+                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f, dsServerSocket);
                         process_T.start();
                     }
                 } else
@@ -147,7 +138,7 @@ public class udpClientServer extends Thread
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
                     reply.put("message", "message must contain a command field as string");
-                    send(reply, ip, udpPort);
+                    send(reply, ip, udpPort, dsServerSocket);
                 }
 
                 //Refresh receive block
@@ -191,27 +182,12 @@ public class udpClientServer extends Thread
     }
 
 
-    private static void send(JSONObject message, InetAddress ip, int udpPort) throws IOException
+    private static void send(JSONObject message, InetAddress ip, int udpPort, DatagramSocket dsServerSocket) throws IOException
     {
-        DatagramSocket dsSocket = new DatagramSocket();
+        //DatagramSocket dsSocket = new DatagramSocket();
         byte[] buf = message.toJSONString().getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-        dsSocket.send(packet);
+        dsServerSocket.send(packet);
         System.out.println("udp sent: " + message.toJSONString());
-    }
-
-    private static void handShake(int udpServerPort, InetAddress ip, int udpPort, DatagramSocket dsSocket) throws IOException
-    {
-        byte[] buf = null;
-        JSONObject hs = new JSONObject();
-        JSONObject hostPort = new JSONObject();
-        hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
-        hostPort.put("port", udpServerPort);
-        hs.put("command", "HANDSHAKE_REQUEST");
-        hs.put("hostPort", hostPort);
-        buf = hs.toJSONString().getBytes();
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-        dsSocket.send(packet);  //IOException  //need "/n" ?
-        System.out.println("udp sent: " + hs);
     }
 }
