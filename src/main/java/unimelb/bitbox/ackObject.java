@@ -19,12 +19,6 @@ public class ackObject
 
     ackObject(JSONObject request, InetAddress ip, int udpPort)
     {
-        this.ip = ip;
-        this.udpPort = udpPort;
-    }
-
-    public void set(JSONObject request, InetAddress ip, int udpPort)
-    {
         this.request = request;
         this.ip = ip;
         this.udpPort = udpPort;

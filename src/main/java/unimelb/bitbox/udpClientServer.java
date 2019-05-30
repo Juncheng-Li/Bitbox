@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Timer;
 
 public class udpClientServer extends Thread
@@ -40,7 +41,8 @@ public class udpClientServer extends Thread
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
             DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
-            ackObject ack = new ackObject();
+            ackStorage as = new ackStorage();
+
 
 
             // udp Client side
@@ -56,7 +58,10 @@ public class udpClientServer extends Thread
             dsSocket.send(packet);  //IOException  //need "/n" ?
             System.out.println("udp sent: " + hs);
             // Handle packet loss
-            ack.set(hs, ip, udpPort);
+            ackObject ack = new ackObject(hs, ip, udpPort);
+            ArrayList<ackObject> newACKlist = new ArrayList<>();
+            as.getAckMap().put(ip.getHostAddress(), newACKlist);
+            as.getAckMap().get(ip.getHostAddress()).add(ack);
             UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
             errorHandling.start();
 
@@ -70,12 +75,8 @@ public class udpClientServer extends Thread
             while (true)
             {
                 serverPacket = new DatagramPacket(receive, receive.length);
-
-                // If time out N seconds
-
-
                 dsServerSocket.receive(serverPacket);  //
-                // if receive message
+                // If receive message
                 StringBuilder message = data(receive);
                 System.out.println("udpClientServer(" +
                         serverPacket.getSocketAddress().toString().replace("/", "") +
@@ -84,7 +85,21 @@ public class udpClientServer extends Thread
 
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
-                ack.match(command, serverPacket);
+                // Match ACK
+                //ack.match(command, serverPacket);
+
+                for (ackObject i : as.getAckMap().get(serverPacket.getAddress().getHostAddress()))
+                {
+                    String currentCOmmand = command.get("command").toString();
+                    System.out.println(currentCOmmand);
+                    if (i.desiredRespond().equals(currentCOmmand));
+                    {
+                        System.out.println(i.desiredRespond());
+
+                        System.out.println("True!!!!!!!!!!");
+                        i.setAnswered(true);
+                    }
+                }
 
                 if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                 {
@@ -109,9 +124,9 @@ public class udpClientServer extends Thread
                     {
                         // get client Ip and port from HANDSHAKE_REQUEST
                         clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        System.out.println("clientIP: " + clientIp);
+                        System.out.println("newClientIP: " + clientIp);
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
-                        System.out.println("clientPort" + clientPort);
+                        System.out.println("newClientPort: " + clientPort);
                         JSONObject hs_res = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
                         hs_res.put("hostPort", hostPort); //use the hostPort defined in the handshake
@@ -145,7 +160,12 @@ public class udpClientServer extends Thread
         } catch (IOException e)
         {
             e.printStackTrace();
-        } finally
+        } catch (NullPointerException e)
+        {
+            e.printStackTrace();
+            System.out.println("Received message error, Null pointer");
+        }
+        finally
         {
             // kill timer
             timer.cancel();
