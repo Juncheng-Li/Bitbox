@@ -62,6 +62,7 @@ public class ackObject
                 && serverPacket.getPort() == udpPort)
         {
             //System.out.println("desired response");
+            System.out.println("<<<<<<<<<!");
             this.answered = true;
         }
         /*
