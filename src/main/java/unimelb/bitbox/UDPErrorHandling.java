@@ -1,8 +1,6 @@
 package unimelb.bitbox;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import unimelb.bitbox.util.Configuration;
 import unimelb.bitbox.util.HostPort;
 
@@ -23,9 +21,9 @@ public class UDPErrorHandling extends Thread
     private JSONObject respondCommand = null;
     private socketStorage ss;
     private DatagramPacket serverPacket = null;
-    private ackStorage ack;
+    private ackObject ack;
 
-    UDPErrorHandling(JSONObject command, ackStorage ack, socketStorage ss)
+    UDPErrorHandling(JSONObject command, ackObject ack, socketStorage ss)
     {
         this.command = command;
         this.ack = ack;

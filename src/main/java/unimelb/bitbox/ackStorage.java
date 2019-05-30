@@ -1,62 +1,23 @@
 package unimelb.bitbox;
 
-import org.json.simple.JSONObject;
-
-import java.net.InetAddress;
+import java.util.*;
 
 public class ackStorage
 {
-    private JSONObject request = new JSONObject();
-    private InetAddress ip = null;
-    private int udpPort;
-    private boolean answered;
+    private Map<String, ArrayList<ackObject>> ackMap = new HashMap<>();
 
-    public void init()
+    ackStorage()
     {
-        answered = false;
+
     }
 
-    public void set(JSONObject request, InetAddress ip, int udpPort)
+    public Map<String, ArrayList<ackObject>> getAckMap()
     {
-        this.request = request;
-        this.ip = ip;
-        this.udpPort = udpPort;
+        return ackMap;
     }
 
-    public InetAddress getInetIp()
+    public void setAckMap(Map<String, ArrayList<ackObject>> ackMap)
     {
-        return ip;
+        this.ackMap = ackMap;
     }
-
-    public String getIp()
-    {
-        return ip.getHostAddress();
-    }
-
-    public int getUdpPort()
-    {
-        return udpPort;
-    }
-
-    public String desiredRespond()
-    {
-        String name = request.get("command").toString();
-        return name.substring(0, name.lastIndexOf("_")) + "_RESPONSE";
-    }
-
-    public void setAnswered(boolean answered)
-    {
-        this.answered = answered;
-    }
-
-    public boolean getAnswered()
-    {
-        return answered;
-    }
-    /*
-    public String getRequestName()
-    {
-        return request.get("command").toString();
-    }
-     */
 }

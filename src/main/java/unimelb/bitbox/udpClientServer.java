@@ -10,11 +10,7 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.Timer;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class udpClientServer extends Thread
 {
@@ -44,7 +40,7 @@ public class udpClientServer extends Thread
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
             DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
-            ackStorage ack = new ackStorage();
+            ackObject ack = new ackObject();
 
 
             // udp Client side
@@ -60,10 +56,11 @@ public class udpClientServer extends Thread
             dsSocket.send(packet);  //IOException  //need "/n" ?
             System.out.println("udp sent: " + hs);
             // Handle packet loss
-            ack.init();
             ack.set(hs, ip, udpPort);
             UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
             errorHandling.start();
+
+
 
             //ServerSide
             // Step 1 : Create a socket to listen
@@ -87,16 +84,7 @@ public class udpClientServer extends Thread
 
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
-                if (command.get("command").toString().equals(ack.desiredRespond())
-                        && serverPacket.getAddress().getHostAddress().equals(ack.getIp()))
-                {
-                    //System.out.println("desired response");
-                    ack.setAnswered(true);
-                }
-                else
-                {
-                    System.out.println("not desired response.");
-                }
+                ack.match(command, serverPacket);
 
                 if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                 {
