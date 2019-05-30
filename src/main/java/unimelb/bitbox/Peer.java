@@ -37,9 +37,10 @@ public class Peer
 
         int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
         DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
+        ackStorage as = new ackStorage();
 
         socketStorage ss = new socketStorage();
-        ServerMain f = new ServerMain(ss, dsServerSocket);
+        ServerMain f = new ServerMain(ss, dsServerSocket, as);
 
         // Peer part
         if (Configuration.getConfigurationValue("mode").equals("tcp"))
@@ -81,7 +82,7 @@ public class Peer
                 HostPort peer_hp = new HostPort(peer);
                 InetAddress ip = InetAddress.getByName(peer_hp.host); //UnknownHostException
                 int udpPort = peer_hp.port;
-                udpClientServer udpCS_T = new udpClientServer(ip, udpPort, f, ss, dsServerSocket);
+                udpClientServer udpCS_T = new udpClientServer(ip, udpPort, f, ss, dsServerSocket, as);
                 udpCS_T.start();
             }
         }

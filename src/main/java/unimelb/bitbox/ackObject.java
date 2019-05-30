@@ -58,7 +58,8 @@ public class ackObject
     public void match(JSONObject command, DatagramPacket serverPacket)
     {
         if (command.get("command").toString().equals(desiredRespond())
-                && serverPacket.getAddress().getHostAddress().equals(getIp()))
+                && serverPacket.getAddress().getHostAddress().equals(getIp())
+                && serverPacket.getPort() == udpPort)
         {
             //System.out.println("desired response");
             this.answered = true;

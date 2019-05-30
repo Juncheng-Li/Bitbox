@@ -23,14 +23,16 @@ public class udpClientServer extends Thread
     private int udpPort;
     private socketStorage ss;
     private DatagramSocket dsServerSocket = null;
+    private ackStorage as;
 
-    udpClientServer(InetAddress ip, int udpPort, ServerMain f, socketStorage ss, DatagramSocket dsServerSocket)
+    udpClientServer(InetAddress ip, int udpPort, ServerMain f, socketStorage ss, DatagramSocket dsServerSocket, ackStorage as)
     {
         this.ip = ip;
         this.udpPort = udpPort;
         this.f = f;
         this.ss = ss;
         this.dsServerSocket = dsServerSocket;
+        this.as = as;
     }
 
     public void run()
@@ -38,13 +40,11 @@ public class udpClientServer extends Thread
         try
         {
             // Step 1: Preparing
-            //DatagramSocket dsSocket = new DatagramSocket();  //SocketException  //self socket]
             byte[] buf = null;
             InetAddress clientIp = null;
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
-            //DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
-            ackStorage as = new ackStorage();
+
 
 
 
@@ -64,8 +64,12 @@ public class udpClientServer extends Thread
 
             // Handle packet loss
             ackObject ack = new ackObject(hs, ip, udpPort);
-            ArrayList<ackObject> newACKlist = new ArrayList<>();
-            as.getAckMap().put(ip.getHostAddress(), newACKlist);
+            if (!as.getAckMap().containsKey(ip.getHostAddress()))
+            {
+                //System.out.println("no such host");
+                ArrayList<ackObject> newACKlist = new ArrayList<>();
+                as.getAckMap().put(ip.getHostAddress(), newACKlist);
+            }
             as.getAckMap().get(ip.getHostAddress()).add(ack);
             UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
             errorHandling.start();
@@ -106,8 +110,21 @@ public class udpClientServer extends Thread
                         HostPort hostP = new HostPort(h_p);
                         ss.add(hostP);
                         // Synchronizing Events after Handshake!!!
-                        timer.schedule(new SyncEvents(f), 0,
-                                Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                        boolean contains = false;
+                        for (HostPort socket : ss.getUdpSockets())
+                        {
+                            if (socket.toString().equals(hostP.toString()))
+                            {
+                                System.out.println("Same");
+                                contains = true;
+                            }
+                        }
+                        // Sync only starts when client does not in the list
+                        if (!contains)
+                        {
+                            timer.schedule(new SyncEvents(f), 0,
+                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                        }
                     } else if (command.get("command").toString().equals("CONNECTION_REFUSED"))
                     {
                         System.out.println("Peer(" +
@@ -187,7 +204,6 @@ public class udpClientServer extends Thread
 
     private static void send(JSONObject message, InetAddress ip, int udpPort, DatagramSocket dsServerSocket) throws IOException
     {
-        //DatagramSocket dsSocket = new DatagramSocket();
         byte[] buf = message.toJSONString().getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
         dsServerSocket.send(packet);

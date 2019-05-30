@@ -45,7 +45,21 @@ public class socketStorage
 
     public void add(HostPort udpSocket)
     {
-        udpSockets.add(udpSocket);
+        boolean contains = false;
+        for(HostPort socket : udpSockets)
+        {
+            if (socket.toString().equals(udpSocket.toString()))
+            {
+                System.out.println("Same udp socket already exists, skip adding to socket map");
+                contains = true;
+            }
+        }
+
+        if (!contains)
+        {
+            udpSockets.add(udpSocket);
+        }
+
     }
 
     public void remove(HostPort udpSocket)
