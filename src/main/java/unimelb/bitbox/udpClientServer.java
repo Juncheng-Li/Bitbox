@@ -45,6 +45,7 @@ public class udpClientServer extends Thread
 
             for (String peer : peersArray)
             {
+                System.out.println(peer);
                 HostPort peer_hp = new HostPort(peer);
                 InetAddress ip = null;
                 if (peer_hp.host.equals("localhost"))
@@ -68,7 +69,7 @@ public class udpClientServer extends Thread
                 buf = hs.toJSONString().getBytes();
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
                 dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
-                System.out.println("udp sent: " + hs);
+                System.out.println("udp sent " + ip.getHostAddress() + ":" + udpPort + " : " + hs);
 
                 // Handle packet loss
                 ackObject ack = new ackObject(hs, ip, udpPort);
