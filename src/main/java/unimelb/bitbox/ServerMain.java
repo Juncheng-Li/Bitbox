@@ -255,7 +255,7 @@ public class ServerMain implements FileSystemObserver
                 as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
             }
             as.getAckMap().get(ip.getHostAddress()).add(ack);
-            UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss);
+            UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss, dsServerSocket);
             errorHandling.start();
         }
     }

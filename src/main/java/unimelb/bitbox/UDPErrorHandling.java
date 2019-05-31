@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import unimelb.bitbox.util.Configuration;
 import unimelb.bitbox.util.HostPort;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -15,19 +16,20 @@ import java.util.TimerTask;
 public class UDPErrorHandling extends Thread
 {
     private JSONObject command = new JSONObject();
-    private boolean respond = false;
     private Timer timer = new Timer();
     private int count = 1;
     private JSONObject respondCommand = null;
     private socketStorage ss;
     private DatagramPacket serverPacket = null;
     private ackObject ack;
+    private DatagramSocket dsServerSocket;
 
-    UDPErrorHandling(JSONObject command, ackObject ack, socketStorage ss)
+    UDPErrorHandling(JSONObject command, ackObject ack, socketStorage ss, DatagramSocket dsServerSocket)
     {
         this.command = command;
         this.ack = ack;
         this.ss = ss;
+        this.dsServerSocket = dsServerSocket;
     }
 
 
@@ -58,7 +60,7 @@ public class UDPErrorHandling extends Thread
                     return;
                 }
 
-                send(command, ack.getInetIp(), ack.getUdpPort());
+                send(command, ack.getInetIp(), ack.getUdpPort(), dsServerSocket);
                 System.out.println("<<<Detect packet loss!>>> - Retransmitting to " + ack.getInetIp().getHostAddress()
                                     + ":" + ack.getUdpPort() + " time " + count + ": " + command.toJSONString());
 
@@ -98,14 +100,14 @@ public class UDPErrorHandling extends Thread
     }
 
 
-    private static void send(JSONObject message, InetAddress ip, int udpPort)
+    private static void send(JSONObject message, InetAddress ip, int udpPort, DatagramSocket dsServerSocket)
     {
         try
         {
-            DatagramSocket dsSocket = new DatagramSocket();
+            //DatagramSocket dsSocket = new DatagramSocket();
             byte[] buf = message.toJSONString().getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-            dsSocket.send(packet);
+            dsServerSocket.send(packet);
         }
         catch (IOException e)
         {
