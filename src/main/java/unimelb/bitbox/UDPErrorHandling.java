@@ -59,7 +59,7 @@ public class UDPErrorHandling extends Thread
                 }
 
                 send(command, ack.getInetIp(), ack.getUdpPort());
-                System.out.println("<<<Detect packet loss!>>> - Retransmitting to" + ack.getInetIp().getHostAddress()
+                System.out.println("<<<Detect packet loss!>>> - Retransmitting to " + ack.getInetIp().getHostAddress()
                                     + ":" + ack.getUdpPort() + " time " + count + ": " + command.toJSONString());
 
                 count++;
