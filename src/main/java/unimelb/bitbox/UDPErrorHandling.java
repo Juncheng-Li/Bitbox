@@ -33,7 +33,7 @@ public class UDPErrorHandling extends Thread
 
     public void run()
     {
-        System.out.println(">>>>>>>>>>");
+        //System.out.println(">>>>>>>>>>");
 
         TimerTask tt = new TimerTask()
         {
