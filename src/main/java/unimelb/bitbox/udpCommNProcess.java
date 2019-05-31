@@ -29,12 +29,12 @@ public class udpCommNProcess extends Thread
                            DatagramSocket dsServerSocket, socketStorage ss, ackStorage as)
     {
         this.command = command;
-        this.ip = ip;
-        this.udpPort = udpPort;
         this.f = f;
         this.dsServerSocket = dsServerSocket;
         this.ss = ss;
         this.as = as;
+        this.ip = ip;
+        this.udpPort = udpPort;
     }
 
     public void run()
@@ -306,7 +306,7 @@ public class udpCommNProcess extends Thread
                             req.put("pathName", pathName);
                             req.put("position", 0);
                             req.put("length", fileSize);
-                            send(req, ip, udpPort, dsServerSocket, ss, as);
+                            send(req,  ip, udpPort, dsServerSocket, ss, as);
                         } else
                         {
                             long remainingSize = fileSize;
@@ -320,7 +320,7 @@ public class udpCommNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", Long.parseLong(Configuration.getConfigurationValue("blockSize")));
-                                send(req, ip, udpPort, dsServerSocket, ss, as);
+                                send(req,  ip, udpPort, dsServerSocket, ss, as);
                                 // Update position
                                 position = position + Long.parseLong(Configuration.getConfigurationValue("blockSize"));
                                 remainingSize = remainingSize - Long.parseLong(Configuration.getConfigurationValue("blockSize"));
@@ -341,7 +341,7 @@ public class udpCommNProcess extends Thread
                                 req.put("pathName", pathName);
                                 req.put("position", position);
                                 req.put("length", remainingSize);
-                                send(req, ip, udpPort, dsServerSocket, ss, as);
+                                send(req,  ip, udpPort, dsServerSocket, ss, as);
                             }
                         }
                     }
@@ -620,6 +620,22 @@ public class udpCommNProcess extends Thread
         System.out.println("udp sent: " + message.toJSONString());
     }
 
+    /*
+    public static void send(JSONObject message, socketStorage ss,
+                            DatagramSocket dsServerSocket) throws IOException
+    {
+        for (HostPort hp : ss.getUdpSockets())
+        {
+            InetAddress ip = InetAddress.getByName(hp.host);
+            int port = hp.port;
+            byte[] buf = message.toJSONString().getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+            dsServerSocket.send(packet);
+            System.out.println("udp sent: " + message.toJSONString());
+        }
+    }
+     */
+
 
     public static void send(JSONObject message, InetAddress ip, int udpPort,
                             DatagramSocket dsServerSocket, socketStorage ss, ackStorage as)
@@ -643,5 +659,33 @@ public class udpCommNProcess extends Thread
         UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss);
         errorHandling.start();
     }
+
+    /*
+    public static void send(JSONObject message, DatagramSocket dsServerSocket,
+                            socketStorage ss, ackStorage as) throws IOException
+    {
+        for (HostPort hp : ss.getUdpSockets())
+        {
+            InetAddress ip = InetAddress.getByName(hp.host);
+            int port = hp.port;
+            byte[] buf = message.toJSONString().getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+            dsServerSocket.send(packet);
+            System.out.println("udp sent: " + message.toJSONString());
+
+            //Error handling
+            ackObject ack = new ackObject(message, ip, port);
+            if (!as.getAckMap().containsKey(ip.getHostAddress()))
+            {
+                //System.out.println("no such host");
+                ArrayList<ackObject> newACKlist = new ArrayList<>();
+                as.getAckMap().put(ip.getHostAddress(), newACKlist);
+            }
+            as.getAckMap().get(ip.getHostAddress()).add(ack);
+            UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss);
+            errorHandling.start();
+        }
+    }
+     */
 
 }

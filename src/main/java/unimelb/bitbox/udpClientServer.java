@@ -19,16 +19,12 @@ public class udpClientServer extends Thread
     private JSONParser parser = new JSONParser();
     private Timer timer = new Timer();
     private ServerMain f;
-    private InetAddress ip = null;
-    private int udpPort;
     private socketStorage ss;
     private DatagramSocket dsServerSocket = null;
     private ackStorage as;
 
-    udpClientServer(InetAddress ip, int udpPort, ServerMain f, socketStorage ss, DatagramSocket dsServerSocket, ackStorage as)
+    udpClientServer(ServerMain f, socketStorage ss, DatagramSocket dsServerSocket, ackStorage as)
     {
-        this.ip = ip;
-        this.udpPort = udpPort;
         this.f = f;
         this.ss = ss;
         this.dsServerSocket = dsServerSocket;
@@ -44,35 +40,48 @@ public class udpClientServer extends Thread
             InetAddress clientIp = null;
             int clientPort;
             int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
+            String peers = Configuration.getConfigurationValue("peers");
+            String[] peersArray = peers.split(", ");
 
-
-
-
-            // udp Client side
-            // Handshake - fixed!
-            JSONObject hs = new JSONObject();
-            JSONObject hostPort = new JSONObject();
-            hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
-            hostPort.put("port", udpServerPort);
-            hs.put("command", "HANDSHAKE_REQUEST");
-            hs.put("hostPort", hostPort);
-            buf = hs.toJSONString().getBytes();
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-            dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
-            System.out.println("udp sent: " + hs);
-
-
-            // Handle packet loss
-            ackObject ack = new ackObject(hs, ip, udpPort);
-            if (!as.getAckMap().containsKey(ip.getHostAddress()))
+            for (String peer : peersArray)
             {
-                //System.out.println("no such host");
-                ArrayList<ackObject> newACKlist = new ArrayList<>();
-                as.getAckMap().put(ip.getHostAddress(), newACKlist);
+                HostPort peer_hp = new HostPort(peer);
+                InetAddress ip = null;
+                if (peer_hp.host.equals("localhost"))
+                {
+                    ip = InetAddress.getLocalHost();
+                }
+                else
+                {
+                    ip = InetAddress.getByName(peer_hp.host); //UnknownHostException
+                }
+                int udpPort = peer_hp.port;
+
+                // udp Client side
+                // Handshake - fixed!
+                JSONObject hs = new JSONObject();
+                JSONObject hostPort = new JSONObject();
+                hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
+                hostPort.put("port", udpServerPort);
+                hs.put("command", "HANDSHAKE_REQUEST");
+                hs.put("hostPort", hostPort);
+                buf = hs.toJSONString().getBytes();
+                DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
+                dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
+                System.out.println("udp sent: " + hs);
+
+                // Handle packet loss
+                ackObject ack = new ackObject(hs, ip, udpPort);
+                if (!as.getAckMap().containsKey(ip.getHostAddress()))
+                {
+                    //System.out.println("no such host");
+                    ArrayList<ackObject> newACKlist = new ArrayList<>();
+                    as.getAckMap().put(ip.getHostAddress(), newACKlist);
+                }
+                as.getAckMap().get(ip.getHostAddress()).add(ack);
+                UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
+                errorHandling.start();
             }
-            as.getAckMap().get(ip.getHostAddress()).add(ack);
-            UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
-            errorHandling.start();
 
 
 
@@ -94,10 +103,14 @@ public class udpClientServer extends Thread
                 // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
                 // Match ACK
-                for (ackObject i : as.getAckMap().get(serverPacket.getAddress().getHostAddress()))
+                if (as.getAckMap().containsKey(serverPacket.getAddress().getHostAddress()))
                 {
-                    i.match(command, serverPacket);
+                    for (ackObject i : as.getAckMap().get(serverPacket.getAddress().getHostAddress()))
+                    {
+                        i.match(command, serverPacket);
+                    }
                 }
+
 
                 if (command.getClass().getName().equals("org.json.simple.JSONObject"))
                 {
@@ -129,6 +142,10 @@ public class udpClientServer extends Thread
                         System.out.println("newClientIP: " + clientIp);
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
                         System.out.println("newClientPort: " + clientPort);
+                        // ready local host port
+                        JSONObject hostPort = new JSONObject();
+                        hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
+                        hostPort.put("port", udpServerPort);
                         JSONObject hs_res = new JSONObject();
                         hs_res.put("command", "HANDSHAKE_RESPONSE");
                         hs_res.put("hostPort", hostPort); //use the hostPort defined in the handshake
@@ -143,16 +160,20 @@ public class udpClientServer extends Thread
                         }
                     } else
                     {
-                        udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f, dsServerSocket, ss, as);
+                        InetAddress ip = serverPacket.getAddress();
+                        int port = serverPacket.getPort();
+                        udpCommNProcess process_T = new udpCommNProcess(command, ip, port, f, dsServerSocket, ss, as);
                         process_T.start();
                     }
                 } else
                 {
                     // If not a JSONObject
+                    InetAddress ip = serverPacket.getAddress();
+                    int port = serverPacket.getPort();
                     JSONObject reply = new JSONObject();
                     reply.put("command", "INVALID_PROTOCOL");
                     reply.put("message", "message must contain a command field as string");
-                    send(reply, ip, udpPort, dsServerSocket);
+                    send(reply, ip, port, dsServerSocket);
                 }
 
                 //Refresh receive block

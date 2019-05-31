@@ -31,7 +31,7 @@ public class Peer
         Security.addProvider(new BouncyCastleProvider());
         JSONParser parser = new JSONParser();
         String peers = Configuration.getConfigurationValue("peers");
-        String[] peersArray = peers.split(" ");
+        String[] peersArray = peers.split(", ");
         ArrayList<Socket> socketList = new ArrayList<>();
         JSONArray connectedPeer = new JSONArray();
 
@@ -82,7 +82,7 @@ public class Peer
                 HostPort peer_hp = new HostPort(peer);
                 InetAddress ip = InetAddress.getByName(peer_hp.host); //UnknownHostException
                 int udpPort = peer_hp.port;
-                udpClientServer udpCS_T = new udpClientServer(ip, udpPort, f, ss, dsServerSocket, as);
+                udpClientServer udpCS_T = new udpClientServer(f, ss, dsServerSocket, as);
                 udpCS_T.start();
             }
         }
