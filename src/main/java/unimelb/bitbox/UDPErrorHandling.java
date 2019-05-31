@@ -53,7 +53,7 @@ public class UDPErrorHandling extends Thread
                     return;
                 }
 
-                if (count > Integer.parseInt(Configuration.getConfigurationValue("tryTimes")))
+                if (count > Integer.parseInt(Configuration.getConfigurationValue("udpRetries")))
                 {
                     System.out.println("udpPeer(" + ack.getIp() + ":" + ack.getUdpPort() + ") lost... Removing it from socket list");
                     HostPort udpSocket = new HostPort(ack.getIp() + ":" + ack.getUdpPort());
@@ -70,7 +70,7 @@ public class UDPErrorHandling extends Thread
                 count++;
             }
         };
-        int timeout = 1000 * Integer.parseInt(Configuration.getConfigurationValue("timeout"));
+        int timeout = 1000 * Integer.parseInt(Configuration.getConfigurationValue("udpTimeout"));
         timer.schedule(tt, timeout, timeout);
 
     }
