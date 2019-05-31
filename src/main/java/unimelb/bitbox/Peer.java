@@ -367,6 +367,9 @@ public class Peer
                 } catch (InvalidKeySpecException e)
                 {
                     e.printStackTrace();
+                } catch (NullPointerException e)
+                {
+                    System.out.println("Client invalid request");
                 }
             }
         } catch (SocketException ex)

@@ -106,7 +106,7 @@ public class Client
             {
                 //Get PrivateKey, ready to deEncrypt AES
                 Security.addProvider(new BouncyCastleProvider());
-                System.out.println("BouncyCastle provider added.");
+                //System.out.println("BouncyCastle provider added.");
                 KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
                 try
                 {

@@ -7,19 +7,34 @@ import org.json.simple.parser.ParseException;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import javax.crypto.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 public class wrapPayload
 {
     public static JSONObject payload(JSONObject request, SecretKey secretKey) throws NoSuchAlgorithmException, NoSuchPaddingException,
-            InvalidKeyException, IllegalBlockSizeException, BadPaddingException
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException
     {
         //Encrypt the JSONObject
-        Cipher cipherAES = Cipher.getInstance("AES");
+        Cipher cipherAES = Cipher.getInstance("AES/ECB/NoPadding");
         cipherAES.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] EncryptedJSON = cipherAES.doFinal(request.toJSONString().getBytes());
+
+        SecureRandom random = new SecureRandom();
+        String RequestNewline = request.toJSONString() + "\n";
+        int blockSize = 16;
+        byte[] paddingBlock = new byte[blockSize - (RequestNewline.getBytes().length % blockSize)];
+        random.nextBytes(paddingBlock);
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        byteOut.write(RequestNewline.getBytes());
+        byteOut.write(paddingBlock);
+        byte[] padded = byteOut.toByteArray();
+
+        //byte[] EncryptedJSON = cipherAES.doFinal(request.toJSONString().getBytes());
+        byte[] EncryptedJSON = cipherAES.doFinal(padded);
         String EncryptedJSON_Base64 = Base64.getEncoder().encodeToString(EncryptedJSON);
         //Prepare payload
         JSONObject payLoad = new JSONObject();
@@ -34,11 +49,14 @@ public class wrapPayload
         //Decode the JSONObject
         byte[] encryptedJSON = Base64.getDecoder().decode(payload.get("payload").toString());
         //Decrypt the JSONObject
-        Cipher cipherAES = Cipher.getInstance("AES");
+        Cipher cipherAES = Cipher.getInstance("AES/ECB/NoPadding");
         cipherAES.init(Cipher.DECRYPT_MODE, secretKey);
         byte[] decryptedJSON = cipherAES.doFinal(encryptedJSON);
+
         //Parse to String then to JSON
-        String JsonString = new String(decryptedJSON);
+        String padded = new String(decryptedJSON);
+        String JsonString = padded.substring(0, padded.indexOf("\n"));
+
         JSONParser parser = new JSONParser();
         JSONObject Json = (JSONObject) parser.parse(JsonString);
         System.out.println("Receive decrypted: " + Json);
