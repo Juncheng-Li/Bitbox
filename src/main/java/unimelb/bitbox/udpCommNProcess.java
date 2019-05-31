@@ -1,6 +1,5 @@
 package unimelb.bitbox;
 
-import com.sun.security.ntlm.Server;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import unimelb.bitbox.util.Configuration;

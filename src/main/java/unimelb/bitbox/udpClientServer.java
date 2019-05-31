@@ -52,7 +52,7 @@ public class udpClientServer extends Thread
             // Handshake - fixed!
             JSONObject hs = new JSONObject();
             JSONObject hostPort = new JSONObject();
-            hostPort.put("host", Configuration.getConfigurationValue("advertisedName"));
+            hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
             hostPort.put("port", udpServerPort);
             hs.put("command", "HANDSHAKE_REQUEST");
             hs.put("hostPort", hostPort);
@@ -108,17 +108,8 @@ public class udpClientServer extends Thread
                         String tempPort = hp.get("port").toString();
                         String h_p = tempIP + ":" + tempPort;
                         HostPort hostP = new HostPort(h_p);
-                        ss.add(hostP);
-                        // Synchronizing Events after Handshake!!!
-                        boolean contains = false;
-                        for (HostPort socket : ss.getUdpSockets())
-                        {
-                            if (socket.toString().equals(hostP.toString()))
-                            {
-                                System.out.println("Same");
-                                contains = true;
-                            }
-                        }
+                        boolean contains = ss.add(hostP);
+
                         // Sync only starts when client does not in the list
                         if (!contains)
                         {
@@ -144,9 +135,12 @@ public class udpClientServer extends Thread
                         send(hs_res, clientIp, clientPort, dsServerSocket);
 
                         HostPort hp = new HostPort(clientIp.getHostAddress() + ":" + clientPort);
-                        ss.add(hp);
-                        timer.schedule(new SyncEvents(f), 0,
-                                Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                        boolean contains = ss.add(hp);
+                        if (!contains)
+                        {
+                            timer.schedule(new SyncEvents(f), 0,
+                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                        }
                     } else
                     {
                         udpCommNProcess process_T = new udpCommNProcess(command, ip, udpPort, f, dsServerSocket, ss, as);

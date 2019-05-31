@@ -108,7 +108,8 @@ public class UDPErrorHandling extends Thread
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Host seems to be down");
+            //e.printStackTrace();
         }
     }
 

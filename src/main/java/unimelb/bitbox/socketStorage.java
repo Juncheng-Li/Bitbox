@@ -43,7 +43,7 @@ public class socketStorage
         this.udpSockets = udpSockets;
     }
 
-    public void add(HostPort udpSocket)
+    public boolean add(HostPort udpSocket)
     {
         boolean contains = false;
         for(HostPort socket : udpSockets)
@@ -60,6 +60,7 @@ public class socketStorage
             udpSockets.add(udpSocket);
         }
 
+        return contains;
     }
 
     public void remove(HostPort udpSocket)
