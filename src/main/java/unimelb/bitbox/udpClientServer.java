@@ -79,6 +79,19 @@ public class udpClientServer extends Thread
                     ArrayList<ackObject> newACKlist = new ArrayList<>();
                     as.getAckMap().put(ip.getHostAddress(), newACKlist);
                 }
+                // remove duplicated same content, diff obj ack
+                int duplicatedIndex = -1;
+                for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
+                {
+                    if (aa.getUdpPort() == ack.getUdpPort() && aa.desiredRespond().equals(ack.desiredRespond()))
+                    {
+                        duplicatedIndex = as.getAckMap().get(ip.getHostAddress()).indexOf(aa);
+                    }
+                }
+                if (duplicatedIndex != -1)
+                {
+                    as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
+                }
                 as.getAckMap().get(ip.getHostAddress()).add(ack);
                 UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss);
                 errorHandling.start();
