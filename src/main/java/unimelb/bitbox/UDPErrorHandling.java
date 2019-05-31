@@ -24,12 +24,15 @@ public class UDPErrorHandling extends Thread
     private ackObject ack;
     private DatagramSocket dsServerSocket;
 
-    UDPErrorHandling(JSONObject command, ackObject ack, socketStorage ss, DatagramSocket dsServerSocket)
+    private ackStorage as;
+
+    UDPErrorHandling(JSONObject command, ackObject ack, socketStorage ss, DatagramSocket dsServerSocket, ackStorage as)
     {
         this.command = command;
         this.ack = ack;
         this.ss = ss;
         this.dsServerSocket = dsServerSocket;
+        this.as = as;
     }
 
 
@@ -60,7 +63,7 @@ public class UDPErrorHandling extends Thread
                     return;
                 }
 
-                send(command, ack.getInetIp(), ack.getUdpPort(), dsServerSocket);
+                send(command, ack.getInetIp(), ack.getUdpPort(), dsServerSocket, as);
                 System.out.println("<<<Detect packet loss!>>> - Retransmitting to " + ack.getInetIp().getHostAddress()
                                     + ":" + ack.getUdpPort() + " time " + count + ": " + command.toJSONString());
 
@@ -100,7 +103,7 @@ public class UDPErrorHandling extends Thread
     }
 
 
-    private static void send(JSONObject message, InetAddress ip, int udpPort, DatagramSocket dsServerSocket)
+    private static void send(JSONObject message, InetAddress ip, int udpPort, DatagramSocket dsServerSocket, ackStorage as)
     {
         try
         {
@@ -108,6 +111,7 @@ public class UDPErrorHandling extends Thread
             byte[] buf = message.toJSONString().getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
             dsServerSocket.send(packet);
+            //System.out.println(as.getAckMap().entrySet());
         }
         catch (IOException e)
         {

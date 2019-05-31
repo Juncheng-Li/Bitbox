@@ -93,7 +93,7 @@ public class udpClientServer extends Thread
                     as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
                 }
                 as.getAckMap().get(ip.getHostAddress()).add(ack);
-                UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss, dsServerSocket);
+                UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss, dsServerSocket, as);
                 errorHandling.start();
             }
 

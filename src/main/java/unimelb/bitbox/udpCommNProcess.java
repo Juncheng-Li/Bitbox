@@ -670,6 +670,7 @@ public class udpCommNProcess extends Thread
             as.getAckMap().put(ip.getHostAddress(), newACKlist);
         }
         // remove duplicated same content, diff obj ack
+        /*
         int duplicatedIndex = -1;
         for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
         {
@@ -682,8 +683,9 @@ public class udpCommNProcess extends Thread
         {
             as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
         }
+         */
         as.getAckMap().get(ip.getHostAddress()).add(ack);
-        UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss, dsServerSocket);
+        UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss, dsServerSocket, as);
         errorHandling.start();
     }
 

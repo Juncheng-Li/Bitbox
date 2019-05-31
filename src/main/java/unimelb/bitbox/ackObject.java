@@ -57,11 +57,19 @@ public class ackObject
 
     public void match(JSONObject command, DatagramPacket serverPacket)
     {
+        System.out.println(command.get("command").toString() + " " + desiredRespond());
+        if(request.containsKey("pathName"))
+        {
+            System.out.println(request.get("pathName"));
+        }
+        System.out.println(serverPacket.getAddress().getHostAddress() + " " + getIp());
+        System.out.println(serverPacket.getPort() + " " + udpPort);
+        System.out.println(this.answered);
         if (command.get("command").toString().equals(desiredRespond())
                 && serverPacket.getAddress().getHostAddress().equals(getIp())
                 && serverPacket.getPort() == udpPort)
         {
-            //System.out.println("desired response");
+            System.out.println("yes!");
             //System.out.println("<<<<<<<<<!");
             this.answered = true;
         }
