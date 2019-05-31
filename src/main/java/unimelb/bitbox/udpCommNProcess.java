@@ -647,6 +647,7 @@ public class udpCommNProcess extends Thread
         dsServerSocket.send(packet);
         System.out.println("udp sent: " + message.toJSONString());
 
+        /*
         //Error handling
         ackObject ack = new ackObject(message, ip, udpPort);
         if (!as.getAckMap().containsKey(ip.getHostAddress()))
@@ -654,6 +655,32 @@ public class udpCommNProcess extends Thread
             //System.out.println("no such host");
             ArrayList<ackObject> newACKlist = new ArrayList<>();
             as.getAckMap().put(ip.getHostAddress(), newACKlist);
+        }
+        as.getAckMap().get(ip.getHostAddress()).add(ack);
+        UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss);
+        errorHandling.start();
+         */
+
+        // Handle packet loss
+        ackObject ack = new ackObject(message, ip, udpPort);
+        if (!as.getAckMap().containsKey(ip.getHostAddress()))
+        {
+            //System.out.println("no such host");
+            ArrayList<ackObject> newACKlist = new ArrayList<>();
+            as.getAckMap().put(ip.getHostAddress(), newACKlist);
+        }
+        // remove duplicated same content, diff obj ack
+        int duplicatedIndex = -1;
+        for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
+        {
+            if (aa.getUdpPort() == ack.getUdpPort() && aa.desiredRespond().equals(ack.desiredRespond()))
+            {
+                duplicatedIndex = as.getAckMap().get(ip.getHostAddress()).indexOf(aa);
+            }
+        }
+        if (duplicatedIndex != -1)
+        {
+            as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
         }
         as.getAckMap().get(ip.getHostAddress()).add(ack);
         UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss);
