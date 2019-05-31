@@ -59,7 +59,7 @@ public class wrapPayload
 
         JSONParser parser = new JSONParser();
         JSONObject Json = (JSONObject) parser.parse(JsonString);
-        System.out.println("Receive decrypted: " + Json);
+        System.out.println("Message decrypted: " + Json);
         return Json;
     }
 }

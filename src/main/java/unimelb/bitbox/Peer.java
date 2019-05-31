@@ -59,12 +59,10 @@ public class Peer
                     connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
                     Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
                     T_client.start();
-                }
-                catch (IOException e)
+                } catch (IOException e)
                 {
                     System.out.println(peer + " cannot be connected.");
-                }
-                catch (ParseException e)
+                } catch (ParseException e)
                 {
                     e.printStackTrace();
                 }
@@ -73,20 +71,18 @@ public class Peer
             // Peer_serverSide Start here
             listening Listening = new listening(ss, f);
             Listening.start();
-        }
-        else if (Configuration.getConfigurationValue("mode").equals("udp"))
+        } else if (Configuration.getConfigurationValue("mode").equals("udp"))
         {
             // UDP clientServer
             udpClientServer udpCS_T = new udpClientServer(f, ss, dsServerSocket, as);
             udpCS_T.start();
-        }
-        else
+        } else
         {
             System.out.println("Wrong mode: please choose udp or tcp");
         }
 
 
-        // Server for Client - not finished
+        // Server for Client
 
         ServerSocket listeningSocket_client = null;
         Socket clientSocket_client = null;
@@ -150,30 +146,77 @@ public class Peer
                                         //Connect peer
                                         try
                                         {
-                                            //Connect
-                                            String host = decryptedCommand.get("host").toString();
-                                            int port = Integer.parseInt(decryptedCommand.get("port").toString());
-                                            Socket socket = new Socket(host, port);
-                                            System.out.println(host + ":" + port + " successfully connected.");
-                                            //add to successful connected peerList
-                                            socketList.add(socket);
-                                            JSONObject peer = new JSONObject();
-                                            peer.put("host", decryptedCommand.get("host").toString());
-                                            peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
-                                            connectedPeer.add(peer);
-                                            //Start thread
-                                            Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
-                                            T_client.start();
-                                            //reply
-                                            JSONObject reply = new JSONObject();
-                                            reply.put("command", "CONNECT_PEER_RESPONSE");
-                                            reply.put("host", host);
-                                            reply.put("port", port);
-                                            reply.put("status", true);
-                                            reply.put("message", "connected to peer");
-                                            System.out.println("Sent encrypted: " + reply);
-                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                            out.flush();
+                                            if (Configuration.getConfigurationValue("mode").equals("tcp"))
+                                            {
+                                                //Connect tcp
+                                                String host = decryptedCommand.get("host").toString();
+                                                int port = Integer.parseInt(decryptedCommand.get("port").toString());
+                                                Socket socket = new Socket(host, port);
+                                                System.out.println(host + ":" + port + " successfully connected.");
+                                                //add to successful connected peerList
+                                                socketList.add(socket);
+                                                JSONObject peer = new JSONObject();
+                                                peer.put("host", decryptedCommand.get("host").toString());
+                                                peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
+                                                connectedPeer.add(peer);
+                                                //Start thread
+                                                Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
+                                                T_client.start();
+                                                //reply
+                                                JSONObject reply = new JSONObject();
+                                                reply.put("command", "CONNECT_PEER_RESPONSE");
+                                                reply.put("host", host);
+                                                reply.put("port", port);
+                                                reply.put("status", true);
+                                                reply.put("message", "connected to peer");
+                                                System.out.println("Sent encrypted: " + reply);
+                                                out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                                out.flush();
+                                            }
+                                            else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                                            {
+                                                //Connect udp
+                                                String host = null;
+                                                if (decryptedCommand.get("host").toString().equals("localhost"))
+                                                {
+                                                    host = InetAddress.getByName(decryptedCommand.get("host").toString()).getHostAddress();
+                                                }
+                                                else
+                                                {
+                                                    host = decryptedCommand.get("host").toString();
+                                                }
+                                                int udpPort = Integer.parseInt(decryptedCommand.get("port").toString());
+                                                HostPort udpSocket = new HostPort(host, udpPort);
+                                                //ss.add(udpSocket);
+                                                //handshake
+                                                byte[] buf = null;
+                                                InetAddress ip = InetAddress.getByName(host);
+                                                JSONObject hs = new JSONObject();
+                                                JSONObject hostPort = new JSONObject();
+                                                hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
+                                                hostPort.put("port", udpServerPort);
+                                                hs.put("command", "HANDSHAKE_REQUEST");
+                                                hs.put("hostPort", hostPort);
+                                                buf = hs.toJSONString().getBytes();
+                                                DatagramPacket packet = new DatagramPacket(buf, buf.length,ip, udpPort);
+                                                dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
+                                                System.out.println("udp sent " + ip.getHostAddress() + ":" + udpPort + " : " + hs);
+
+                                                //reply
+                                                JSONObject reply = new JSONObject();
+                                                reply.put("command", "CONNECT_PEER_RESPONSE");
+                                                reply.put("host", host);
+                                                reply.put("port", udpPort);
+                                                reply.put("status", true);
+                                                reply.put("message", "connected to peer");
+                                                System.out.println("Sent encrypted: " + reply);
+                                                out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                                out.flush();
+                                            }
+                                            else
+                                            {
+                                                System.out.println("Wrong mode - choose either tcp or udp");
+                                            }
                                         }
                                         // If connection unsuccessful
                                         catch (IOException e)
@@ -190,6 +233,7 @@ public class Peer
                                             System.out.println("Sent encrypted: " + reply);
                                             out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                             out.flush();
+
                                         }
                                     }
                                     // Handle DISCONNECT_PEER_REQUEST
