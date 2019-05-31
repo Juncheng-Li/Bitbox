@@ -73,18 +73,6 @@ public class UDPErrorHandling extends Thread
         int timeout = 1000 * Integer.parseInt(Configuration.getConfigurationValue("timeout"));
         timer.schedule(tt, timeout, timeout);
 
-        /*
-        while (true)
-        {
-            if(ack.getAnswered())
-            {
-                System.out.println("timer stopped");
-                timer.cancel();
-                timer.purge();
-                break;
-            }
-        }
-         */
     }
 
 

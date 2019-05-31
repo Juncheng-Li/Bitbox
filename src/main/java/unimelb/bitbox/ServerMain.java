@@ -242,11 +242,13 @@ public class ServerMain implements FileSystemObserver
                 as.getAckMap().put(ip.getHostAddress(), newACKlist);
             }
             // remove duplicated same content, diff obj ack
-            /*
+
             int duplicatedIndex = -1;
             for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
             {
-                if (aa.getUdpPort() == ack.getUdpPort() && aa.desiredRespond().equals(ack.desiredRespond()))
+                if (aa.getUdpPort() == ack.getUdpPort()
+                        && aa.desiredRespond().equals(ack.desiredRespond())
+                        && aa.getAnswered())
                 {
                     duplicatedIndex = as.getAckMap().get(ip.getHostAddress()).indexOf(aa);
                 }
@@ -255,7 +257,7 @@ public class ServerMain implements FileSystemObserver
             {
                 as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
             }
-             */
+
             as.getAckMap().get(ip.getHostAddress()).add(ack);
             UDPErrorHandling errorHandling = new UDPErrorHandling(message, ack, ss, dsServerSocket, as);
             errorHandling.start();

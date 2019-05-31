@@ -12,11 +12,6 @@ public class ackObject
     private int udpPort;
     private boolean answered = false;
 
-    ackObject()
-    {
-
-    }
-
     ackObject(JSONObject request, InetAddress ip, int udpPort)
     {
         this.request = request;
@@ -57,6 +52,7 @@ public class ackObject
 
     public void match(JSONObject command, DatagramPacket serverPacket)
     {
+        /*
         System.out.println(command.get("command").toString() + " " + desiredRespond());
         if(request.containsKey("pathName"))
         {
@@ -65,11 +61,12 @@ public class ackObject
         System.out.println(serverPacket.getAddress().getHostAddress() + " " + getIp());
         System.out.println(serverPacket.getPort() + " " + udpPort);
         System.out.println(this.answered);
+         */
         if (command.get("command").toString().equals(desiredRespond())
                 && serverPacket.getAddress().getHostAddress().equals(getIp())
                 && serverPacket.getPort() == udpPort)
         {
-            System.out.println("yes!");
+            //System.out.println("yes!");
             //System.out.println("<<<<<<<<<!");
             this.answered = true;
         }

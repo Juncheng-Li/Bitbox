@@ -83,7 +83,9 @@ public class udpClientServer extends Thread
                 int duplicatedIndex = -1;
                 for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
                 {
-                    if (aa.getUdpPort() == ack.getUdpPort() && aa.desiredRespond().equals(ack.desiredRespond()))
+                    if (aa.getUdpPort() == ack.getUdpPort()
+                        && aa.desiredRespond().equals(ack.desiredRespond())
+                        && aa.getAnswered())
                     {
                         duplicatedIndex = as.getAckMap().get(ip.getHostAddress()).indexOf(aa);
                     }
