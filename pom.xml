@@ -49,7 +49,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>peer1</outputDirectory>
+                    <!--<outputDirectory>peer1</outputDirectory>!-->
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
