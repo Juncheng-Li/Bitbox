@@ -58,45 +58,48 @@ public class udpClientServer extends Thread
                 }
                 int udpPort = peer_hp.port;
 
-                // udp Client side
-                // Handshake - fixed!
-                JSONObject hs = new JSONObject();
-                JSONObject hostPort = new JSONObject();
-                hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
-                hostPort.put("port", udpServerPort);
-                hs.put("command", "HANDSHAKE_REQUEST");
-                hs.put("hostPort", hostPort);
-                buf = hs.toJSONString().getBytes();
-                DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
-                dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
-                System.out.println("udp sent " + ip.getHostAddress() + ":" + udpPort + " : " + hs);
+                if(ss.getUdpSockets().size() < Integer.parseInt(Configuration.getConfigurationValue("maximumIncommingConnections")))
+                {
+                    // udp Client side
+                    // Handshake - fixed!
+                    JSONObject hs = new JSONObject();
+                    JSONObject hostPort = new JSONObject();
+                    hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
+                    hostPort.put("port", udpServerPort);
+                    hs.put("command", "HANDSHAKE_REQUEST");
+                    hs.put("hostPort", hostPort);
+                    buf = hs.toJSONString().getBytes();
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, udpPort);
+                    dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
+                    System.out.println("udp sent " + ip.getHostAddress() + ":" + udpPort + " : " + hs);
 
-                // Handle packet loss
-                ackObject ack = new ackObject(hs, ip, udpPort);
-                if (!as.getAckMap().containsKey(ip.getHostAddress()))
-                {
-                    //System.out.println("no such host");
-                    ArrayList<ackObject> newACKlist = new ArrayList<>();
-                    as.getAckMap().put(ip.getHostAddress(), newACKlist);
-                }
-                // remove duplicated same content, diff obj ack
-                int duplicatedIndex = -1;
-                for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
-                {
-                    if (aa.getUdpPort() == ack.getUdpPort()
-                        && aa.desiredRespond().equals(ack.desiredRespond())
-                        && aa.getAnswered())
+                    // Handle packet loss
+                    ackObject ack = new ackObject(hs, ip, udpPort);
+                    if (!as.getAckMap().containsKey(ip.getHostAddress()))
                     {
-                        duplicatedIndex = as.getAckMap().get(ip.getHostAddress()).indexOf(aa);
+                        //System.out.println("no such host");
+                        ArrayList<ackObject> newACKlist = new ArrayList<>();
+                        as.getAckMap().put(ip.getHostAddress(), newACKlist);
                     }
+                    // remove duplicated same content, diff obj ack
+                    int duplicatedIndex = -1;
+                    for (ackObject aa : as.getAckMap().get(ip.getHostAddress()))
+                    {
+                        if (aa.getUdpPort() == ack.getUdpPort()
+                                && aa.desiredRespond().equals(ack.desiredRespond())
+                                && aa.getAnswered())
+                        {
+                            duplicatedIndex = as.getAckMap().get(ip.getHostAddress()).indexOf(aa);
+                        }
+                    }
+                    if (duplicatedIndex != -1)
+                    {
+                        as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
+                    }
+                    as.getAckMap().get(ip.getHostAddress()).add(ack);
+                    UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss, dsServerSocket, as);
+                    errorHandling.start();
                 }
-                if (duplicatedIndex != -1)
-                {
-                    as.getAckMap().get(ip.getHostAddress()).remove(duplicatedIndex);
-                }
-                as.getAckMap().get(ip.getHostAddress()).add(ack);
-                UDPErrorHandling errorHandling = new UDPErrorHandling(hs, ack, ss, dsServerSocket, as);
-                errorHandling.start();
             }
 
 
@@ -115,8 +118,6 @@ public class udpClientServer extends Thread
                 System.out.println("udpClientServer(" +
                         serverPacket.getSocketAddress().toString().replace("/", "") +
                         "): " + message);
-                //System.out.println(serverPacket.getLength());
-                // Client side, copied from server
                 JSONObject command = (JSONObject) parser.parse(message.toString());
                 // Match ACK
                 if (as.getAckMap().containsKey(serverPacket.getAddress().getHostAddress()))
@@ -155,25 +156,30 @@ public class udpClientServer extends Thread
                     {
                         // get client Ip and port from HANDSHAKE_REQUEST
                         clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        System.out.println("newClientIP: " + clientIp);
+                        System.out.println("requestClientIP: " + clientIp);
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
-                        System.out.println("newClientPort: " + clientPort);
-                        // ready local host port
-                        JSONObject hostPort = new JSONObject();
-                        hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
-                        hostPort.put("port", udpServerPort);
-                        JSONObject hs_res = new JSONObject();
-                        hs_res.put("command", "HANDSHAKE_RESPONSE");
-                        hs_res.put("hostPort", hostPort); //use the hostPort defined in the handshake
-                        send(hs_res, clientIp, clientPort, dsServerSocket);
+                        System.out.println("requestClientPort: " + clientPort);
 
-                        HostPort hp = new HostPort(clientIp.getHostAddress() + ":" + clientPort);
-                        boolean contains = ss.add(hp);
-                        if (!contains)
+                        if (ss.getUdpSockets().size() < Integer.parseInt(Configuration.getConfigurationValue("maximumIncommingConnections")))
                         {
-                            timer.schedule(new SyncEvents(f), 0,
-                                    Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                            // ready local host port
+                            JSONObject hostPort = new JSONObject();
+                            hostPort.put("host", InetAddress.getLocalHost().getHostAddress());
+                            hostPort.put("port", udpServerPort);
+                            JSONObject hs_res = new JSONObject();
+                            hs_res.put("command", "HANDSHAKE_RESPONSE");
+                            hs_res.put("hostPort", hostPort); //use the hostPort defined in the handshake
+                            send(hs_res, clientIp, clientPort, dsServerSocket);
+
+                            HostPort hp = new HostPort(clientIp.getHostAddress() + ":" + clientPort);
+                            boolean contains = ss.add(hp);
+                            if (!contains)
+                            {
+                                timer.schedule(new SyncEvents(f), 0,
+                                        Integer.parseInt(Configuration.getConfigurationValue("syncInterval")) * 1000);
+                            }
                         }
+
                     } else
                     {
                         InetAddress ip = serverPacket.getAddress();
