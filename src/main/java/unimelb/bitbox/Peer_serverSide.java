@@ -97,19 +97,18 @@ public class Peer_serverSide extends Thread
                 }
             } catch (SocketException e)
             {
-                e.printStackTrace();
+                //e.printStackTrace();
                 clientSocket.close();
                 System.out.println("closed...");
             } catch (ParseException e)
             {
-                System.out.println(e);
-                e.printStackTrace();
+                System.out.println("Parse invalid letter at " + e.getPosition());
+                //e.printStackTrace();
             }
             clientSocket.close();
         } catch (IOException e)
         {
-            System.out.println(e);
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally
         {
             // kill timer

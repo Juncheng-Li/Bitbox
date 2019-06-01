@@ -170,7 +170,7 @@ public class ServerMain implements FileSystemObserver
         }
         catch (IOException e)
         {
-            System.out.println("ServerMain " + e);
+            System.out.println("ServerMain " + e.getCause());
         }
     }
 
@@ -196,12 +196,14 @@ public class ServerMain implements FileSystemObserver
                     }
                     catch (IOException es)
                     {
-                        es.printStackTrace();
+                        System.out.println("Socket cannot be closed.");
+                        //es.printStackTrace();
                     }
                 } else
                 {
-                    System.out.println(e.toString());
-                    e.printStackTrace();
+                    System.out.println("Socket have problems");
+                    //System.out.println(e.toString());
+                    //e.printStackTrace();
                 }
             }
         }

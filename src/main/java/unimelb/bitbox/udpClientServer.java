@@ -204,13 +204,15 @@ public class udpClientServer extends Thread
             }
         } catch (ParseException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Parse error" + e.toString());
         } catch (IOException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Seems something wrong with socket");
         } catch (NullPointerException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("Received message error, Null pointer");
         }
         finally

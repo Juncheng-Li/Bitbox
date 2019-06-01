@@ -115,7 +115,8 @@ public class Client
                 }
                 catch (InvalidKeySpecException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("Key Invalid..");
+                    //e.printStackTrace();
                 }
 
                 //Decode AES

@@ -388,31 +388,36 @@ public class Peer
                     }
                 } catch (IOException e)
                 {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (ParseException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("Parse Invalid letter at " + e.getPosition());
+                    //e.printStackTrace();
                 } catch (NoSuchProviderException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("No such security provider");
+                    //e.printStackTrace();
                 } catch (NoSuchAlgorithmException e)
                 {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (NoSuchPaddingException e)
                 {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (IllegalBlockSizeException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("Illigual block size");
+                    //e.printStackTrace();
                 } catch (BadPaddingException e)
                 {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (InvalidKeyException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("Invalid key..");
+                    //e.printStackTrace();
                 } catch (InvalidKeySpecException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("Invalid KeySpec");
+                    //e.printStackTrace();
                 } catch (NullPointerException e)
                 {
                     System.out.println("Client invalid request");
@@ -420,10 +425,10 @@ public class Peer
             }
         } catch (SocketException ex)
         {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         } catch (IOException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally
         {
             if (listeningSocket_client != null)

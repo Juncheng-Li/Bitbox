@@ -63,10 +63,10 @@ public class listening extends Thread
             }
         } catch (SocketException ex)
         {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         } catch (IOException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally
         {
             if (listeningSocket != null)
@@ -76,7 +76,7 @@ public class listening extends Thread
                     listeningSocket.close();
                 } catch (IOException e)
                 {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }

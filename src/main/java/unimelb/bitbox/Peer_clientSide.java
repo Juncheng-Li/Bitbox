@@ -90,7 +90,8 @@ class Peer_clientSide extends Thread
             }
         } catch (UnknownHostException e)
         {
-            e.printStackTrace();
+            System.out.println("Unknown host");
+            //e.printStackTrace();
         } catch (IOException e)
         {
             if (e.toString().contains("ConnectException"))
@@ -107,7 +108,8 @@ class Peer_clientSide extends Thread
             }
         } catch (ParseException e)
         {
-            e.printStackTrace();
+            System.out.println("Parse invalid letter at " + e.getPosition());
+            //e.printStackTrace();
         } finally
         {
             // Close the socket
@@ -126,7 +128,8 @@ class Peer_clientSide extends Thread
                     socket.close();
                 } catch (IOException e)
                 {
-                    e.printStackTrace();
+                    System.out.println("Socket cannot be closed...");
+                    //e.printStackTrace();
                 }
             }
         }

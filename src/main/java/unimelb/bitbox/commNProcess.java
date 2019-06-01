@@ -218,7 +218,7 @@ public class commNProcess extends Thread
                                 System.out.println("sent: " + reply);
                                 out.write(reply.toJSONString() + "\n");
                                 out.flush();
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
 
                             // FILE_CREATE_RESPONSE
@@ -270,7 +270,7 @@ public class commNProcess extends Thread
                                     catch (InterruptedException e)
                                     {
                                         System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
-                                        e.printStackTrace();
+                                        //e.printStackTrace();
                                     }
                                 }
                                 if (remainingSize != 0)
@@ -318,7 +318,7 @@ public class commNProcess extends Thread
                             System.out.println("sent: " + reply);
                             out.write(reply.toJSONString() + "\n");
                             out.flush();
-                            e.printStackTrace();
+                            //e.printStackTrace();
                         }
 
                         // FILE_CREATE_RESPONSE
@@ -370,7 +370,7 @@ public class commNProcess extends Thread
                                 catch (InterruptedException e)
                                 {
                                     System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
-                                    e.printStackTrace();
+                                    //e.printStackTrace();
                                 }
                             }
                             if (remainingSize != 0)
@@ -577,7 +577,7 @@ public class commNProcess extends Thread
                             catch (InterruptedException e)
                             {
                                 System.out.println("File_byte_request in commNProcess - Thread.sleep() interrupted");
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
                         }
                         if (remainingSize != 0)
@@ -670,7 +670,7 @@ public class commNProcess extends Thread
 
         } catch (SocketException e)
         {
-            System.out.println("Socket Exception cought!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("Socket Exception cought");
             try
             {
                 System.out.println(e.toString());
@@ -679,16 +679,16 @@ public class commNProcess extends Thread
                 System.out.println("Socket closed.");
             } catch (IOException ee)
             {
-                ee.printStackTrace();
+                //ee.printStackTrace();
             }
         } catch (IOException e)
         {
             // Includes no dir
-            System.out.println("IOException cought!!!!!!!!!!!!!!!!!");
-            e.printStackTrace();
+            System.out.println("IOException cought");
+            //e.printStackTrace();
         } catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
