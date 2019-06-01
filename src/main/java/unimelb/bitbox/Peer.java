@@ -196,6 +196,7 @@ public class Peer
                                                 int udpPort = Integer.parseInt(decryptedCommand.get("port").toString());
                                                 HostPort udpSocket = new HostPort(host, udpPort);
                                                 //ss.add(udpSocket);
+                                                int num = ss.getUdpSockets().size();
                                                 //handshake
                                                 byte[] buf = null;
                                                 InetAddress ip = InetAddress.getByName(host);
@@ -210,16 +211,42 @@ public class Peer
                                                 dsServerSocket.send(packet);  //IOException  //need "/n" ?              //////
                                                 System.out.println("udp sent " + ip.getHostAddress() + ":" + udpPort + " : " + hs);
 
-                                                //reply
-                                                JSONObject reply = new JSONObject();
-                                                reply.put("command", "CONNECT_PEER_RESPONSE");
-                                                reply.put("host", host);
-                                                reply.put("port", udpPort);
-                                                reply.put("status", true);
-                                                reply.put("message", "connected to peer");
-                                                System.out.println("Sent encrypted: " + reply);
-                                                out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                                out.flush();
+                                                try
+                                                {
+                                                    Thread.sleep(500);
+                                                }
+                                                catch (InterruptedException e)
+                                                {
+                                                    System.out.println("Thread interrupted.");
+                                                }
+                                                int secondNum = ss.getUdpSockets().size();
+                                                if (secondNum > num)
+                                                {
+                                                    //reply
+                                                    JSONObject reply = new JSONObject();
+                                                    reply.put("command", "CONNECT_PEER_RESPONSE");
+                                                    reply.put("host", host);
+                                                    reply.put("port", udpPort);
+                                                    reply.put("status", true);
+                                                    reply.put("message", "connected to peer");
+                                                    System.out.println("Sent encrypted: " + reply);
+                                                    out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                                    out.flush();
+                                                }
+                                                else
+                                                {
+                                                    //reply
+                                                    JSONObject reply = new JSONObject();
+                                                    reply.put("command", "CONNECT_PEER_RESPONSE");
+                                                    reply.put("host", host);
+                                                    reply.put("port", udpPort);
+                                                    reply.put("status", false);
+                                                    reply.put("message", "connection failed");
+                                                    System.out.println("Sent encrypted: " + reply);
+                                                    out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                                    out.flush();
+                                                }
+
                                             }
                                             else
                                             {

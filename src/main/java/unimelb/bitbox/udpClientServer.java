@@ -45,7 +45,6 @@ public class udpClientServer extends Thread
 
             for (String peer : peersArray)
             {
-                System.out.println(peer);
                 HostPort peer_hp = new HostPort(peer);
                 InetAddress ip = null;
                 if (peer_hp.host.equals("localhost"))

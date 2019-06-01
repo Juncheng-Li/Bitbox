@@ -209,7 +209,7 @@ public class socketStorage
         JSONArray list = new JSONArray();
         for (Socket element : sockets)
         {
-            int port = element.getLocalPort();
+            int port = element.getPort();
             String host = null;
             if (element.getInetAddress().toString().contains("localhost"))
             {

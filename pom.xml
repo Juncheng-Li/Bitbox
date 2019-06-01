@@ -4,7 +4,7 @@
 
     <groupId>unimelb</groupId>
     <artifactId>bitbox</artifactId>
-    <version>11</version>
+    <version>15</version>
     <packaging>jar</packaging>
 
     <name>bitbox</name>
@@ -37,7 +37,6 @@
     </dependencies>
 
     <build>
-        <!--<directory>peer2</directory>-->
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
