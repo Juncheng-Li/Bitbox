@@ -155,9 +155,9 @@ public class udpClientServer extends Thread
                     {
                         // get client Ip and port from HANDSHAKE_REQUEST
                         clientIp = InetAddress.getByName(((JSONObject) command.get("hostPort")).get("host").toString());
-                        System.out.println("requestClientIP: " + clientIp);
+                        //System.out.println("requestClientIP: " + clientIp);
                         clientPort = Integer.parseInt(((JSONObject) command.get("hostPort")).get("port").toString());
-                        System.out.println("requestClientPort: " + clientPort);
+                        //System.out.println("requestClientPort: " + clientPort);
 
                         if (ss.getUdpSockets().size() < Integer.parseInt(Configuration.getConfigurationValue("maximumIncommingConnections")))
                         {
