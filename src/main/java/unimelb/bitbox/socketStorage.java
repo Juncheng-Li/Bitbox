@@ -2,6 +2,7 @@ package unimelb.bitbox;
 
 import unimelb.bitbox.util.HostPort;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -103,6 +104,32 @@ public class socketStorage
         return is;
     }
 
+    public boolean contains(String host, int port)
+    {
+
+        boolean is = false;
+        for (Socket socketInList : sockets)
+        {
+            if (host.equals("localhost"))
+            {
+                if (host.equals(socketInList.getInetAddress().toString().substring(0, socketInList.getInetAddress().toString().indexOf("/")))
+                        && port == socketInList.getPort())
+                {
+                    is = true;
+                }
+            }
+            else
+            {
+                if (host.equals(socketInList.getInetAddress().getHostAddress())
+                        && port == socketInList.getPort())
+                {
+                    is = true;
+                }
+            }
+        }
+        return is;
+    }
+
     public void remove(String mode, String hostPort)
     {
         try
@@ -135,6 +162,43 @@ public class socketStorage
         catch (UnknownHostException e)
         {
             System.out.println("socketStorage remove method, localhost does not exist");
+        }
+    }
+
+
+    public void disNremove(String host, int port)
+    {
+        Socket temp = null;
+        for (Socket socketInList : sockets)
+        {
+            if (host.equals("localhost"))
+            {
+                if (host.equals(socketInList.getInetAddress().toString().substring(0, socketInList.getInetAddress().toString().indexOf("/")))
+                        && port == socketInList.getPort())
+                {
+                    temp = socketInList;
+                }
+            }
+            else
+            {
+                if (host.equals(socketInList.getInetAddress().getHostAddress())
+                        && port == socketInList.getPort())
+                {
+                    temp = socketInList;
+                }
+            }
+        }
+        if (temp != null)
+        {
+            try
+            {
+                temp.close();
+                sockets.remove(temp);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Did not close socket");
+            }
         }
     }
 }

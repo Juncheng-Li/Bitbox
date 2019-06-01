@@ -154,7 +154,8 @@ public class Peer
                                                 Socket socket = new Socket(host, port);
                                                 System.out.println(host + ":" + port + " successfully connected.");
                                                 //add to successful connected peerList
-                                                socketList.add(socket);
+                                                ss.add(socket);
+                                                //socketList.add(socket);
                                                 JSONObject peer = new JSONObject();
                                                 peer.put("host", decryptedCommand.get("host").toString());
                                                 peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
@@ -241,7 +242,39 @@ public class Peer
                                         if (Configuration.getConfigurationValue("mode").equals("tcp"))
                                         {
                                             //Disconnect peer
-                                            //System.out.println("how to close a socket with address and port number");
+                                            String host = decryptedCommand.get("host").toString();
+                                            int port = Integer.parseInt(decryptedCommand.get("port").toString());
+                                            boolean contains = ss.contains(host, port);
+                                            if (contains)
+                                            {
+                                                ss.disNremove(host, port);
+                                                //reply
+                                                JSONObject reply = new JSONObject();
+                                                reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                                reply.put("host", host);
+                                                reply.put("port", port);
+                                                reply.put("status", true);
+                                                reply.put("message", "disconnected from peer");
+                                                System.out.println("Sent encrypted: " + reply);
+                                                out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                                out.flush();
+                                            }
+                                            else
+                                            {
+                                                System.out.println("The peer want to disconnect does not exist in peer");
+                                                JSONObject reply = new JSONObject();
+                                                reply.put("command", "DISCONNECT_PEER_RESPONSE");
+                                                reply.put("host", host);
+                                                reply.put("port", port);
+                                                reply.put("status", false);
+                                                reply.put("message", "connection not active");
+                                                System.out.println("Sent encrypted: " + reply);
+                                                out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                                out.flush();
+                                            }
+
+                                            /*
+                                            //Disconnect peer
                                             String host = decryptedCommand.get("host").toString();
                                             int port = Integer.parseInt(decryptedCommand.get("port").toString());
                                             LinkedList<Integer> removeIndex = new LinkedList<>();
@@ -315,6 +348,7 @@ public class Peer
                                             }
                                             // Remove inactive peers
                                             removeSocket(socketList, connectedPeer, removeIndex);
+                                            */
                                         }
                                         else if (Configuration.getConfigurationValue("mode").equals("udp"))
                                         {
