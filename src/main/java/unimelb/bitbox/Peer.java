@@ -32,8 +32,7 @@ public class Peer
         JSONParser parser = new JSONParser();
         String peers = Configuration.getConfigurationValue("peers");
         String[] peersArray = peers.split(", ");
-        ArrayList<Socket> socketList = new ArrayList<>();
-        JSONArray connectedPeer = new JSONArray();
+        connectedPeers TCPconnectedList = new connectedPeers();
 
         int udpServerPort = Integer.parseInt(Configuration.getConfigurationValue("udpPort"));
         DatagramSocket dsServerSocket = new DatagramSocket(udpServerPort); //
@@ -54,15 +53,16 @@ public class Peer
                     HostPort peer_hp = new HostPort(peer);
                     Socket socket = new Socket(peer_hp.host, peer_hp.port);
                     ss.add(socket);
-                    //socketList.add(socket);
-                    System.out.println(ss.getSockets());
-                    connectedPeer.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
+                    //System.out.println(ss.getSockets());
+                    TCPconnectedList.add((JSONObject) parser.parse(peer_hp.toDoc().toJson()));
                     Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
                     T_client.start();
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     System.out.println(peer + " cannot be connected.");
-                } catch (ParseException e)
+                }
+                catch (ParseException e)
                 {
                     e.printStackTrace();
                 }
@@ -121,24 +121,32 @@ public class Peer
                                     // Handle LIST_PEERS_REQUEST
                                     if (decryptedCommand.get("command").equals("LIST_PEERS_REQUEST"))
                                     {
-                                        //Check if sockets are active
-                                        LinkedList<Integer> removeIndex = new LinkedList<>();
-                                        for (int i = 0; i < socketList.size(); i++)
+                                        if (Configuration.getConfigurationValue("mode").equals("tcp"))
                                         {
-                                            if (socketList.get(i).isClosed())
-                                            {
-                                                removeIndex.add(i);
-                                            }
+
+                                            // Send reply
+                                            JSONObject reply = new JSONObject();
+                                            reply.put("command", "LIST_PEERS_RESPONSE");
+                                            //reply.put("peers", TCPconnectedList.getStringList());
+                                            reply.put("peers", ss.getTcpList());
+                                            System.out.println("Sent encrypted: " + reply);
+                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                            out.flush();
                                         }
-                                        // Remove inactive sockets
-                                        removeSocket(socketList, connectedPeer, removeIndex);
-                                        // Send reply
-                                        JSONObject reply = new JSONObject();
-                                        reply.put("command", "LIST_PEERS_RESPONSE");
-                                        reply.put("peers", connectedPeer);
-                                        System.out.println("Sent encrypted: " + reply);
-                                        out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                        out.flush();
+                                        else if (Configuration.getConfigurationValue("mode").equals("udp"))
+                                        {
+                                            // Send reply
+                                            JSONObject reply = new JSONObject();
+                                            reply.put("command", "LIST_PEERS_RESPONSE");
+                                            reply.put("peers", ss.getUdpList());
+                                            System.out.println("Sent encrypted: " + reply);
+                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
+                                            out.flush();
+                                        }
+                                        else
+                                        {
+                                            System.out.println("Wrong mode - please choose either tcp or udp");
+                                        }
                                     }
                                     // Handle CONNECT_PEER_REQUEST
                                     else if (decryptedCommand.get("command").equals("CONNECT_PEER_REQUEST"))
@@ -155,11 +163,10 @@ public class Peer
                                                 System.out.println(host + ":" + port + " successfully connected.");
                                                 //add to successful connected peerList
                                                 ss.add(socket);
-                                                //socketList.add(socket);
                                                 JSONObject peer = new JSONObject();
                                                 peer.put("host", decryptedCommand.get("host").toString());
                                                 peer.put("port", Integer.parseInt(decryptedCommand.get("port").toString()));
-                                                connectedPeer.add(peer);
+                                                TCPconnectedList.add(peer);
                                                 //Start thread
                                                 Peer_clientSide T_client = new Peer_clientSide(socket, f, ss);
                                                 T_client.start();
@@ -272,83 +279,6 @@ public class Peer
                                                 out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
                                                 out.flush();
                                             }
-
-                                            /*
-                                            //Disconnect peer
-                                            String host = decryptedCommand.get("host").toString();
-                                            int port = Integer.parseInt(decryptedCommand.get("port").toString());
-                                            LinkedList<Integer> removeIndex = new LinkedList<>();
-                                            boolean existence = false;
-                                            for (int i = 0; i < socketList.size(); i++)
-                                            {
-                                                if (socketList.get(i).getRemoteSocketAddress().toString().replace("/", "").equals(host + ":" + port))
-                                                {
-                                                    existence = true;
-                                                    if (!socketList.get(i).isClosed())
-                                                    {
-                                                        try
-                                                        {
-                                                            socketList.get(i).close();
-                                                            removeIndex.add(i);
-                                                            //reply
-                                                            JSONObject reply = new JSONObject();
-                                                            reply.put("command", "DISCONNECT_PEER_RESPONSE");
-                                                            reply.put("host", host);
-                                                            reply.put("port", port);
-                                                            reply.put("status", true);
-                                                            reply.put("message", "disconnected from peer");
-                                                            System.out.println("Sent encrypted: " + reply);
-                                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                                            out.flush();
-                                                        }
-                                                        catch (IOException e)
-                                                        {
-                                                            System.out.println("Socket " + socketList.get(i).getRemoteSocketAddress().toString().replace("/", "") + " is inactive");
-                                                            JSONObject reply = new JSONObject();
-                                                            reply.put("command", "DISCONNECT_PEER_RESPONSE");
-                                                            reply.put("host", host);
-                                                            reply.put("port", port);
-                                                            reply.put("status", false);
-                                                            reply.put("message", "connection not active");
-                                                            System.out.println("Sent encrypted: " + reply);
-                                                            out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                                            out.flush();
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        // The peer that want to connect is already inactive, therefore add to removeIndex
-                                                        removeIndex.add(i);
-                                                        System.out.println("Socket " + socketList.get(i).getRemoteSocketAddress().toString().replace("/", "") + " is inactive");
-                                                        JSONObject reply = new JSONObject();
-                                                        reply.put("command", "DISCONNECT_PEER_RESPONSE");
-                                                        reply.put("host", host);
-                                                        reply.put("port", port);
-                                                        reply.put("status", false);
-                                                        reply.put("message", "connection not active");
-                                                        System.out.println("Sent encrypted: " + reply);
-                                                        out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                                        out.flush();
-                                                    }
-                                                }
-                                            }
-                                            // disconnect peer does not exist in the list
-                                            if (!existence)
-                                            {
-                                                System.out.println("The peer want to disconnect does not exist in peer");
-                                                JSONObject reply = new JSONObject();
-                                                reply.put("command", "DISCONNECT_PEER_RESPONSE");
-                                                reply.put("host", host);
-                                                reply.put("port", port);
-                                                reply.put("status", false);
-                                                reply.put("message", "connection not active");
-                                                System.out.println("Sent encrypted: " + reply);
-                                                out.write(wrapPayload.payload(reply, secretKey).toJSONString() + "\n");
-                                                out.flush();
-                                            }
-                                            // Remove inactive peers
-                                            removeSocket(socketList, connectedPeer, removeIndex);
-                                            */
                                         }
                                         else if (Configuration.getConfigurationValue("mode").equals("udp"))
                                         {

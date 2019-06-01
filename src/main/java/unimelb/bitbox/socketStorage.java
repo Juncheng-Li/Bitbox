@@ -1,5 +1,7 @@
 package unimelb.bitbox;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import unimelb.bitbox.util.HostPort;
 
 import java.io.IOException;
@@ -200,5 +202,45 @@ public class socketStorage
                 System.out.println("Did not close socket");
             }
         }
+    }
+
+    public String getTcpList ()
+    {
+        JSONArray list = new JSONArray();
+        for (Socket element : sockets)
+        {
+            int port = element.getLocalPort();
+            String host = null;
+            if (element.getInetAddress().toString().contains("localhost"))
+            {
+                host = "localhost";
+            }
+            else
+            {
+                host = element.getInetAddress().getHostAddress();
+            }
+
+            JSONObject hp = new JSONObject();
+            hp.put("host", host);
+            hp.put("port", port);
+            list.add(hp);
+        }
+        return list.toString();
+    }
+
+    public String getUdpList()
+    {
+        JSONArray list = new JSONArray();
+        for (HostPort element : udpSockets)
+        {
+            int port = element.port;
+            String host = element.host;
+
+            JSONObject hp = new JSONObject();
+            hp.put("host", host);
+            hp.put("port", port);
+            list.add(hp);
+        }
+        return list.toString();
     }
 }
